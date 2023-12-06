@@ -13,7 +13,7 @@ const gamepadConfigSchema = z.object({
   secondaryGamepad: z.string().nullable(),
 });
 
-const schema = z.object({
+export const userConfigSchema = z.object({
   cams: z.array(cameraConfigSchema),
   videoMixers: z.array(
     z.object({
@@ -28,7 +28,7 @@ const schema = z.object({
 
 export type CameraConfig = z.infer<typeof cameraConfigSchema>;
 export type GamepadConfig = z.infer<typeof gamepadConfigSchema>;
-export type UserConfig = z.infer<typeof schema>;
+export type UserConfig = z.infer<typeof userConfigSchema>;
 
 /**
  * Loads the config file from the given path. If the file is not found or the
@@ -45,7 +45,7 @@ export function loadConfig(configPath: string): UserConfig {
     process.exit(1);
   }
 
-  const config = schema.safeParse(jsonConfig);
+  const config = userConfigSchema.safeParse(jsonConfig);
 
   if (!config.success) {
     console.error(config.error.message);
