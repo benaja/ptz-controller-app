@@ -38,8 +38,8 @@ export function registerEndpoints(obj: any) {
   });
 }
 
-export function setupApi(mainWindow: Electron.BrowserWindow) {
-  const apis = [new GamepadApi(mainWindow), new CameraApi()];
+export function setupApi() {
+  const apis = [new GamepadApi(), new CameraApi()];
 
   apis.forEach((api) => registerEndpoints(api));
 }

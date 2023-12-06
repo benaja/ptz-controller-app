@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import { join, resolve } from 'node:path';
-import { setupApi } from './api/setupApi';
+import { registerListener } from './events/eventBus';
 
 const WINDOW_TITLE = 'PTZ Controller';
 
@@ -17,7 +17,9 @@ export async function createWindow() {
     title: WINDOW_TITLE,
   });
 
-  setupApi(browserWindow);
+  registerListener('gamepadEvent', (event) => {
+    browserWindow.webContents.send('onGamepadEvent', event);
+  });
 
   // setupUtpListener(browserWindow);
 
@@ -66,7 +68,7 @@ export async function createWindow() {
  */
 export async function restoreOrCreateMainWindow() {
   let window = BrowserWindow.getAllWindows().find(
-    (w) => !w.isDestroyed() && w.getTitle() === WINDOW_TITLE
+    (w) => !w.isDestroyed() && w.getTitle() === WINDOW_TITLE,
   );
 
   if (window === undefined) {

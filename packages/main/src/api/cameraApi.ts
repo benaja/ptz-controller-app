@@ -12,11 +12,9 @@ export class CameraApi {
   }
 
   removeCameraEndpoint(id: string) {
-    console.log('removeCameraEndpoint', id);
     const cameras = userConfigStore.get('cameras');
     const index = cameras.findIndex((c) => c.id === id);
 
-    console.log('removeCameraEndpoint', id, index);
     if (index === -1) return;
     cameras.splice(index, 1);
     userConfigStore.set('cameras', cameras);

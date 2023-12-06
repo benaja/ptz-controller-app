@@ -8,6 +8,9 @@ dependencies:
   '@electron-toolkit/preload':
     specifier: ^2.0.0
     version: 2.0.0(electron@27.1.0)
+  '@electron-toolkit/utils':
+    specifier: ^2.0.1
+    version: 2.0.1(electron@27.1.0)
   '@heroicons/react':
     specifier: ^2.0.18
     version: 2.0.18(react@18.2.0)
@@ -395,6 +398,14 @@ packages:
     dependencies:
       '@types/node': 20.9.0
     dev: true
+
+  /@electron-toolkit/utils@2.0.1(electron@27.1.0):
+    resolution: {integrity: sha512-3nnjd3D1NIjxdzNrvR5fkJ3kbJNbRkpHppv0/pSbMX6I0DaBzpPXeSfDYuJJKzZrAc3CmGcJa0MU4+AjEOlT4g==}
+    peerDependencies:
+      electron: '>=13.0.0'
+    dependencies:
+      electron: 27.1.0
+    dev: false
 
   /@electron/asar@3.2.8:
     resolution: {integrity: sha512-cmskk5M06ewHMZAplSiF4AlME3IrnnZhKnWbtwKVLRkdJkKyUVjMLhDIiPIx/+6zQWVlKX/LtmK9xDme7540Sg==}

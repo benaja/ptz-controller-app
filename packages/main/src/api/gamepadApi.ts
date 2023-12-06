@@ -1,3 +1,4 @@
+import { emit } from '@/events/eventBus';
 import { userConfigStore } from '@/store/userStore';
 import Electron from 'electron';
 
@@ -114,11 +115,8 @@ function resetConnectedGamepads(): void {
 }
 
 export class GamepadApi {
-  private window: Electron.BrowserWindow;
-
-  public constructor(window: Electron.BrowserWindow) {
+  public constructor() {
     resetConnectedGamepads();
-    this.window = window;
   }
 
   public gamepadConnected({ payload }: GamepadConnected): void {
@@ -189,8 +187,7 @@ export class GamepadApi {
   }
 
   public gamepadEventEndpoint(gamepadEvent: GamepadEvent) {
-    this.window.webContents.send('onGamepadEvent', gamepadEvent);
-    // console.log('gamepadEvent', gamepadEvent);
+    emit('gamepadEvent', gamepadEvent);
     switch (gamepadEvent.type) {
       case 'updateGamepads':
         return this.updateGamepads(gamepadEvent);

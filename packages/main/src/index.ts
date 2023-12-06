@@ -3,6 +3,8 @@ import './security-restrictions';
 import { restoreOrCreateMainWindow } from '@/mainWindow';
 import { resoreOrCreateControllerWindow } from '@/controllerWindow';
 import { platform } from 'node:process';
+import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+import { setupApi } from './api/setupApi';
 
 /**
  * Prevent electron from running multiple instances.
@@ -45,8 +47,20 @@ app.on('activate', () => {
 app
   .whenReady()
   .then(() => {
+    // Set app user model id for windows
+    electronApp.setAppUserModelId('com.electron');
+
+    // Default open or close DevTools by F12 in development
+    // and ignore CommandOrControl + R in production.
+    // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
+    app.on('browser-window-created', (_, window) => {
+      optimizer.watchWindowShortcuts(window);
+    });
+
     restoreOrCreateMainWindow();
     resoreOrCreateControllerWindow();
+
+    setupApi();
   })
   .catch((e) => console.error('Failed create window:', e));
 
