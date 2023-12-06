@@ -1,0 +1,16 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`update selected gamepad 1`] = `
+[
+  {
+    "connectionIndex": 0,
+    "id": "test",
+    "isUse": true,
+  },
+  {
+    "connectionIndex": 1,
+    "id": "test",
+    "isUse": false,
+  },
+]
+`;

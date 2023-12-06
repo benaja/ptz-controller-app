@@ -1,5 +1,7 @@
-import {app, BrowserWindow} from 'electron';
-import {join, resolve} from 'node:path';
+import { app, BrowserWindow } from 'electron';
+import { join, resolve } from 'node:path';
+
+const WINDOW_TITLE = 'Controller interface';
 
 export async function createWindow() {
   const browserWindow = new BrowserWindow({
@@ -11,9 +13,8 @@ export async function createWindow() {
       webviewTag: false, // The webview tag is not recommended. Consider alternatives like an iframe or Electron's BrowserView. @see https://www.electronjs.org/docs/latest/api/webview-tag#warning
       preload: join(app.getAppPath(), 'packages/preload/dist/index.cjs'),
     },
+    title: WINDOW_TITLE,
   });
-
-  console.log('createWindow');
 
   /**
    * If the 'show' property of the BrowserWindow's constructor is omitted from the initialization options,
@@ -38,7 +39,7 @@ export async function createWindow() {
     /**
      * Load from the Vite dev server for development.
      */
-    await browserWindow.loadURL(import.meta.env.VITE_DEV_SERVER_URL + 'gamepad.html');
+    await browserWindow.loadURL(import.meta.env.VITE_DEV_SERVER_URL + '/gamepad.html');
   } else {
     /**
      * Load from the local file system for production and test.
@@ -58,8 +59,10 @@ export async function createWindow() {
 /**
  * Restore an existing BrowserWindow or Create a new BrowserWindow.
  */
-export async function restoreOrCreateWindow() {
-  let window = BrowserWindow.getAllWindows().find(w => !w.isDestroyed());
+export async function resoreOrCreateControllerWindow() {
+  let window = BrowserWindow.getAllWindows().find(
+    (w) => !w.isDestroyed() && w.getTitle() === WINDOW_TITLE
+  );
 
   if (window === undefined) {
     window = await createWindow();

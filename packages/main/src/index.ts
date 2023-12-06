@@ -1,7 +1,7 @@
 import { app } from 'electron';
 import './security-restrictions';
-import { createWindow as restoreOrCreateWindow } from '@/mainWindow';
-import { createWindow } from '@/controllerWindow';
+import { restoreOrCreateMainWindow } from '@/mainWindow';
+import { resoreOrCreateControllerWindow } from '@/controllerWindow';
 import { platform } from 'node:process';
 
 /**
@@ -13,8 +13,8 @@ if (!isSingleInstance) {
   process.exit(0);
 }
 app.on('second-instance', () => {
-  restoreOrCreateWindow();
-  createWindow();
+  restoreOrCreateMainWindow();
+  resoreOrCreateControllerWindow();
 });
 
 /**
@@ -34,7 +34,10 @@ app.on('window-all-closed', () => {
 /**
  * @see https://www.electronjs.org/docs/latest/api/app#event-activate-macos Event: 'activate'.
  */
-app.on('activate', restoreOrCreateWindow);
+app.on('activate', () => {
+  restoreOrCreateMainWindow();
+  resoreOrCreateControllerWindow();
+});
 
 /**
  * Create the application window when the background process is ready.
@@ -42,8 +45,8 @@ app.on('activate', restoreOrCreateWindow);
 app
   .whenReady()
   .then(() => {
-    restoreOrCreateWindow();
-    createWindow();
+    restoreOrCreateMainWindow();
+    resoreOrCreateControllerWindow();
   })
   .catch((e) => console.error('Failed create window:', e));
 

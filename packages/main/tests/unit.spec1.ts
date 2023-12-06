@@ -35,6 +35,6 @@ import '../src/index';
 //   vi.clearAllMocks();
 // });
 
-test('Should create a new window', async () => {
-  ipcMain.handle('get-user-config', () => ({}));
-});
+// test('Should create a new window', async () => {
+//   ipcMain.handle('get-user-config', () => ({}));
+// });

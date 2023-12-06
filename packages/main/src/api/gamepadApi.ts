@@ -1,4 +1,3 @@
-import { ipcMain } from 'electron';
 import { userConfigStore } from '@main/store';
 
 export type Gamepad = {
@@ -66,23 +65,11 @@ function resetConnectedGamepads(): void {
   }
 }
 
-function registerEndpoints(obj: any) {
-  const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(obj)).filter(
-    (m) => m !== 'constructor' && typeof obj[m] === 'function' && m.includes('Endpoint')
-  );
-
-  methods.forEach((method) => {
-    const endpointName = method.replace('Endpoint', '');
-    ipcMain.handle(endpointName, (event, args) => {
-      return obj[method](args);
-    });
-  });
-}
-
 export class GamepadApi {
   private window: Electron.BrowserWindow;
 
   public constructor(window: Electron.BrowserWindow) {
+    resetConnectedGamepads();
     this.window = window;
   }
 
@@ -177,8 +164,8 @@ export class GamepadApi {
       id: gamepad.id,
       connectionIndex: gamepad.connectionIndex,
       isUse:
-        selectedGamepads.primaryGamepad?.id === gamepad.id ||
-        selectedGamepads.secondaryGamepad?.id === gamepad.id,
+        selectedGamepads.primaryGamepad?.connectionIndex === gamepad.connectionIndex ||
+        selectedGamepads.secondaryGamepad?.connectionIndex === gamepad.connectionIndex,
     }));
   }
 
@@ -198,11 +185,4 @@ export class GamepadApi {
         return this.gamepadAxisEvent(gamepadEvent);
     }
   }
-}
-
-export function registerGamepadApi(mainWindow: Electron.BrowserWindow) {
-  resetConnectedGamepads();
-
-  const api = new GamepadApi(mainWindow);
-  registerEndpoints(api);
 }

@@ -1,7 +1,8 @@
 import { app, BrowserWindow } from 'electron';
 import { join, resolve } from 'node:path';
-import { registerGamepadApi } from './gamepad/gamepadApi';
-import { setupUtpListener } from './udpListener';
+import { setupApi } from './api/setupApi';
+
+const WINDOW_TITLE = 'PTZ Controller';
 
 export async function createWindow() {
   const browserWindow = new BrowserWindow({
@@ -13,9 +14,10 @@ export async function createWindow() {
       webviewTag: false, // The webview tag is not recommended. Consider alternatives like an iframe or Electron's BrowserView. @see https://www.electronjs.org/docs/latest/api/webview-tag#warning
       preload: join(app.getAppPath(), 'packages/preload/dist/index.cjs'),
     },
+    title: WINDOW_TITLE,
   });
 
-  registerGamepadApi(browserWindow);
+  setupApi(browserWindow);
 
   // setupUtpListener(browserWindow);
 
@@ -62,8 +64,10 @@ export async function createWindow() {
 /**
  * Restore an existing BrowserWindow or Create a new BrowserWindow.
  */
-export async function restoreOrCreateWindow() {
-  let window = BrowserWindow.getAllWindows().find((w) => !w.isDestroyed());
+export async function restoreOrCreateMainWindow() {
+  let window = BrowserWindow.getAllWindows().find(
+    (w) => !w.isDestroyed() && w.getTitle() === WINDOW_TITLE
+  );
 
   if (window === undefined) {
     window = await createWindow();
