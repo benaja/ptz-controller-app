@@ -4,7 +4,7 @@ import { restoreOrCreateMainWindow } from '@/mainWindow';
 import { resoreOrCreateControllerWindow } from '@/controllerWindow';
 import { platform } from 'node:process';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
-import { setupApi } from './api/setupApi';
+import { setupCore } from './core';
 
 /**
  * Prevent electron from running multiple instances.
@@ -60,7 +60,7 @@ app
     restoreOrCreateMainWindow();
     resoreOrCreateControllerWindow();
 
-    setupApi();
+    setupCore();
   })
   .catch((e) => console.error('Failed create window:', e));
 

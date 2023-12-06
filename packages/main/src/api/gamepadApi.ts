@@ -56,7 +56,7 @@ export type GamepadEvent =
 
 const connectedGamepads: Gamepad[] = [];
 
-function getPrimaryGamepad() {
+export function getPrimaryGamepad() {
   const selectedGamepads = userConfigStore.get('selectedGamepads');
   if (!selectedGamepads.primaryGamepad) return null;
 
@@ -73,7 +73,7 @@ function getPrimaryGamepad() {
   return primaryGamepad;
 }
 
-function getSecondaryGamepad() {
+export function getSecondaryGamepad() {
   const selectedGamepads = userConfigStore.get('selectedGamepads');
   if (!selectedGamepads.secondaryGamepad) return null;
 
@@ -135,15 +135,43 @@ export class GamepadApi {
   }
 
   public gamepadButtonEvent(gamepadEvent: ButtonEvent): void {
+    emit('gamepadButtonEvent', gamepadEvent.payload);
     // console.log('gamepadButtonEvent', gamepadEvent);
   }
 
   public gamepadAxisEvent(gamepadEvent: AxisEvent): void {
+    emit('gamepadAxisEvent', gamepadEvent.payload);
     // console.log('gamepadAxisEvent', gamepadEvent);
   }
 
   public updateGamepads(gamepadEvent: UpdateGamepads): void {
+    const originalGamepads = [...connectedGamepads];
+
     connectedGamepads.splice(0, connectedGamepads.length, ...gamepadEvent.payload);
+
+    const addedGamepads = connectedGamepads.filter(
+      (gamepad) =>
+        !originalGamepads.find(
+          (originalGamepad) =>
+            originalGamepad.id === gamepad.id &&
+            originalGamepad.connectionIndex === gamepad.connectionIndex,
+        ),
+    );
+    const removedGamepads = originalGamepads.filter(
+      (gamepad) =>
+        !connectedGamepads.find(
+          (connectedGamepad) =>
+            connectedGamepad.id === gamepad.id &&
+            connectedGamepad.connectionIndex === gamepad.connectionIndex,
+        ),
+    );
+
+    addedGamepads.forEach((gamepad) => {
+      emit('gamepadConnected', gamepad);
+    });
+    removedGamepads.forEach((gamepad) => {
+      emit('gamepadDisconnected', gamepad);
+    });
   }
 
   public updateSelectedGamepadEndpoint({

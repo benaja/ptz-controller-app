@@ -1,11 +1,19 @@
-import { GamepadEvent } from '@/api/gamepadApi';
+import { AxisEventPayload, ButtonEventPayload, Gamepad, GamepadEvent } from '@/api/gamepadApi';
 
 type ListenerTypes = {
   gamepadEvent: (gamepadEvent: GamepadEvent) => void;
+  gamepadConnected: (gamepad: Gamepad) => void;
+  gamepadDisconnected: (gamepad: Gamepad) => void;
+  gamepadButtonEvent: (gamepadEvent: ButtonEventPayload) => void;
+  gamepadAxisEvent: (gamepadEvent: AxisEventPayload) => void;
 };
 
 const listeners: { [K in keyof ListenerTypes]: Set<ListenerTypes[K]> } = {
   gamepadEvent: new Set<(gamepadEvent: GamepadEvent) => void>(),
+  gamepadConnected: new Set<(gamepad: Gamepad) => void>(),
+  gamepadDisconnected: new Set<(gamepad: Gamepad) => void>(),
+  gamepadButtonEvent: new Set<(gamepadEvent: ButtonEventPayload) => void>(),
+  gamepadAxisEvent: new Set<(gamepadEvent: AxisEventPayload) => void>(),
 };
 
 export function registerListener<K extends keyof ListenerTypes>(
