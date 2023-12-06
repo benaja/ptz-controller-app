@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
 import { GamepadApi } from './gamepadApi';
+import { CameraApi } from './cameraApi';
 
 /**
  * Dynamically registers IPC (Inter-Process Communication) handlers based on the methods of the provided object.
@@ -38,6 +39,7 @@ export function registerEndpoints(obj: any) {
 }
 
 export function setupApi(mainWindow: Electron.BrowserWindow) {
-  const api = new GamepadApi(mainWindow);
-  registerEndpoints(api);
+  const apis = [new GamepadApi(mainWindow), new CameraApi()];
+
+  apis.forEach((api) => registerEndpoints(api));
 }

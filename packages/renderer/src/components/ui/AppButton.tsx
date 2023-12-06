@@ -1,7 +1,32 @@
-export default function AppButton({ children }: { children: React.ReactNode }) {
+import { cn } from '@/lib/utils';
+import { NavLink } from 'react-router-dom';
+import { type } from '../../../../main/src/api/gamepadApi';
+
+export default function AppButton({
+  children,
+  className,
+  to,
+  type = 'button',
+  ...props
+}: {
+  children: React.ReactNode;
+  className?: string;
+  to?: string;
+  type?: 'button' | 'submit' | 'reset';
+} & React.HTMLAttributes<HTMLButtonElement>) {
+  const Component = to ? NavLink : 'button';
+
   return (
-    <button className="bg-blue-700 hover:bg-blue-800 text-white px-2 py-1 rounded">
+    <Component
+      className={cn(
+        'bg-white border border-gray-200 text-black px-2 py-0.5 rounded hover:bg-gray-100',
+        className,
+      )}
+      to={to as string}
+      type={type}
+      {...(to ? {} : props)}
+    >
       {children}
-    </button>
+    </Component>
   );
 }

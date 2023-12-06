@@ -18,8 +18,8 @@ export default function Layout({ children, title }: { children: React.ReactNode;
       label: 'Gamepads',
     },
     {
-      id: 'cams',
-      label: 'Cams',
+      id: 'cameras',
+      label: 'Cameras',
     },
   ];
 
@@ -35,7 +35,7 @@ export default function Layout({ children, title }: { children: React.ReactNode;
                   'bg-blue-600 text-white': isActive,
                   'hover:bg-gray-200 text-gray-500': !isActive,
                 },
-                'block w-full text-left rounded px-2 py-1  text-sm'
+                'block w-full text-left rounded px-2 py-1  text-sm',
               )
             }
             key={tab.id}
@@ -51,7 +51,7 @@ export default function Layout({ children, title }: { children: React.ReactNode;
               {
                 'opacity-40 cursor-not-allowed': !canGoBack,
               },
-              'py-0.5 px-1 rounded hover:bg-gray-100'
+              'py-0.5 px-1 rounded hover:bg-gray-100',
             )}
             onClick={() => goBack()}
           >
@@ -62,7 +62,7 @@ export default function Layout({ children, title }: { children: React.ReactNode;
               {
                 'opacity-40 cursor-not-allowed': !canGoForward,
               },
-              'py-0.5 px-1 rounded hover:bg-gray-100'
+              'py-0.5 px-1 rounded hover:bg-gray-100',
             )}
             onClick={() => goForward()}
           >

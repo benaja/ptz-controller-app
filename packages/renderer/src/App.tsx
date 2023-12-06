@@ -11,26 +11,9 @@ import {
 import TestPage from './components/TestPage';
 import EditGampadType from './components/gamepads/EditGampadType';
 import { HistoryProvider } from './providers/HistoryProvider';
-
-const router = createMemoryRouter(
-  [
-    {
-      path: '/gamepads',
-      element: <ManageGamepads />,
-    },
-    {
-      path: '/gamepads/:type',
-      element: <EditGampadType />,
-    },
-    {
-      path: '/cams',
-      element: <TestPage />,
-    },
-  ],
-  {
-    initialEntries: ['/gamepads'],
-  }
-);
+import Cameras from './components/cameras/Cameras';
+import AddCamera from './components/cameras/AddCamera';
+import EditCamera from './components/cameras/EditCamera';
 
 function App(): JSX.Element {
   // useEffect(() => {
@@ -49,9 +32,26 @@ function App(): JSX.Element {
     <MemoryRouter initialEntries={['/gamepads']}>
       <HistoryProvider>
         <Routes>
-          <Route element={<ManageGamepads />} path="/gamepads" />
-          <Route element={<EditGampadType />} path="/gamepads/:type" />
-          <Route element={<TestPage />} path="/cams" />
+          <Route
+            element={<ManageGamepads />}
+            path="/gamepads"
+          />
+          <Route
+            element={<EditGampadType />}
+            path="/gamepads/:type"
+          />
+          <Route
+            element={<Cameras />}
+            path="/cameras"
+          />
+          <Route
+            element={<AddCamera />}
+            path="/cameras/add"
+          />
+          <Route
+            element={<EditCamera />}
+            path="/cameras/:id"
+          />
         </Routes>
       </HistoryProvider>
     </MemoryRouter>

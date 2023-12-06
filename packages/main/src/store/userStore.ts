@@ -1,11 +1,14 @@
 import { z } from 'zod';
 import { VideoMixerType } from '../VideoMixer';
 import { Store } from '.';
+import { randomUUID } from 'crypto';
 
 const cameraConfigSchema = z.object({
-  id: z.number(),
+  id: z.string(),
+  number: z.number(),
   ip: z.string(),
-  port: z.string(),
+  name: z.string(),
+  port: z.number(),
 });
 
 const gamepadConfigSchema = z.object({
@@ -14,7 +17,7 @@ const gamepadConfigSchema = z.object({
 });
 
 export const userConfigSchema = z.object({
-  cams: z.array(cameraConfigSchema),
+  cameras: z.array(cameraConfigSchema),
   videoMixers: z.array(
     z.object({
       type: z.nativeEnum(VideoMixerType),
@@ -34,11 +37,13 @@ export const userConfigStore = new Store<UserConfig>({
   configName: 'userConfig',
   schema: userConfigSchema,
   defaults: {
-    cams: [
+    cameras: [
       {
-        id: 1,
+        id: randomUUID(),
+        name: 'Camera 1',
         ip: '192.168.0.31',
-        port: '/dev/ttyACM0',
+        port: 3000,
+        number: 1,
       },
     ],
     videoMixers: [
