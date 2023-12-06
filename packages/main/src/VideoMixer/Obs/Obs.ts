@@ -3,7 +3,7 @@ import { IConfig, IConnection, IImageSelectionChange, IVideoMixer } from '@main/
 import { EventEmitter } from 'events';
 import { StrictEventEmitter } from 'strict-event-emitter-types';
 import ObsWebSocket from 'obs-websocket-js';
-import { throttle } from '@main/utils';
+import { throttle } from '@/utils/throttle';
 import { debounce } from 'lodash';
 
 export class Obs implements IVideoMixer {
@@ -37,7 +37,7 @@ export class Obs implements IVideoMixer {
     this._selectedChangeEmitter.emit(
       'previewChange',
       this._currentPreview,
-      this._currentOnAir === this._currentPreview
+      this._currentOnAir === this._currentPreview,
     );
   }, 10);
 

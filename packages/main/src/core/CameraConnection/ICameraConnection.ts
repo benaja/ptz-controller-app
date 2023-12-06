@@ -1,4 +1,4 @@
-import { CameraConfig } from '@main/userConfig';
+import { CameraConfig } from '@/store/userStore';
 import { IConnection } from '../GenericFactory/IConnection';
 import { IDisposable } from '../GenericFactory/IDisposable';
 import { ISubscription } from '../GenericFactory/ISubscription';

@@ -7,15 +7,15 @@ import { platform } from 'node:process';
 /**
  * Prevent electron from running multiple instances.
  */
-const isSingleInstance = app.requestSingleInstanceLock();
-if (!isSingleInstance) {
-  app.quit();
-  process.exit(0);
-}
-app.on('second-instance', () => {
-  restoreOrCreateMainWindow();
-  resoreOrCreateControllerWindow();
-});
+// const isSingleInstance = app.requestSingleInstanceLock();
+// if (!isSingleInstance) {
+//   app.quit();
+//   process.exit(0);
+// }
+// app.on('second-instance', () => {
+//   restoreOrCreateMainWindow();
+//   resoreOrCreateControllerWindow();
+// });
 
 /**
  * Disable Hardware Acceleration to save more system resources.
@@ -90,7 +90,7 @@ if (import.meta.env.PROD) {
        * @see https://github.com/electron/electron/issues/38829
        * Potentially it may be fixed by this https://github.com/electron/electron/pull/37535
        */
-      require('electron-updater').autoUpdater.checkForUpdatesAndNotify()
+      require('electron-updater').autoUpdater.checkForUpdatesAndNotify(),
     )
     .catch((e) => console.error('Failed check and install updates:', e));
 }

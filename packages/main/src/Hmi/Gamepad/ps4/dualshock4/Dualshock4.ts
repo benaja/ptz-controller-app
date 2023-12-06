@@ -10,7 +10,7 @@ import {
 import { IDualshock4Config } from './Dualshock4Config';
 import { Ps4Gamepad } from '../Ps4Gamepad';
 import { EButtonDirection } from '../../Shared/GamepadConfiguration';
-import { CameraConfig } from '@main/userConfig';
+import { CameraConfig } from '@/store/userStore';
 
 export class Dualshock4 extends Ps4Gamepad {
   private readonly pad: NodeGamepad;
@@ -18,7 +18,7 @@ export class Dualshock4 extends Ps4Gamepad {
   constructor(
     config: CameraConfig,
     mixerFactory: VideomixerFactory,
-    cameraConnectionFactory: CameraConnectionFactory
+    cameraConnectionFactory: CameraConnectionFactory,
   ) {
     super(config, mixerFactory, cameraConnectionFactory);
     const padConfig = gamepadConfig as IGamepadConfig;

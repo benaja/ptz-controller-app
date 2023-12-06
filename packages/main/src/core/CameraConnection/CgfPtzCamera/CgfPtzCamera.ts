@@ -10,8 +10,8 @@ import { ILogger } from '../../Logger/ILogger';
 import StrictEventEmitter from 'strict-event-emitter-types';
 import WebSocket from 'ws';
 import { clients } from '../../../websocket';
-import { throttle } from '../../../utils';
-import { CameraConfig } from '@main/userConfig';
+import { throttle } from '../../../utils/throttle';
+import { CameraConfig } from '@/store/userStore';
 
 export class CgfPtzCamera implements ICameraConnection {
   // private readonly axios: AxiosInstance;

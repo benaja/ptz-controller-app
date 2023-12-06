@@ -1,29 +1,10 @@
 import electron from 'electron';
 import path from 'path';
 import fs from 'fs';
-import { UserConfig, userConfigSchema } from './userConfig';
-import { VideoMixerType } from './VideoMixer';
+import { UserConfig, userConfigSchema } from './userStore';
+import { VideoMixerType } from '../VideoMixer';
 import { ZodRawShape, z } from 'zod';
-
-function getValueAtPath(obj: any, path: (string | number)[]) {
-  let current = obj;
-
-  for (const key of path) {
-    current = current[key];
-  }
-
-  return current;
-}
-
-function setValueAtPath(obj: any, path: (string | number)[], value: any) {
-  let current = obj;
-
-  for (const key of path.slice(0, path.length - 1)) {
-    current = current[key];
-  }
-
-  current[path[path.length - 1]] = value;
-}
+import { getValueAtPath, setValueAtPath } from '../utils/objectHelpers';
 
 export class Store<T extends Record<string, unknown>> {
   path: string;
@@ -92,29 +73,3 @@ function parseDataFile<T>(filePath: string, defaults: T, schema?: z.ZodObject<Zo
     return defaults;
   }
 }
-
-export const userConfigStore = new Store<UserConfig>({
-  configName: 'userConfig',
-  schema: userConfigSchema,
-  defaults: {
-    cams: [
-      {
-        id: 1,
-        ip: '192.168.0.31',
-        port: '/dev/ttyACM0',
-      },
-    ],
-    videoMixers: [
-      {
-        type: VideoMixerType.Obs,
-        instance: 1,
-        ip: '192.168.1.112',
-        mixEffectBlock: 0,
-      },
-    ],
-    selectedGamepads: {
-      primaryGamepad: null,
-      secondaryGamepad: null,
-    },
-  },
-});

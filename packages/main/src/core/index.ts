@@ -16,7 +16,7 @@ import { ILogger } from './Logger/ILogger';
 import { ISubscription } from './GenericFactory/ISubscription';
 import { IVideoMixer } from './VideoMixer/IVideoMixer';
 import { VideomixerFactory } from './VideoMixer/VideoMixerFactory';
-import { userConfigStore } from '@main/store';
+import { userConfigStore } from '@/store/userStore';
 
 export class Core implements IDisposable {
   private _camFactory = new CameraConnectionFactory();

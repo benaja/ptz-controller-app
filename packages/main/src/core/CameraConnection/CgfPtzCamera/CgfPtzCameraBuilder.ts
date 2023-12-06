@@ -1,7 +1,7 @@
 import { CgfPtzCamera } from './CgfPtzCamera';
 import { IBuilder } from '../../GenericFactory/IBuilder';
 import { ICameraConnection } from '../ICameraConnection';
-import { CameraConfig } from '@main/userConfig';
+import { CameraConfig } from '@/store/userStore';
 
 export class CgfPtzCameraBuilder implements IBuilder<ICameraConnection> {
   public supportedTypes(): Promise<string[]> {

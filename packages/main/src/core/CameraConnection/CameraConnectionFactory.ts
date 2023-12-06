@@ -2,7 +2,7 @@ import { registerCameraConnectedListener } from '../../websocket';
 import { Factory } from '../GenericFactory/Factory';
 import { ICameraConnection } from './ICameraConnection';
 import { CgfPtzCamera } from './CgfPtzCamera/CgfPtzCamera';
-import { CameraConfig } from '@main/userConfig';
+import { CameraConfig } from '@/store/userStore';
 
 export class CameraConnectionFactory extends Factory<ICameraConnection> {
   public async parseConfig(config: CameraConfig): Promise<void> {

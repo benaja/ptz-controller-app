@@ -1,4 +1,5 @@
-import { userConfigStore } from '@main/store';
+import { userConfigStore } from '@/store/userStore';
+import Electron from 'electron';
 
 export type Gamepad = {
   id: string;
@@ -59,7 +60,7 @@ function getPrimaryGamepad() {
   if (!selectedGamepads.primaryGamepad) return null;
 
   const primaryGamepad = connectedGamepads.find(
-    (gamepad) => gamepad.id === selectedGamepads.primaryGamepad
+    (gamepad) => gamepad.id === selectedGamepads.primaryGamepad,
   );
   if (!primaryGamepad) {
     return {
@@ -79,7 +80,7 @@ function getSecondaryGamepad() {
   const secondaryGamepad = connectedGamepads.find(
     (gamepad) =>
       gamepad.id === selectedGamepads.secondaryGamepad &&
-      gamepad.connectionIndex !== primaryGamepad?.connectionIndex
+      gamepad.connectionIndex !== primaryGamepad?.connectionIndex,
   );
   if (!secondaryGamepad) {
     return {
@@ -128,7 +129,7 @@ export class GamepadApi {
 
   public gamepadDisconnected(gamepadEvent: GamepadDisconnected): void {
     const index = connectedGamepads.findIndex(
-      (gamepad) => gamepad.connectionIndex === gamepadEvent.payload.connectionIndex
+      (gamepad) => gamepad.connectionIndex === gamepadEvent.payload.connectionIndex,
     );
     if (index !== -1) {
       connectedGamepads.splice(index, 1);

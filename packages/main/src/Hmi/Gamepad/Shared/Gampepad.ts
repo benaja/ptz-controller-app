@@ -14,7 +14,7 @@ import { ISpecialFunction } from './SpecialFunctions/ISpecialFunction';
 import { ISpecialFunctionDefinition } from './SpecialFunctions/ISpecialFunctionDefinition';
 import { SpecialFunctionFactory } from './SpecialFunctions/SpecialFunctionFactory';
 import { StrictEventEmitter } from 'strict-event-emitter-types';
-import { InterfaceConfig } from '@main/userConfig';
+import { InterfaceConfig } from '@/store/userStore';
 
 enum EAltKey {
   none,
@@ -49,7 +49,7 @@ export abstract class Gamepad implements IHmi {
   constructor(
     config: InterfaceConfig,
     mixerFactory: VideomixerFactory,
-    cameraConnectionFactory: CameraConnectionFactory
+    cameraConnectionFactory: CameraConnectionFactory,
   ) {
     this.mixer = mixerFactory.get(config.videoMixer);
 
@@ -83,7 +83,7 @@ export abstract class Gamepad implements IHmi {
     this.mixer
       ?.imageSelectionChangeGet()
       .on('previewChange', (preview: number, onAir: boolean) =>
-        this.mixerPreviewChange(preview, onAir)
+        this.mixerPreviewChange(preview, onAir),
       );
   }
 
@@ -229,7 +229,7 @@ export abstract class Gamepad implements IHmi {
 
   private parseSpecialFunctionConfig(
     config: { [key in EButtonDirection]?: ISpecialFunctionDefinition },
-    run: (key: EButtonDirection, config: ISpecialFunctionDefinition) => void
+    run: (key: EButtonDirection, config: ISpecialFunctionDefinition) => void,
   ) {
     for (const key in config) {
       if (Object.prototype.hasOwnProperty.call(config, key)) {
