@@ -10,7 +10,8 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "/@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@main/*": ["./src/*"]
     }
   },
   "include": ["src/**/*.ts", "../../types/**/*.d.ts"],

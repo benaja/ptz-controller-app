@@ -34,6 +34,13 @@ const config = {
     reportCompressedSize: false,
   },
   plugins: [preload.vite(), injectAppVersion()],
+  resolve: {
+    alias: {
+      '/@/': join(PACKAGE_ROOT, 'src') + '/',
+      '@renderer': join(PROJECT_ROOT, 'packages') + '/renderer/src',
+      '@main': join(PROJECT_ROOT, 'packages') + '/main/src',
+    },
+  },
 };
 
 export default config;

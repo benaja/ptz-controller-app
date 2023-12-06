@@ -1,6 +1,7 @@
 import {app} from 'electron';
 import './security-restrictions';
-import {restoreOrCreateWindow} from '/@/mainWindow';
+import {restoreOrCreateWindow} from '@/mainWindow';
+import {createWindow} from '@/controllerWindow';
 import {platform} from 'node:process';
 
 /**
@@ -11,7 +12,10 @@ if (!isSingleInstance) {
   app.quit();
   process.exit(0);
 }
-app.on('second-instance', restoreOrCreateWindow);
+app.on('second-instance', () => {
+  restoreOrCreateWindow();
+  createWindow();
+});
 
 /**
  * Disable Hardware Acceleration to save more system resources.
@@ -37,7 +41,10 @@ app.on('activate', restoreOrCreateWindow);
  */
 app
   .whenReady()
-  .then(restoreOrCreateWindow)
+  .then(() => {
+    restoreOrCreateWindow();
+    createWindow();
+  })
   .catch(e => console.error('Failed create window:', e));
 
 /**

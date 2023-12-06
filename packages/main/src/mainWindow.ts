@@ -1,5 +1,7 @@
 import {app, BrowserWindow} from 'electron';
 import {join, resolve} from 'node:path';
+import {registerGamepadApi} from './gamepad/gamepadApi';
+import {setupUtpListener} from './udpListener';
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
@@ -12,6 +14,10 @@ async function createWindow() {
       preload: join(app.getAppPath(), 'packages/preload/dist/index.cjs'),
     },
   });
+
+  registerGamepadApi(browserWindow);
+
+  // setupUtpListener(browserWindow);
 
   /**
    * If the 'show' property of the BrowserWindow's constructor is omitted from the initialization options,
