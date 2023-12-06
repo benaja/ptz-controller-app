@@ -1,8 +1,8 @@
 import Layout from '@renderer/Layout';
-import {useParams} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Container from '../ui/Container';
-import {useEffect, useState} from 'react';
-import {Gamepad, GamepadEvent} from '@main/gamepad/gamepadApi';
+import { useEffect, useState } from 'react';
+import { Gamepad, GamepadEvent } from '@main/api/gamepadApi';
 import {
   getConnectedGamepads,
   getSelectedGamepad,
@@ -11,23 +11,24 @@ import {
 } from '#preload';
 
 export default function EditGampadType() {
-  const {type} = useParams<{type: string}>();
+  const { type } = useParams<{ type: string }>();
   const [connectedGamepads, setConnectedGamepads] = useState<Gamepad[]>([]);
   const [selectedGamepad, setSelectedGamepad] = useState<Gamepad | null>(null);
 
   function loadSelectedGamepad() {
     getSelectedGamepad({
       type: type as 'primary' | 'secondary',
-    }).then(gamepad => {
+    }).then((gamepad) => {
       console.log('selectedGamepad', gamepad);
       setSelectedGamepad(gamepad);
     });
   }
 
   function loadGamepads() {
-    getConnectedGamepads().then(gamepads => {
+    getConnectedGamepads().then((gamepads) => {
+      console.log('gamepads', gamepads);
       loadSelectedGamepad();
-      setConnectedGamepads(gamepads.filter(gamepad => !gamepad.isUse));
+      setConnectedGamepads(gamepads.filter((gamepad) => !gamepad.isUse));
       console.log('gamepads', gamepads);
     });
   }
@@ -37,6 +38,7 @@ export default function EditGampadType() {
     loadSelectedGamepad();
 
     const removeGamepadEventListener = onGamepadEvent(async (event, gamepadEvent: GamepadEvent) => {
+      console.log('onGamepadEvent', gamepadEvent);
       if (gamepadEvent.type === 'updateGamepads') {
         loadGamepads();
       }
@@ -52,8 +54,8 @@ export default function EditGampadType() {
       type: type as 'primary' | 'secondary',
       connectionIndex,
     }).then(() => {
-      console.log('setSelectedGamepad');
       loadSelectedGamepad();
+      loadGamepads();
     });
   }
 
@@ -90,7 +92,7 @@ export default function EditGampadType() {
             <p className="text-gray-600">No gamepad connected</p>
           </div>
         )}
-        {connectedGamepads.map(gamepad => (
+        {connectedGamepads.map((gamepad) => (
           <button
             className="py-2 cursor-pointer group w-full relative text-left"
             key={`${gamepad.id}-${gamepad.connectionIndex}`}

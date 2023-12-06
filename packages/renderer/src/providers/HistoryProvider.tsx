@@ -18,8 +18,6 @@ export const HistoryProvider = ({ children }: { children: React.ReactNode }) => 
   const canGoBack = currentIndex > 0;
   const canGoForward = currentIndex < history.length - 1;
 
-  console.log('history', history);
-
   useEffect(() => {
     if (history[currentIndex]?.pathname == location.pathname) {
       return;

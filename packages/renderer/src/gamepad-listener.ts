@@ -1,6 +1,6 @@
-import {Gamepad} from '@main/gamepad/gamepadApi';
-import {GamepadListener} from 'gamepad.js';
-import {gamepadEvent, onSystemResume} from '#preload';
+import { Gamepad } from '@main/gamepad/gamepadApi';
+import { GamepadListener } from 'gamepad.js';
+import { gamepadEvent, onSystemResume } from '#preload';
 
 function convertGamepad(gamepad: any): Gamepad {
   return {
@@ -15,7 +15,7 @@ const listener = new GamepadListener({
     deadZone: 0.1,
   },
 });
-listener.on('gamepad:connected', event => {
+listener.on('gamepad:connected', (event) => {
   console.log('Gamepad connected', event.detail.gamepad);
   console.log('all gamepads', navigator.getGamepads());
 
@@ -23,31 +23,31 @@ listener.on('gamepad:connected', event => {
     type: 'updateGamepads',
     payload: navigator
       .getGamepads()
-      .filter(g => g)
+      .filter((g) => g)
       .map(convertGamepad),
   });
 
-  // window.gamepadApi.gamepadEvent({
-  //   type: 'connected',
-  //   payload: convertGamepad(event.detail.gamepad),
-  // });
+  gamepadEvent({
+    type: 'connected',
+    payload: convertGamepad(event.detail.gamepad),
+  });
   // window.gamepadApi.onGamepadConnected(convertGamepad(event.detail.gamepad));
 });
-listener.on('gamepad:disconnected', event => {
+listener.on('gamepad:disconnected', (event) => {
   gamepadEvent({
     type: 'updateGamepads',
     payload: navigator
       .getGamepads()
-      .filter(g => g)
+      .filter((g) => g)
       .map(convertGamepad),
   });
   // console.log('Gamepad disconnected', event);
-  // window.gamepadApi.gamepadEvent({
-  //   type: 'disconnected',
-  //   payload: convertGamepad(event.detail.gamepad),
-  // });
+  gamepadEvent({
+    type: 'disconnected',
+    payload: convertGamepad(event.detail.gamepad),
+  });
 });
-listener.on('gamepad:button', event => {
+listener.on('gamepad:button', (event) => {
   console.log('Gamepad button event', event);
   gamepadEvent({
     type: 'button',
@@ -60,7 +60,7 @@ listener.on('gamepad:button', event => {
   });
 });
 
-listener.on('gamepad:axis', event => {
+listener.on('gamepad:axis', (event) => {
   console.log('Gamepad axis event', event);
   gamepadEvent({
     type: 'axis',
@@ -79,5 +79,3 @@ onSystemResume(() => {
   console.log('onSystemResume');
   listener.start();
 });
-
-console.log('gamepad.tsx1');

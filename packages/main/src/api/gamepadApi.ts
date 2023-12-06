@@ -3,6 +3,7 @@ import { userConfigStore } from '@main/store';
 export type Gamepad = {
   id: string;
   connectionIndex: number;
+  type?: 'primary' | 'secondary';
   isUse?: boolean;
 };
 
@@ -53,16 +54,62 @@ export type GamepadEvent =
 
 const connectedGamepads: Gamepad[] = [];
 
+function getPrimaryGamepad() {
+  const selectedGamepads = userConfigStore.get('selectedGamepads');
+  if (!selectedGamepads.primaryGamepad) return null;
+
+  const primaryGamepad = connectedGamepads.find(
+    (gamepad) => gamepad.id === selectedGamepads.primaryGamepad
+  );
+  if (!primaryGamepad) {
+    return {
+      id: selectedGamepads.primaryGamepad,
+      connectionIndex: -1,
+    };
+  }
+
+  return primaryGamepad;
+}
+
+function getSecondaryGamepad() {
+  const selectedGamepads = userConfigStore.get('selectedGamepads');
+  if (!selectedGamepads.secondaryGamepad) return null;
+
+  const primaryGamepad = getPrimaryGamepad();
+  const secondaryGamepad = connectedGamepads.find(
+    (gamepad) =>
+      gamepad.id === selectedGamepads.secondaryGamepad &&
+      gamepad.connectionIndex !== primaryGamepad?.connectionIndex
+  );
+  if (!secondaryGamepad) {
+    return {
+      id: selectedGamepads.secondaryGamepad,
+      connectionIndex: -1,
+    };
+  }
+
+  return secondaryGamepad;
+}
+
+function getConnectedGamepads(): Gamepad[] {
+  const primaryGamepad = getPrimaryGamepad();
+  const secondaryGamepad = getSecondaryGamepad();
+
+  return connectedGamepads.map((gamepad) => {
+    let type: 'primary' | 'secondary' | undefined = undefined;
+    if (gamepad.connectionIndex === primaryGamepad?.connectionIndex) {
+      type = 'primary';
+    }
+    if (gamepad.connectionIndex === secondaryGamepad?.connectionIndex) {
+      type = 'secondary';
+    }
+
+    return { id: gamepad.id, connectionIndex: gamepad.connectionIndex, type, isUse: !!type };
+  });
+}
+
 function resetConnectedGamepads(): void {
   connectedGamepads.splice(0, connectedGamepads.length);
-
-  const selectedGamepads = userConfigStore.get('selectedGamepads');
-  if (selectedGamepads.primaryGamepad) {
-    selectedGamepads.primaryGamepad.connectionIndex = -1;
-  }
-  if (selectedGamepads.secondaryGamepad) {
-    selectedGamepads.secondaryGamepad.connectionIndex = -1;
-  }
 }
 
 export class GamepadApi {
@@ -74,19 +121,15 @@ export class GamepadApi {
   }
 
   public gamepadConnected({ payload }: GamepadConnected): void {
+    if (connectedGamepads.find((gamepad) => gamepad.connectionIndex === payload.connectionIndex))
+      return;
     connectedGamepads.push(payload);
-
-    const selectedGamepads = userConfigStore.get('selectedGamepads');
-    if (selectedGamepads.primaryGamepad?.id === payload.id) {
-      selectedGamepads.primaryGamepad.connectionIndex = payload.connectionIndex;
-    } else if (selectedGamepads.secondaryGamepad?.id === payload.id) {
-      selectedGamepads.secondaryGamepad.connectionIndex = payload.connectionIndex;
-    }
-    userConfigStore.set('selectedGamepads', selectedGamepads);
   }
 
   public gamepadDisconnected(gamepadEvent: GamepadDisconnected): void {
-    const index = connectedGamepads.findIndex((gamepad) => gamepad.id === gamepadEvent.payload.id);
+    const index = connectedGamepads.findIndex(
+      (gamepad) => gamepad.connectionIndex === gamepadEvent.payload.connectionIndex
+    );
     if (index !== -1) {
       connectedGamepads.splice(index, 1);
     }
@@ -102,25 +145,6 @@ export class GamepadApi {
 
   public updateGamepads(gamepadEvent: UpdateGamepads): void {
     connectedGamepads.splice(0, connectedGamepads.length, ...gamepadEvent.payload);
-
-    const selectedGamepads = userConfigStore.get('selectedGamepads');
-    if (selectedGamepads.primaryGamepad) {
-      selectedGamepads.primaryGamepad.connectionIndex = connectedGamepads.findIndex(
-        (gamepad) => gamepad.id === selectedGamepads.primaryGamepad?.id
-      );
-    }
-    if (selectedGamepads.secondaryGamepad) {
-      const connectionIndex = connectedGamepads.findIndex(
-        (gamepad) => gamepad.id === selectedGamepads.secondaryGamepad?.id
-      );
-      if (connectionIndex !== selectedGamepads.primaryGamepad?.connectionIndex) {
-        selectedGamepads.secondaryGamepad.connectionIndex = connectionIndex;
-      }
-    }
-
-    console.log('updateGamepads', selectedGamepads);
-
-    userConfigStore.set('selectedGamepads', selectedGamepads);
   }
 
   public updateSelectedGamepadEndpoint({
@@ -131,42 +155,36 @@ export class GamepadApi {
     connectionIndex: number | null;
   }): void {
     console.log('updateSelectedGamepad', type, connectionIndex);
-    const gamepads = userConfigStore.get('selectedGamepads');
+    const selectedGamepads = userConfigStore.get('selectedGamepads');
 
-    let gamepad: Gamepad | null = null;
+    let newGampadId: string | null = null;
     if (connectionIndex !== null && connectionIndex !== -1) {
-      gamepad =
-        connectedGamepads.find((gamepad) => gamepad.connectionIndex === connectionIndex) || null;
+      newGampadId =
+        connectedGamepads.find((gamepad) => gamepad.connectionIndex === connectionIndex)?.id ||
+        null;
     }
 
     if (type === 'primary') {
-      gamepads.primaryGamepad = gamepad;
+      selectedGamepads.primaryGamepad = newGampadId;
     } else {
-      gamepads.secondaryGamepad = gamepad;
+      selectedGamepads.secondaryGamepad = newGampadId;
     }
-    userConfigStore.set('selectedGamepads', gamepads);
+    userConfigStore.set('selectedGamepads', selectedGamepads);
   }
 
   public getSelectedGamepadEndpoint({ type }: { type: 'primary' | 'secondary' }): Gamepad | null {
     const gamepads = userConfigStore.get('selectedGamepads');
     if (!gamepads) return null;
+
     if (type === 'primary') {
-      return gamepads.primaryGamepad;
+      return getPrimaryGamepad();
     } else {
-      return gamepads.secondaryGamepad;
+      return getSecondaryGamepad();
     }
   }
 
   public getConnectedGamepadsEndpoint(): Gamepad[] {
-    const selectedGamepads = userConfigStore.get('selectedGamepads');
-
-    return connectedGamepads.map((gamepad) => ({
-      id: gamepad.id,
-      connectionIndex: gamepad.connectionIndex,
-      isUse:
-        selectedGamepads.primaryGamepad?.connectionIndex === gamepad.connectionIndex ||
-        selectedGamepads.secondaryGamepad?.connectionIndex === gamepad.connectionIndex,
-    }));
+    return getConnectedGamepads();
   }
 
   public gamepadEventEndpoint(gamepadEvent: GamepadEvent) {

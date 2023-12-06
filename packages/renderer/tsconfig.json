@@ -13,6 +13,7 @@
     "paths": {
       "#preload": ["../preload/src"],
       "@/*": ["./src/*"],
+      "@renderer/*": ["./src/*"],
       "@main/*": ["../main/src/*"],
       "@preload/*": ["../prload/src/*"]
     },
@@ -23,6 +24,7 @@
     "src/**/*.vue",
     "src/**/*.ts",
     "src/**/*.tsx",
+    "../main/src/**/*.ts",
     "types/**/*.d.ts",
     "../../types/**/*.d.ts"
   ],

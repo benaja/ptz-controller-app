@@ -8,14 +8,9 @@ const cameraConfigSchema = z.object({
   port: z.string(),
 });
 
-const gamepadSchema = z.object({
-  id: z.string(),
-  connectionIndex: z.number(),
-});
-
 const gamepadConfigSchema = z.object({
-  primaryGamepad: gamepadSchema.nullable(),
-  secondaryGamepad: gamepadSchema.nullable(),
+  primaryGamepad: z.string().nullable(),
+  secondaryGamepad: z.string().nullable(),
 });
 
 const schema = z.object({

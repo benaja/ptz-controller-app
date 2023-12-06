@@ -24,7 +24,7 @@ export const getSelectedGamepad = (args: {
 export const newCammeraConnected = (callback) => {
   return registerListener('newCammeraConnected', callback);
 };
-export const onGamepadEvent = (callback: (event: GamepadEvent) => void) => {
+export const onGamepadEvent = (callback: (event: any, gamepadEvent: GamepadEvent) => void) => {
   return registerListener('onGamepadEvent', callback);
 };
 export const getConnectedGamepads = (): Promise<Gamepad[]> =>

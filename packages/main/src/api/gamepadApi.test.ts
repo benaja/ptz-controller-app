@@ -86,3 +86,32 @@ test('update selected gamepad', () => {
   const connectedGamepads = gamepadApi.getConnectedGamepadsEndpoint();
   expect(connectedGamepads).toMatchSnapshot();
 });
+
+test('can handle two gamepads with same id', () => {
+  gamepadApi.gamepadEventEndpoint({
+    type: 'updateGamepads',
+    payload: [
+      {
+        id: 'test',
+        connectionIndex: 0,
+      },
+      {
+        id: 'test',
+        connectionIndex: 1,
+      },
+    ],
+  });
+
+  gamepadApi.updateSelectedGamepadEndpoint({
+    type: 'primary',
+    connectionIndex: 0,
+  });
+
+  gamepadApi.updateSelectedGamepadEndpoint({
+    type: 'secondary',
+    connectionIndex: 1,
+  });
+
+  const connectedGamepads = gamepadApi.getConnectedGamepadsEndpoint();
+  expect(connectedGamepads).toMatchSnapshot();
+});
