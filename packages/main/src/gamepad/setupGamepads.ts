@@ -1,4 +1,10 @@
-import { Gamepad, getPrimaryGamepad, getSecondaryGamepad } from '@/api/gamepadApi';
+import {
+  AxisEventPayload,
+  ButtonEventPayload,
+  Gamepad,
+  getPrimaryGamepad,
+  getSecondaryGamepad,
+} from '@/api/gamepadApi';
 import { registerListener } from '@/events/eventBus';
 import { GamepadController } from './GamepadController';
 
@@ -16,8 +22,6 @@ export function setupGamepads() {
   function updateGamepads() {
     primaryGamepad = getPrimaryGamepad();
     secondaryGamepad = getSecondaryGamepad();
-
-    console.log('updateGamepads', primaryGamepad, secondaryGamepad);
 
     if (primaryGamepad) {
       if (!controllers.primary) {
@@ -46,25 +50,34 @@ export function setupGamepads() {
     return controllers.secondary && secondaryGamepad?.connectionIndex === gamepad.connectionIndex;
   }
 
-  registerListener('gamepadConnected', updateGamepads);
-
-  registerListener('gamepadDisconnected', updateGamepads);
-
-  registerListener('gamepadButtonEvent', (buttonEvent) => {
+  function buttonEvent(buttonEvent: ButtonEventPayload) {
     if (isPrimaryGamepad(buttonEvent.gamepad)) {
       controllers.primary?.onButton(buttonEvent);
     }
     if (isSecondaryGamepad(buttonEvent.gamepad)) {
       controllers.secondary?.onButton(buttonEvent);
     }
-  });
+  }
 
-  registerListener('gamepadAxisEvent', (axisEvent) => {
+  function axisEvent(axisEvent: AxisEventPayload) {
     if (isPrimaryGamepad(axisEvent.gamepad)) {
       controllers.primary?.onAxis(axisEvent);
     }
     if (isSecondaryGamepad(axisEvent.gamepad)) {
       controllers.secondary?.onAxis(axisEvent);
     }
-  });
+  }
+
+  const listeners = [
+    registerListener('gamepadConnected', updateGamepads),
+    registerListener('gamepadDisconnected', updateGamepads),
+    registerListener('gamepadButtonEvent', buttonEvent),
+    registerListener('gamepadAxisEvent', axisEvent),
+  ];
+
+  return () => {
+    listeners.forEach((listener) => listener());
+    controllers.primary?.destroy();
+    controllers.secondary?.destroy();
+  };
 }

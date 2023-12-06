@@ -1,4 +1,5 @@
 import WebSocket, { WebSocketServer } from 'ws';
+import { emit } from './events/eventBus';
 
 const wss = new WebSocketServer({
   port: 3000,
@@ -11,12 +12,6 @@ type Message = {
   ID: number;
 };
 
-const listeners: ((cameraId: number) => void)[] = [];
-
-export const registerCameraConnectedListener = (callback: (cameraId: number) => void) => {
-  listeners.push(callback);
-};
-
 console.log('websocket server started');
 
 wss.on('connection', (ws, request) => {
@@ -25,12 +20,13 @@ wss.on('connection', (ws, request) => {
   ws.onerror = (error) => {};
 
   ws.on('message', (data: Buffer) => {
-    let message = JSON.parse(data.toString()) as Message;
+    const message = JSON.parse(data.toString()) as Message;
+    cameraId = message.ID;
     console.log('message from client:', message);
 
-    clients.set(message.ID, ws);
-    listeners.forEach((l) => l(message.ID));
-    cameraId = message.ID;
+    clients.set(cameraId, ws);
+
+    emit('cameraConnected', cameraId);
   });
 
   ws.on('close', () => {

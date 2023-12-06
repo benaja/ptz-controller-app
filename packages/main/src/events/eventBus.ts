@@ -6,6 +6,8 @@ type ListenerTypes = {
   gamepadDisconnected: (gamepad: Gamepad) => void;
   gamepadButtonEvent: (gamepadEvent: ButtonEventPayload) => void;
   gamepadAxisEvent: (gamepadEvent: AxisEventPayload) => void;
+
+  cameraConnected: (cameraNumber: number) => void;
 };
 
 const listeners: { [K in keyof ListenerTypes]: Set<ListenerTypes[K]> } = {
@@ -14,6 +16,8 @@ const listeners: { [K in keyof ListenerTypes]: Set<ListenerTypes[K]> } = {
   gamepadDisconnected: new Set<(gamepad: Gamepad) => void>(),
   gamepadButtonEvent: new Set<(gamepadEvent: ButtonEventPayload) => void>(),
   gamepadAxisEvent: new Set<(gamepadEvent: AxisEventPayload) => void>(),
+
+  cameraConnected: new Set<(cameraNumber: number) => void>(),
 };
 
 export function registerListener<K extends keyof ListenerTypes>(
