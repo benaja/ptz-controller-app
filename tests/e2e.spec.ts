@@ -1,13 +1,13 @@
-import type {ElectronApplication, JSHandle} from 'playwright';
-import {_electron as electron} from 'playwright';
-import {afterAll, beforeAll, expect, test} from 'vitest';
-import {createHash} from 'crypto';
-import type {BrowserWindow} from 'electron';
+import type { ElectronApplication, JSHandle } from 'playwright';
+import { _electron as electron } from 'playwright';
+import { afterAll, beforeAll, expect, test } from 'vitest';
+import { createHash } from 'crypto';
+import type { BrowserWindow } from 'electron';
 
 let electronApp: ElectronApplication;
 
 beforeAll(async () => {
-  electronApp = await electron.launch({args: ['.']});
+  electronApp = await electron.launch({ args: ['./packages/main/dist/index.cjs'] });
 });
 
 afterAll(async () => {
@@ -18,14 +18,16 @@ test('Main window state', async () => {
   const page = await electronApp.firstWindow();
   const window: JSHandle<BrowserWindow> = await electronApp.browserWindow(page);
   const windowState = await window.evaluate(
-    (mainWindow): Promise<{isVisible: boolean; isDevToolsOpened: boolean; isCrashed: boolean}> => {
+    (
+      mainWindow
+    ): Promise<{ isVisible: boolean; isDevToolsOpened: boolean; isCrashed: boolean }> => {
       const getState = () => ({
         isVisible: mainWindow.isVisible(),
         isDevToolsOpened: mainWindow.webContents.isDevToolsOpened(),
         isCrashed: mainWindow.webContents.isCrashed(),
       });
 
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         /**
          * The main window is created hidden, and is shown only when it is ready.
          * See {@link ../packages/main/src/mainWindow.ts} function
@@ -34,7 +36,7 @@ test('Main window state', async () => {
           resolve(getState());
         } else mainWindow.once('ready-to-show', () => resolve(getState()));
       });
-    },
+    }
   );
 
   expect(windowState.isCrashed, 'The app has crashed').toBeFalsy();
@@ -44,7 +46,7 @@ test('Main window state', async () => {
 
 test('Main window web content', async () => {
   const page = await electronApp.firstWindow();
-  const element = await page.$('#app', {strict: true});
+  const element = await page.$('#app', { strict: true });
   expect(element, 'Was unable to find the root element').toBeDefined();
   expect((await element.innerHTML()).trim(), 'Window content was empty').not.equal('');
 });
@@ -53,7 +55,7 @@ test('Preload versions', async () => {
   const page = await electronApp.firstWindow();
   const versionsElement = page.locator('#process-versions');
   expect(await versionsElement.count(), 'expect find one element #process-versions').toStrictEqual(
-    1,
+    1
   );
 
   /**
@@ -64,7 +66,7 @@ test('Preload versions', async () => {
 
   for (const expectedVersionsKey in expectedVersions) {
     expect(renderedVersions).include(
-      `${expectedVersionsKey}:v${expectedVersions[expectedVersionsKey]}`,
+      `${expectedVersionsKey}:v${expectedVersions[expectedVersionsKey]}`
     );
   }
 });
@@ -78,13 +80,13 @@ test('Preload nodeCrypto', async () => {
   const rawInput = page.locator('input#reactive-hash-raw-value');
   expect(
     await rawInput.count(),
-    'expect find one element input#reactive-hash-raw-value',
+    'expect find one element input#reactive-hash-raw-value'
   ).toStrictEqual(1);
 
   const hashedInput = page.locator('input#reactive-hash-hashed-value');
   expect(
     await hashedInput.count(),
-    'expect find one element input#reactive-hash-hashed-value',
+    'expect find one element input#reactive-hash-hashed-value'
   ).toStrictEqual(1);
 
   await rawInput.fill(testString);

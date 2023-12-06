@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron';
+import {ipcRenderer} from 'electron';
 
 export function registerListener(channel: string, callback: (...args: any[]) => void) {
   ipcRenderer.on(channel, callback);

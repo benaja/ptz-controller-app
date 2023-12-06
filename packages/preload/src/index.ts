@@ -2,10 +2,10 @@
  * @module preload
  */
 
-import {ipcRenderer} from 'electron';
-import {Gamepad, GamepadEvent} from '@main/gamepad/gamepadApi';
-import {type UserConfig} from '@main/userConfig';
-import {registerListener} from './utils';
+import { ipcRenderer } from 'electron';
+import { Gamepad, GamepadEvent } from '@main/gamepad/gamepadApi';
+import { type UserConfig } from '@main/userConfig';
+import { registerListener } from './utils';
 
 // Custom APIs for renderer
 
@@ -21,7 +21,7 @@ export const getSelectedGamepad = (args: {
   type: 'primary' | 'secondary';
 }): Promise<Gamepad | null> => ipcRenderer.invoke('getSelectedGamepad', args);
 
-export const newCammeraConnected = callback => {
+export const newCammeraConnected = (callback) => {
   return registerListener('newCammeraConnected', callback);
 };
 export const onGamepadEvent = (callback: (event: GamepadEvent) => void) => {
@@ -35,5 +35,5 @@ export const gamepadEvent = (event: GamepadEvent) => ipcRenderer.invoke('gamepad
 export const onSystemResume = (callback: () => void) =>
   registerListener('onSystemResume', callback);
 
-export {sha256sum} from './nodeCrypto';
-export {versions} from './versions';
+export { sha256sum } from './nodeCrypto';
+export { versions } from './versions';

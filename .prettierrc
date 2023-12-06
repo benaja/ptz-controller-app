@@ -10,12 +10,8 @@
       }
     }
   ],
-  "trailingComma": "all",
-  "bracketSpacing": false,
-  "arrowParens": "avoid",
-  "proseWrap": "never",
+  "trailingComma": "es5",
   "htmlWhitespaceSensitivity": "strict",
-  "vueIndentScriptAndStyle": false,
   "endOfLine": "lf",
   "singleAttributePerLine": true
 }

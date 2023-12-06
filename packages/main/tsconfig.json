@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "resolveJsonModule": true,
     "module": "esnext",
     "target": "esnext",
     "sourceMap": false,
@@ -12,7 +13,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@main/*": ["./src/*"]
-    }
+    },
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*.ts", "../../types/**/*.d.ts"],
   "exclude": ["**/*.spec.ts", "**/*.test.ts"]

@@ -1,5 +1,5 @@
-import {ipcMain} from 'electron';
-import {userConfigStore} from '@main/store';
+import { ipcMain } from 'electron';
+import { userConfigStore } from '@main/store';
 
 export type Gamepad = {
   id: string;
@@ -54,80 +54,6 @@ export type GamepadEvent =
 
 const connectedGamepads: Gamepad[] = [];
 
-function gamepadConnected({payload}: GamepadConnected): void {
-  connectedGamepads.push(payload);
-
-  const selectedGamepads = userConfigStore.get('selectedGamepads');
-  if (selectedGamepads.primaryGamepad?.id === payload.id) {
-    selectedGamepads.primaryGamepad.connectionIndex = payload.connectionIndex;
-  } else if (selectedGamepads.secondaryGamepad?.id === payload.id) {
-    selectedGamepads.secondaryGamepad.connectionIndex = payload.connectionIndex;
-  }
-  userConfigStore.set('selectedGamepads', selectedGamepads);
-}
-
-function gamepadDisconnected(gamepadEvent: GamepadDisconnected): void {
-  const index = connectedGamepads.findIndex(gamepad => gamepad.id === gamepadEvent.payload.id);
-  if (index !== -1) {
-    connectedGamepads.splice(index, 1);
-  }
-}
-
-function gamepadButtonEvent(gamepadEvent: ButtonEvent): void {
-  // console.log('gamepadButtonEvent', gamepadEvent);
-}
-
-function gamepadAxisEvent(gamepadEvent: AxisEvent): void {
-  // console.log('gamepadAxisEvent', gamepadEvent);
-}
-
-function updateGamepads(gamepadEvent: UpdateGamepads): void {
-  connectedGamepads.splice(0, connectedGamepads.length, ...gamepadEvent.payload);
-
-  const selectedGamepads = userConfigStore.get('selectedGamepads');
-  if (selectedGamepads.primaryGamepad) {
-    selectedGamepads.primaryGamepad.connectionIndex = connectedGamepads.findIndex(
-      gamepad => gamepad.id === selectedGamepads.primaryGamepad?.id,
-    );
-  }
-  if (selectedGamepads.secondaryGamepad) {
-    const connectionIndex = connectedGamepads.findIndex(
-      gamepad => gamepad.id === selectedGamepads.secondaryGamepad?.id,
-    );
-    if (connectionIndex !== selectedGamepads.primaryGamepad?.connectionIndex) {
-      selectedGamepads.secondaryGamepad.connectionIndex = connectionIndex;
-    }
-  }
-
-  console.log('updateGamepads', selectedGamepads);
-
-  userConfigStore.set('selectedGamepads', selectedGamepads);
-}
-
-export function setSelectedGamepad({
-  type,
-  connectionIndex,
-}: {
-  type: 'primary' | 'secondary';
-  connectionIndex: number | null;
-}): void {
-  console.log('setSelectedGamepad', type, connectionIndex);
-  const gamepads = userConfigStore.get('selectedGamepads');
-
-  let gamepad: Gamepad | null = null;
-  if (connectionIndex !== null && connectionIndex !== -1) {
-    gamepad =
-      connectedGamepads.find(gamepad => gamepad.connectionIndex === connectionIndex) || null;
-  }
-
-  if (type === 'primary') {
-    gamepads.primaryGamepad = gamepad;
-  } else {
-    gamepads.secondaryGamepad = gamepad;
-  }
-  userConfigStore.set('selectedGamepads', gamepads);
-}
-
 function resetConnectedGamepads(): void {
   connectedGamepads.splice(0, connectedGamepads.length);
 
@@ -140,58 +66,143 @@ function resetConnectedGamepads(): void {
   }
 }
 
-export function registerGamepadApi(mainWindow: Electron.BrowserWindow) {
-  resetConnectedGamepads();
+function registerEndpoints(obj: any) {
+  const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(obj)).filter(
+    (m) => m !== 'constructor' && typeof obj[m] === 'function' && m.includes('Endpoint')
+  );
 
-  ipcMain.handle('gamepadEvent', (event, gamepadEvent: GamepadEvent): void => {
-    mainWindow.webContents.send('onGamepadEvent', gamepadEvent);
-    // console.log('gamepadEvent', gamepadEvent);
-    switch (gamepadEvent.type) {
-      case 'updateGamepads':
-        return updateGamepads(gamepadEvent);
-      case 'connected':
-        return gamepadConnected(gamepadEvent);
-      case 'disconnected':
-        return gamepadDisconnected(gamepadEvent);
-      case 'button':
-        return gamepadButtonEvent(gamepadEvent);
-      case 'axis':
-        return gamepadAxisEvent(gamepadEvent);
-    }
+  methods.forEach((method) => {
+    const endpointName = method.replace('Endpoint', '');
+    ipcMain.handle(endpointName, (event, args) => {
+      return obj[method](args);
+    });
   });
+}
 
-  ipcMain.handle('getConnectedGamepads', (event): Gamepad[] => {
+export class GamepadApi {
+  private window: Electron.BrowserWindow;
+
+  public constructor(window: Electron.BrowserWindow) {
+    this.window = window;
+  }
+
+  public gamepadConnected({ payload }: GamepadConnected): void {
+    connectedGamepads.push(payload);
+
+    const selectedGamepads = userConfigStore.get('selectedGamepads');
+    if (selectedGamepads.primaryGamepad?.id === payload.id) {
+      selectedGamepads.primaryGamepad.connectionIndex = payload.connectionIndex;
+    } else if (selectedGamepads.secondaryGamepad?.id === payload.id) {
+      selectedGamepads.secondaryGamepad.connectionIndex = payload.connectionIndex;
+    }
+    userConfigStore.set('selectedGamepads', selectedGamepads);
+  }
+
+  public gamepadDisconnected(gamepadEvent: GamepadDisconnected): void {
+    const index = connectedGamepads.findIndex((gamepad) => gamepad.id === gamepadEvent.payload.id);
+    if (index !== -1) {
+      connectedGamepads.splice(index, 1);
+    }
+  }
+
+  public gamepadButtonEvent(gamepadEvent: ButtonEvent): void {
+    // console.log('gamepadButtonEvent', gamepadEvent);
+  }
+
+  public gamepadAxisEvent(gamepadEvent: AxisEvent): void {
+    // console.log('gamepadAxisEvent', gamepadEvent);
+  }
+
+  public updateGamepads(gamepadEvent: UpdateGamepads): void {
+    connectedGamepads.splice(0, connectedGamepads.length, ...gamepadEvent.payload);
+
+    const selectedGamepads = userConfigStore.get('selectedGamepads');
+    if (selectedGamepads.primaryGamepad) {
+      selectedGamepads.primaryGamepad.connectionIndex = connectedGamepads.findIndex(
+        (gamepad) => gamepad.id === selectedGamepads.primaryGamepad?.id
+      );
+    }
+    if (selectedGamepads.secondaryGamepad) {
+      const connectionIndex = connectedGamepads.findIndex(
+        (gamepad) => gamepad.id === selectedGamepads.secondaryGamepad?.id
+      );
+      if (connectionIndex !== selectedGamepads.primaryGamepad?.connectionIndex) {
+        selectedGamepads.secondaryGamepad.connectionIndex = connectionIndex;
+      }
+    }
+
+    console.log('updateGamepads', selectedGamepads);
+
+    userConfigStore.set('selectedGamepads', selectedGamepads);
+  }
+
+  public updateSelectedGamepadEndpoint({
+    type,
+    connectionIndex,
+  }: {
+    type: 'primary' | 'secondary';
+    connectionIndex: number | null;
+  }): void {
+    console.log('updateSelectedGamepad', type, connectionIndex);
+    const gamepads = userConfigStore.get('selectedGamepads');
+
+    let gamepad: Gamepad | null = null;
+    if (connectionIndex !== null && connectionIndex !== -1) {
+      gamepad =
+        connectedGamepads.find((gamepad) => gamepad.connectionIndex === connectionIndex) || null;
+    }
+
+    if (type === 'primary') {
+      gamepads.primaryGamepad = gamepad;
+    } else {
+      gamepads.secondaryGamepad = gamepad;
+    }
+    userConfigStore.set('selectedGamepads', gamepads);
+  }
+
+  public getSelectedGamepadEndpoint({ type }: { type: 'primary' | 'secondary' }): Gamepad | null {
+    const gamepads = userConfigStore.get('selectedGamepads');
+    if (!gamepads) return null;
+    if (type === 'primary') {
+      return gamepads.primaryGamepad;
+    } else {
+      return gamepads.secondaryGamepad;
+    }
+  }
+
+  public getConnectedGamepadsEndpoint(): Gamepad[] {
     const selectedGamepads = userConfigStore.get('selectedGamepads');
 
-    return connectedGamepads.map(gamepad => ({
+    return connectedGamepads.map((gamepad) => ({
       id: gamepad.id,
       connectionIndex: gamepad.connectionIndex,
       isUse:
         selectedGamepads.primaryGamepad?.id === gamepad.id ||
         selectedGamepads.secondaryGamepad?.id === gamepad.id,
     }));
-  });
+  }
 
-  ipcMain.handle(
-    'getSelectedGamepad',
-    (event, {type}: {type: 'primary' | 'secondary'}): Gamepad | null => {
-      const gamepads = userConfigStore.get('selectedGamepads');
-      if (!gamepads) return null;
-      if (type === 'primary') {
-        return gamepads.primaryGamepad;
-      } else {
-        return gamepads.secondaryGamepad;
-      }
-    },
-  );
+  public gamepadEventEndpoint(gamepadEvent: GamepadEvent) {
+    this.window.webContents.send('onGamepadEvent', gamepadEvent);
+    // console.log('gamepadEvent', gamepadEvent);
+    switch (gamepadEvent.type) {
+      case 'updateGamepads':
+        return this.updateGamepads(gamepadEvent);
+      case 'connected':
+        return this.gamepadConnected(gamepadEvent);
+      case 'disconnected':
+        return this.gamepadDisconnected(gamepadEvent);
+      case 'button':
+        return this.gamepadButtonEvent(gamepadEvent);
+      case 'axis':
+        return this.gamepadAxisEvent(gamepadEvent);
+    }
+  }
+}
 
-  ipcMain.handle(
-    'updateSelectedGamepad',
-    (
-      event,
-      {type, connectionIndex}: {type: 'primary' | 'secondary'; connectionIndex: number | null},
-    ) => {
-      return setSelectedGamepad({type, connectionIndex});
-    },
-  );
+export function registerGamepadApi(mainWindow: Electron.BrowserWindow) {
+  resetConnectedGamepads();
+
+  const api = new GamepadApi(mainWindow);
+  registerEndpoints(api);
 }

@@ -1,8 +1,8 @@
-import {app} from 'electron';
+import { app } from 'electron';
 import './security-restrictions';
-import {restoreOrCreateWindow} from '@/mainWindow';
-import {createWindow} from '@/controllerWindow';
-import {platform} from 'node:process';
+import { createWindow as restoreOrCreateWindow } from '@/mainWindow';
+import { createWindow } from '@/controllerWindow';
+import { platform } from 'node:process';
 
 /**
  * Prevent electron from running multiple instances.
@@ -45,7 +45,7 @@ app
     restoreOrCreateWindow();
     createWindow();
   })
-  .catch(e => console.error('Failed create window:', e));
+  .catch((e) => console.error('Failed create window:', e));
 
 /**
  * Install Vue.js or any other extension in development mode only.
@@ -87,7 +87,7 @@ if (import.meta.env.PROD) {
        * @see https://github.com/electron/electron/issues/38829
        * Potentially it may be fixed by this https://github.com/electron/electron/pull/37535
        */
-      require('electron-updater').autoUpdater.checkForUpdatesAndNotify(),
+      require('electron-updater').autoUpdater.checkForUpdatesAndNotify()
     )
-    .catch(e => console.error('Failed check and install updates:', e));
+    .catch((e) => console.error('Failed check and install updates:', e));
 }

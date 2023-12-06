@@ -1,9 +1,9 @@
-import {app, BrowserWindow} from 'electron';
-import {join, resolve} from 'node:path';
-import {registerGamepadApi} from './gamepad/gamepadApi';
-import {setupUtpListener} from './udpListener';
+import { app, BrowserWindow } from 'electron';
+import { join, resolve } from 'node:path';
+import { registerGamepadApi } from './gamepad/gamepadApi';
+import { setupUtpListener } from './udpListener';
 
-async function createWindow() {
+export async function createWindow() {
   const browserWindow = new BrowserWindow({
     show: false, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
     webPreferences: {
@@ -63,7 +63,7 @@ async function createWindow() {
  * Restore an existing BrowserWindow or Create a new BrowserWindow.
  */
 export async function restoreOrCreateWindow() {
-  let window = BrowserWindow.getAllWindows().find(w => !w.isDestroyed());
+  let window = BrowserWindow.getAllWindows().find((w) => !w.isDestroyed());
 
   if (window === undefined) {
     window = await createWindow();
