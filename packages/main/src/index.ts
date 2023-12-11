@@ -3,8 +3,8 @@ import './security-restrictions';
 import { restoreOrCreateMainWindow } from '@/mainWindow';
 import { resoreOrCreateControllerWindow } from '@/controllerWindow';
 import { platform } from 'node:process';
-import { electronApp, optimizer, is } from '@electron-toolkit/utils';
-import { setupCore } from './core';
+import { electronApp, optimizer } from '@electron-toolkit/utils';
+import { setupCore, teardownCore } from './core';
 
 /**
  * Prevent electron from running multiple instances.
@@ -28,9 +28,15 @@ app.disableHardwareAcceleration();
  * Shout down background process if all windows was closed
  */
 app.on('window-all-closed', () => {
+  console.log('window-all-closed');
   if (platform !== 'darwin') {
     app.quit();
   }
+});
+
+app.on('before-quit', () => {
+  console.log('before-quit');
+  teardownCore();
 });
 
 /**

@@ -57,14 +57,14 @@ const connectedGamepads: Gamepad[] = [];
 
 export function getPrimaryGamepad() {
   const selectedGamepads = userConfigStore.get('selectedGamepads');
-  if (!selectedGamepads.primaryGamepad) return null;
+  if (!selectedGamepads.primaryGamepad.id) return null;
 
   const primaryGamepad = connectedGamepads.find(
-    (gamepad) => gamepad.id === selectedGamepads.primaryGamepad,
+    (gamepad) => gamepad.id === selectedGamepads.primaryGamepad.id,
   );
   if (!primaryGamepad) {
     return {
-      id: selectedGamepads.primaryGamepad,
+      id: selectedGamepads.primaryGamepad.id,
       connectionIndex: -1,
     };
   }
@@ -74,17 +74,17 @@ export function getPrimaryGamepad() {
 
 export function getSecondaryGamepad() {
   const selectedGamepads = userConfigStore.get('selectedGamepads');
-  if (!selectedGamepads.secondaryGamepad) return null;
+  if (!selectedGamepads.secondaryGamepad.id) return null;
 
   const primaryGamepad = getPrimaryGamepad();
   const secondaryGamepad = connectedGamepads.find(
     (gamepad) =>
-      gamepad.id === selectedGamepads.secondaryGamepad &&
+      gamepad.id === selectedGamepads.secondaryGamepad.id &&
       gamepad.connectionIndex !== primaryGamepad?.connectionIndex,
   );
   if (!secondaryGamepad) {
     return {
-      id: selectedGamepads.secondaryGamepad,
+      id: selectedGamepads.secondaryGamepad.id,
       connectionIndex: -1,
     };
   }
@@ -191,9 +191,9 @@ export class GamepadApi {
     }
 
     if (type === 'primary') {
-      selectedGamepads.primaryGamepad = newGampadId;
+      selectedGamepads.primaryGamepad.id = newGampadId;
     } else {
-      selectedGamepads.secondaryGamepad = newGampadId;
+      selectedGamepads.secondaryGamepad.id = newGampadId;
     }
     userConfigStore.set('selectedGamepads', selectedGamepads);
   }

@@ -2,7 +2,6 @@ import { CgfPtzCameraState } from '@/core/CameraConnection/CgfPtzCamera/CgfPtzCa
 import { IAxisAction } from './BaseAction';
 
 export class TiltCameraAction implements IAxisAction {
-  name = 'TiltCamera';
   state: CgfPtzCameraState;
 
   constructor(state: CgfPtzCameraState) {

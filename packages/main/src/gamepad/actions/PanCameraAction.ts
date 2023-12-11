@@ -2,7 +2,6 @@ import { CgfPtzCameraState } from '@/core/CameraConnection/CgfPtzCamera/CgfPtzCa
 import { IAxisAction } from './BaseAction';
 
 export class PanCameraAction implements IAxisAction {
-  name = 'PanCamera';
   state: CgfPtzCameraState;
 
   constructor(state: CgfPtzCameraState) {

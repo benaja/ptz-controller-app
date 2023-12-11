@@ -11,11 +11,15 @@ export class GamepadController {
   private gamepad: Gamepad;
   private selectedCamera = 0;
   private currentState = new CgfPtzCameraState();
+  private keyBindings: Record<string, number>;
 
   private axisActions: IAxisAction[];
 
-  constructor(gamepad: Gamepad) {
+  constructor(gamepad: Gamepad, keyBindings: Record<string, number>) {
     this.gamepad = gamepad;
+    this.keyBindings = keyBindings;
+
+    console.log('GamepadController', this.gamepad, this.keyBindings);
 
     this.axisActions = [
       new PanCameraAction(this.currentState),
@@ -25,17 +29,11 @@ export class GamepadController {
   }
 
   onAxis(axis: AxisEventPayload) {
-    switch (axis.axis) {
-      case 0:
-        this.currentState.tilt = Math.round(axis.value * 255);
-        break;
-      case 1:
-        this.currentState.pan = Math.round(axis.value * 255);
-        break;
-      case 3:
-        this.currentState.zoom = Math.round(axis.value * 8);
-        break;
-    }
+    this.axisActions.forEach((action) => {
+      if (this.keyBindings[action.constructor.name] === axis.axis) {
+        action.hanlde(axis.value);
+      }
+    });
     this.sendUpdate();
   }
 

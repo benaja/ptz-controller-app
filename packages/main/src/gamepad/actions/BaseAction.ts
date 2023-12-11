@@ -1,6 +1,4 @@
-export interface IBaseAction {
-  name: string;
-}
+export interface IBaseAction {}
 
 export interface IButtonAction extends IBaseAction {
   button: number;

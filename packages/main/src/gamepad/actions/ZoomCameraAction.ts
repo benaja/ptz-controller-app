@@ -2,7 +2,6 @@ import { CgfPtzCameraState } from '@/core/CameraConnection/CgfPtzCamera/CgfPtzCa
 import { IAxisAction } from './BaseAction';
 
 export class ZoomCameraAction implements IAxisAction {
-  name = 'ZoomCamera';
   state: CgfPtzCameraState;
 
   constructor(state: CgfPtzCameraState) {
@@ -10,6 +9,6 @@ export class ZoomCameraAction implements IAxisAction {
   }
 
   hanlde(value: number): void {
-    this.state.pan = Math.round(value * 8);
+    this.state.zoom = Math.round(value * 8);
   }
 }

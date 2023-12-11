@@ -7,6 +7,7 @@ import {
 } from '@/api/gamepadApi';
 import { registerListener } from '@/events/eventBus';
 import { GamepadController } from './GamepadController';
+import { userConfigStore } from '@/store/userStore';
 
 export function setupGamepads() {
   const controllers: {
@@ -20,12 +21,16 @@ export function setupGamepads() {
   let secondaryGamepad: Gamepad | null = null;
 
   function updateGamepads() {
+    const userStore = userConfigStore.get('selectedGamepads');
     primaryGamepad = getPrimaryGamepad();
     secondaryGamepad = getSecondaryGamepad();
 
     if (primaryGamepad) {
       if (!controllers.primary) {
-        controllers.primary = new GamepadController(primaryGamepad);
+        controllers.primary = new GamepadController(
+          primaryGamepad,
+          userStore.primaryGamepad.keyBindings,
+        );
       }
     } else {
       controllers.primary?.destroy();
@@ -34,7 +39,10 @@ export function setupGamepads() {
 
     if (secondaryGamepad) {
       if (!controllers.secondary) {
-        controllers.secondary = new GamepadController(secondaryGamepad);
+        controllers.secondary = new GamepadController(
+          secondaryGamepad,
+          userStore.secondaryGamepad.keyBindings,
+        );
       }
     } else {
       controllers.secondary?.destroy();

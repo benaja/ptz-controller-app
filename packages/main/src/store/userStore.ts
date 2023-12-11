@@ -2,6 +2,9 @@ import { z } from 'zod';
 import { VideoMixerType } from '../VideoMixer';
 import { Store } from '.';
 import { randomUUID } from 'crypto';
+import { PanCameraAction } from '@/gamepad/actions/PanCameraAction';
+import { TiltCameraAction } from '@/gamepad/actions/TiltCameraAction';
+import { ZoomCameraAction } from '@/gamepad/actions/ZoomCameraAction';
 
 const cameraConfigSchema = z.object({
   id: z.string(),
@@ -12,8 +15,14 @@ const cameraConfigSchema = z.object({
 });
 
 const gamepadConfigSchema = z.object({
-  primaryGamepad: z.string().nullable(),
-  secondaryGamepad: z.string().nullable(),
+  primaryGamepad: z.object({
+    id: z.string().nullable(),
+    keyBindings: z.record(z.number()),
+  }),
+  secondaryGamepad: z.object({
+    id: z.string().nullable(),
+    keyBindings: z.record(z.number()),
+  }),
 });
 
 export const userConfigSchema = z.object({
@@ -55,8 +64,18 @@ export const userConfigStore = new Store<UserConfig>({
       },
     ],
     selectedGamepads: {
-      primaryGamepad: null,
-      secondaryGamepad: null,
+      primaryGamepad: {
+        id: null,
+        keyBindings: {
+          [TiltCameraAction.name]: 0,
+          [PanCameraAction.name]: 1,
+          [ZoomCameraAction.name]: 3,
+        },
+      },
+      secondaryGamepad: {
+        id: null,
+        keyBindings: {},
+      },
     },
   },
 });
