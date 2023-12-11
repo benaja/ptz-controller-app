@@ -1,6 +1,5 @@
 import { emit } from '@/events/eventBus';
 import { userConfigStore } from '@/store/userStore';
-import Electron from 'electron';
 
 export type Gamepad = {
   id: string;

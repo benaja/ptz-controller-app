@@ -2,14 +2,26 @@ import { AxisEventPayload, ButtonEventPayload, Gamepad } from '@/api/gamepadApi'
 import { CgfPtzCameraState } from '@/core/CameraConnection/CgfPtzCamera/CgfPtzCameraState';
 import { clients } from '@/websocket';
 import { throttle } from '../utils/throttle';
+import { IAxisAction } from './actions/BaseAction';
+import { PanCameraAction } from './actions/PanCameraAction';
+import { TiltCameraAction } from './actions/TiltCameraAction';
+import { ZoomCameraAction } from './actions/ZoomCameraAction';
 
 export class GamepadController {
   private gamepad: Gamepad;
   private selectedCamera = 0;
   private currentState = new CgfPtzCameraState();
 
+  private axisActions: IAxisAction[];
+
   constructor(gamepad: Gamepad) {
     this.gamepad = gamepad;
+
+    this.axisActions = [
+      new PanCameraAction(this.currentState),
+      new TiltCameraAction(this.currentState),
+      new ZoomCameraAction(this.currentState),
+    ];
   }
 
   onAxis(axis: AxisEventPayload) {
