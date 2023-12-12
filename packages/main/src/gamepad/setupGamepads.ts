@@ -27,10 +27,7 @@ export function setupGamepads() {
 
     if (primaryGamepad) {
       if (!controllers.primary) {
-        controllers.primary = new GamepadController(
-          primaryGamepad,
-          userStore.primaryGamepad.keyBindings,
-        );
+        controllers.primary = new GamepadController(primaryGamepad, primaryGamepad.keyBindings);
       }
     } else {
       controllers.primary?.destroy();
@@ -41,7 +38,7 @@ export function setupGamepads() {
       if (!controllers.secondary) {
         controllers.secondary = new GamepadController(
           secondaryGamepad,
-          userStore.secondaryGamepad.keyBindings,
+          secondaryGamepad.keyBindings,
         );
       }
     } else {

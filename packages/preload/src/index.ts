@@ -14,5 +14,10 @@ export {
   onSystemResume,
 } from './gamepadApi';
 export { addCamera, removeCamera, updateCamera, getCameras, getCamera } from './cameraApi';
+export {
+  getSelectedVideoMixer,
+  updateSelectedVideoMixer,
+  getAvailableVideoMixers,
+} from './videoMixerApi';
 export { sha256sum } from './nodeCrypto';
 export { versions } from './versions';

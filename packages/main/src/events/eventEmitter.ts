@@ -1,4 +1,4 @@
-import { CameraConfig } from '@/store/userStore';
+import { CameraConfig, VideoMixerConfig } from '@/store/userStore';
 import { Emitter } from 'strict-event-emitter';
 
 type Events = {
@@ -7,6 +7,8 @@ type Events = {
   cameraUpdated: [config: CameraConfig];
   cameraConnected: [config: CameraConfig];
   cameraDisconnected: [config: CameraConfig];
+
+  videoMixerUpdated: [config: VideoMixerConfig];
 };
 
 export const eventEmitter = new Emitter<Events>();

@@ -1,5 +1,5 @@
 import { app } from 'electron';
-import './security-restrictions';
+// import './security-restrictions';
 import { restoreOrCreateMainWindow } from '@/mainWindow';
 import { resoreOrCreateControllerWindow } from '@/controllerWindow';
 import { platform } from 'node:process';

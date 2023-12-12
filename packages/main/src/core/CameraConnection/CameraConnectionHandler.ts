@@ -2,6 +2,7 @@ import { CameraConfig, userConfigStore } from '@/store/userStore';
 import { CameraConnection } from './CameraConnection';
 import { eventEmitter } from '@/events/eventEmitter';
 import { IDisposable } from '../GenericFactory/IDisposable';
+import { useVideoMixHanlder } from '@/VideoMixer/VideoMixHanlder';
 
 let connectionHanlder: CameraConnectionHandler | null = null;
 
@@ -44,8 +45,10 @@ export class CameraConnectionHandler implements IDisposable {
   }
 
   public getCurrentCameraConnection(): CameraConnection | undefined {
-    if (this.selectedCameraNumber === null) return undefined;
-    return this.cameraConnections.get(this.selectedCameraNumber);
+    const currentInput = useVideoMixHanlder().currentMixer()?.getPreview();
+
+    if (currentInput == undefined) return;
+    return this.cameraConnections.get(currentInput + 1);
   }
 
   private cameraAdded(camera: CameraConfig) {

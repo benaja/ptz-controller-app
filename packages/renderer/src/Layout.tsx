@@ -29,6 +29,10 @@ export default function Layout({
       id: 'cameras',
       label: 'Cameras',
     },
+    {
+      id: 'video-mixer',
+      label: 'Video Mixer',
+    },
   ];
 
   return (

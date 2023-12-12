@@ -9,6 +9,9 @@ import { ZoomCameraAction } from './actions/ZoomCameraAction';
 import { FocusCameraAction } from './actions/FocusCameraAction';
 import { ToggleAutofocusAction } from './actions/ToggleAutofocusAction';
 import { ToggleTallyAction } from './actions/ToggleTallyAction';
+import { CutInputAction } from './actions/CutInputAction';
+import { NextInputAction } from './actions/NextInputAction';
+import { PreviousInputAction } from './actions/PreviousInputAction';
 
 export class GamepadController {
   private gamepad: Gamepad;
@@ -30,7 +33,13 @@ export class GamepadController {
       // new FocusCameraAction(this.currentState),
     ];
 
-    this.buttonActions = [new ToggleAutofocusAction(), new ToggleTallyAction()];
+    this.buttonActions = [
+      new ToggleAutofocusAction(),
+      new ToggleTallyAction(),
+      new CutInputAction(),
+      new NextInputAction(),
+      new PreviousInputAction(),
+    ];
   }
 
   onAxis(axis: AxisEventPayload) {
@@ -43,7 +52,7 @@ export class GamepadController {
   }
 
   onButton(button: ButtonEventPayload) {
-    console.log('onButton', button.button, this.buttonActions, this.keyBindings);
+    console.log('onButton', button.button);
     this.buttonActions.forEach((action) => {
       if (this.keyBindings[action.constructor.name] === button.button) {
         action.hanlde(button.pressed ? 'pressed' : 'released');

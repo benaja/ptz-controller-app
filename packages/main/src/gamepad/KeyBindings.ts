@@ -1,15 +1,18 @@
+import { CutInputAction } from './actions/CutInputAction';
 import { FocusCameraAction } from './actions/FocusCameraAction';
+import { NextInputAction } from './actions/NextInputAction';
 import { PanCameraAction } from './actions/PanCameraAction';
+import { PreviousInputAction } from './actions/PreviousInputAction';
 import { TiltCameraAction } from './actions/TiltCameraAction';
 import { ToggleAutofocusAction } from './actions/ToggleAutofocusAction';
 import { ToggleTallyAction } from './actions/ToggleTallyAction';
 import { ZoomCameraAction } from './actions/ZoomCameraAction';
 
 export enum GamepadButtons {
-  A = 0,
-  B = 1,
-  Y = 3,
-  X = 2,
+  A = 0, // Cross
+  B = 1, // Circle
+  Y = 3, // Triangle
+  X = 2, // Square
   LeftBumper = 4,
   RightBumper = 5,
   LeftTrigger = 6,
@@ -42,7 +45,10 @@ export const defualtPrimaryKeyBindings: Record<string, GamepadButtons | GamepadA
   [FocusCameraAction.name]: GamepadAxis.RightStickX,
 
   [ToggleAutofocusAction.name]: GamepadButtons.A,
-  [ToggleTallyAction.name]: GamepadButtons.B,
+  [ToggleTallyAction.name]: GamepadButtons.X,
+  [PreviousInputAction.name]: GamepadButtons.LeftBumper,
+  [NextInputAction.name]: GamepadButtons.RightBumper,
+  [CutInputAction.name]: GamepadButtons.B,
 };
 
 export const defaultSecondaryKeyBindings: Record<string, GamepadButtons | GamepadAxis> = {};

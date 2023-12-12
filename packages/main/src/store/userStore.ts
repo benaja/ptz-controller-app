@@ -2,12 +2,7 @@ import { z } from 'zod';
 import { VideoMixerType } from '../VideoMixer';
 import { Store } from '.';
 import { randomUUID } from 'crypto';
-import { PanCameraAction } from '@/gamepad/actions/PanCameraAction';
-import { TiltCameraAction } from '@/gamepad/actions/TiltCameraAction';
-import { ZoomCameraAction } from '@/gamepad/actions/ZoomCameraAction';
-import { FocusCameraAction } from '@/gamepad/actions/FocusCameraAction';
-import { ToggleAutofocusAction } from '@/gamepad/actions/ToggleAutofocusAction';
-import { ToggleTallyAction } from '@/gamepad/actions/ToggleTallyAction';
+import { ObsMixer } from '@/VideoMixer/Obs/ObsMixer';
 
 const cameraConfigSchema = z.object({
   id: z.string(),
@@ -26,22 +21,22 @@ const gamepadConfigSchema = z.object({
   }),
 });
 
+const videoMixerSchema = z.object({
+  name: z.string(),
+  ip: z.string(),
+  password: z.string(),
+});
+
 export const userConfigSchema = z.object({
   cameras: z.array(cameraConfigSchema),
-  videoMixers: z.array(
-    z.object({
-      type: z.nativeEnum(VideoMixerType),
-      instance: z.number(),
-      ip: z.string(),
-      mixEffectBlock: z.number(),
-    }),
-  ),
+  videoMixer: videoMixerSchema,
   selectedGamepads: gamepadConfigSchema,
 });
 
 export type CameraConfig = z.infer<typeof cameraConfigSchema>;
 export type GamepadConfig = z.infer<typeof gamepadConfigSchema>;
 export type UserConfig = z.infer<typeof userConfigSchema>;
+export type VideoMixerConfig = z.infer<typeof videoMixerSchema>;
 
 export const userConfigStore = new Store<UserConfig>({
   configName: 'userConfig',
@@ -54,14 +49,11 @@ export const userConfigStore = new Store<UserConfig>({
         number: 1,
       },
     ],
-    videoMixers: [
-      {
-        type: VideoMixerType.Obs,
-        instance: 1,
-        ip: '192.168.1.112',
-        mixEffectBlock: 0,
-      },
-    ],
+    videoMixer: {
+      name: new ObsMixer().name,
+      ip: '127.0.0.1:4455',
+      password: '',
+    },
     selectedGamepads: {
       primaryGamepad: {
         id: null,

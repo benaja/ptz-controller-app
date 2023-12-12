@@ -1,5 +1,5 @@
 import { emit } from '@/events/eventBus';
-import { defaultSecondaryKeyBindings, defualtPrimaryKeyBindings } from '@/gamepad/GamepadControls';
+import { defaultSecondaryKeyBindings, defualtPrimaryKeyBindings } from '@/gamepad/KeyBindings';
 import { userConfigStore } from '@/store/userStore';
 
 export type Gamepad = {

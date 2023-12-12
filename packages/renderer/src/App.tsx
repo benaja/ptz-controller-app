@@ -14,6 +14,7 @@ import { HistoryProvider } from './providers/HistoryProvider';
 import Cameras from './components/cameras/Cameras';
 import AddCamera from './components/cameras/AddCamera';
 import EditCamera from './components/cameras/EditCamera';
+import VideoMixerConfiguration from './components/videomixer/VideoMixerConfiguration';
 
 function App(): JSX.Element {
   // useEffect(() => {
@@ -51,6 +52,10 @@ function App(): JSX.Element {
           <Route
             element={<EditCamera />}
             path="/cameras/:id"
+          />
+          <Route
+            element={<VideoMixerConfiguration />}
+            path="/video-mixer"
           />
         </Routes>
       </HistoryProvider>

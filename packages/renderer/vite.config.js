@@ -37,8 +37,10 @@ const config = {
     outDir: 'dist',
     assetsDir: '.',
     rollupOptions: {
-      input: join(PACKAGE_ROOT, 'index.html'),
-      gamepad: join(PACKAGE_ROOT, 'gamepad.html'),
+      input: {
+        index: join(PACKAGE_ROOT, 'index.html'),
+        gamepad: join(PACKAGE_ROOT, 'gamepad.html'),
+      },
     },
     emptyOutDir: true,
     reportCompressedSize: false,
