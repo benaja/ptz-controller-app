@@ -1,14 +1,8 @@
-import { CgfPtzCameraState } from '@/core/CameraConnection/CgfPtzCamera/CgfPtzCameraState';
-import { IAxisAction } from './BaseAction';
+import { getCurrentCameraConnection } from '@/core/CameraConnection/CameraConnectionHandler';
+import { AxisAction } from './BaseAction';
 
-export class ZoomCameraAction implements IAxisAction {
-  state: CgfPtzCameraState;
-
-  constructor(state: CgfPtzCameraState) {
-    this.state = state;
-  }
-
+export class ZoomCameraAction extends AxisAction {
   hanlde(value: number): void {
-    this.state.zoom = Math.round(value * 8);
+    getCurrentCameraConnection()?.zoom(-Math.round(value * 8));
   }
 }

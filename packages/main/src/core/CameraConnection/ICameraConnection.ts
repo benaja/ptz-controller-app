@@ -3,8 +3,7 @@ import { IConnection } from '../GenericFactory/IConnection';
 import { IDisposable } from '../GenericFactory/IDisposable';
 import { ISubscription } from '../GenericFactory/ISubscription';
 
-export interface ICameraConnection extends ISubscription<IConnection>, IDisposable {
-  config: CameraConfig;
+export interface ICameraConnection extends IDisposable {
   /**
    * Set the pan speed of the camera.
    * @param value The speed of pan in the value range of [-1 .. 1] where

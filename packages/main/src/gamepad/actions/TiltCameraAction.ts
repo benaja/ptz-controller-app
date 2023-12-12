@@ -1,14 +1,8 @@
-import { CgfPtzCameraState } from '@/core/CameraConnection/CgfPtzCamera/CgfPtzCameraState';
-import { IAxisAction } from './BaseAction';
+import { getCurrentCameraConnection } from '@/core/CameraConnection/CameraConnectionHandler';
+import { AxisAction } from './BaseAction';
 
-export class TiltCameraAction implements IAxisAction {
-  state: CgfPtzCameraState;
-
-  constructor(state: CgfPtzCameraState) {
-    this.state = state;
-  }
-
+export class TiltCameraAction extends AxisAction {
   hanlde(value: number): void {
-    this.state.tilt = Math.round(value * 255);
+    getCurrentCameraConnection()?.tilt(-Math.round(value * 255));
   }
 }

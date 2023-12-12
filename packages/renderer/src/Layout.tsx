@@ -8,7 +8,15 @@ type Tab = {
   label: string;
 };
 
-export default function Layout({ children, title }: { children: React.ReactNode; title: string }) {
+export default function Layout({
+  children,
+  title,
+  actions,
+}: {
+  children: React.ReactNode;
+  title: string;
+  actions?: React.ReactNode;
+}) {
   const navigate = useNavigate();
   const { canGoBack, canGoForward, goBack, goForward } = useHistoryContext();
 
@@ -69,6 +77,8 @@ export default function Layout({ children, title }: { children: React.ReactNode;
             <ChevronRightIcon className="h-6 w-6 text-gray-600" />
           </button>
           <h1 className="font-bold text-lg  text-gray-800">{title}</h1>
+
+          {actions && <div className="ml-auto">{actions}</div>}
         </div>
         {children}
         {/* <ManageGamepads /> */}

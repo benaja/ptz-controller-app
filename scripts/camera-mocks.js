@@ -1,15 +1,9 @@
-#!/usr/bin/env node
 import { WebSocketServer } from 'ws';
 
-type Message = {
-  pan: number;
-  tilt: number;
-  zoom: number;
-  focus: boolean;
-};
+const AMOUNT_OF_CAMERAS = 4;
 
-export function startConnection(cameraId: number) {
-  function log(...args: any[]) {
+function startConnection(cameraId) {
+  function log(...args) {
     console.log(`[Camera: ${cameraId}] `, ...args);
   }
 
@@ -21,9 +15,13 @@ export function startConnection(cameraId: number) {
   wss.on('connection', (ws) => {
     log('connection');
 
-    ws.on('message', (data: Buffer) => {
-      const message = JSON.parse(data.toString()) as Message;
+    ws.on('message', (data) => {
+      const message = JSON.parse(data.toString());
       log('message from client:', message);
     });
   });
+}
+
+for (let i = 0; i < AMOUNT_OF_CAMERAS; i++) {
+  startConnection(i + 1);
 }

@@ -1,13 +1,19 @@
 import { setupApi } from '@/api/setupApi';
 import { setupGamepads } from '@/gamepad/setupGamepads';
-import { startWebsocketServer, stopWebsocketServer } from '@/websocket';
+import {
+  setupCameraConnectionHandler,
+  useCameraConnectionHandler,
+} from './CameraConnection/CameraConnectionHandler';
+import { GamepadApi } from '@/api/gamepadApi';
+import { CameraApi } from '@/api/cameraApi';
 
 export function setupCore() {
-  startWebsocketServer();
-  setupApi();
+  setupCameraConnectionHandler();
+
+  setupApi([new GamepadApi(), new CameraApi()]);
   setupGamepads();
 }
 
 export function teardownCore() {
-  stopWebsocketServer();
+  useCameraConnectionHandler()?.dispose();
 }

@@ -1,9 +1,11 @@
 import WebSocket, { WebSocketServer } from 'ws';
 import { emit } from './events/eventBus';
+import ip from 'ip';
 
 let wss: WebSocketServer | null = null;
 
 export const clients: Map<number, WebSocket> = new Map();
+export const connectedTo: Map<number, WebSocket> = new Map();
 
 type Message = {
   ID: number;
@@ -44,4 +46,37 @@ export function stopWebsocketServer() {
 
   wss.close();
   wss = null;
+}
+
+export function connectToServer(cameraId: number, cameraIp: string) {
+  const ws = new WebSocket(`ws://${cameraIp}:3004`);
+  let timeout: NodeJS.Timeout | null = null;
+
+  ws.on('open', () => {
+    connectedTo.set(cameraId, ws);
+    const myIp = ip.address();
+    console.log('open', myIp);
+    ws.send(myIp);
+  });
+
+  ws.on('message', (data: Buffer) => {
+    console.log('message from server:', data.toString());
+  });
+
+  ws.on('close', () => {
+    connectedTo.delete(cameraId);
+    console.log('close');
+
+    timeout = setTimeout(() => {
+      connectToServer(cameraId, cameraIp);
+    }, 5000);
+  });
+
+  ws.on('error', (error) => {
+    console.log('error', error);
+    console.log('reconnecting in 5 seconds');
+    timeout = setTimeout(() => {
+      connectToServer(cameraId, cameraIp);
+    }, 1000);
+  });
 }

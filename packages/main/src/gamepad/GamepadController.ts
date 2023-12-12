@@ -2,29 +2,37 @@ import { AxisEventPayload, ButtonEventPayload, Gamepad } from '@/api/gamepadApi'
 import { CgfPtzCameraState } from '@/core/CameraConnection/CgfPtzCamera/CgfPtzCameraState';
 import { clients } from '@/websocket';
 import { throttle } from '../utils/throttle';
-import { IAxisAction } from './actions/BaseAction';
+import { IAxisAction, IButtonAction } from './actions/BaseAction';
 import { PanCameraAction } from './actions/PanCameraAction';
 import { TiltCameraAction } from './actions/TiltCameraAction';
 import { ZoomCameraAction } from './actions/ZoomCameraAction';
+import { FocusCameraAction } from './actions/FocusCameraAction';
+import { ToggleAutofocusAction } from './actions/ToggleAutofocusAction';
+import { ToggleTallyAction } from './actions/ToggleTallyAction';
 
 export class GamepadController {
   private gamepad: Gamepad;
-  private selectedCamera = 0;
+  public selectedCamera = 1;
   private currentState = new CgfPtzCameraState();
   private keyBindings: Record<string, number>;
 
   private axisActions: IAxisAction[];
+  private buttonActions: IButtonAction[];
 
   constructor(gamepad: Gamepad, keyBindings: Record<string, number>) {
     this.gamepad = gamepad;
     this.keyBindings = keyBindings;
 
-    console.log('GamepadController', this.gamepad, this.keyBindings);
-
     this.axisActions = [
-      new PanCameraAction(this.currentState),
-      new TiltCameraAction(this.currentState),
-      new ZoomCameraAction(this.currentState),
+      new PanCameraAction(),
+      new TiltCameraAction(),
+      new ZoomCameraAction(),
+      // new FocusCameraAction(this.currentState),
+    ];
+
+    this.buttonActions = [
+      new ToggleAutofocusAction(() => this.selectedCamera),
+      new ToggleTallyAction(() => this.selectedCamera),
     ];
   }
 
@@ -38,14 +46,19 @@ export class GamepadController {
   }
 
   onButton(button: ButtonEventPayload) {
-    console.log('onButton', button);
+    console.log('onButton', button.button, this.buttonActions, this.keyBindings);
+    this.buttonActions.forEach((action) => {
+      if (this.keyBindings[action.constructor.name] === button.button) {
+        action.hanlde(button.pressed ? 'pressed' : 'released');
+      }
+    });
   }
 
   sendUpdate = throttle(() => {
-    console.log('sendUpdate', this.currentState);
     const client = clients.get(this.selectedCamera);
     if (!client) return;
 
+    console.log('sendUpdate', this.currentState);
     client.send(JSON.stringify(this.currentState));
   }, 10);
 

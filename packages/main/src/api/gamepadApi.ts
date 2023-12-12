@@ -6,6 +6,7 @@ export type Gamepad = {
   connectionIndex: number;
   type?: 'primary' | 'secondary';
   isUse?: boolean;
+  keyBindings?: Record<string, number>;
 };
 
 export type ButtonEventPayload = {
@@ -66,13 +67,15 @@ export function getPrimaryGamepad() {
     return {
       id: selectedGamepads.primaryGamepad.id,
       connectionIndex: -1,
+      keyBindings: selectedGamepads.primaryGamepad.keyBindings,
     };
   }
+  primaryGamepad.keyBindings = selectedGamepads.primaryGamepad.keyBindings;
 
   return primaryGamepad;
 }
 
-export function getSecondaryGamepad() {
+export function getSecondaryGamepad(): Gamepad | null {
   const selectedGamepads = userConfigStore.get('selectedGamepads');
   if (!selectedGamepads.secondaryGamepad.id) return null;
 
@@ -86,8 +89,11 @@ export function getSecondaryGamepad() {
     return {
       id: selectedGamepads.secondaryGamepad.id,
       connectionIndex: -1,
+      keyBindings: selectedGamepads.secondaryGamepad.keyBindings,
     };
   }
+
+  secondaryGamepad.keyBindings = selectedGamepads.secondaryGamepad.keyBindings;
 
   return secondaryGamepad;
 }

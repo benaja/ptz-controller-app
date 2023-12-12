@@ -12,7 +12,7 @@ function convertGamepad(gamepad: any): Gamepad {
 const listener = new GamepadListener({
   axis: {
     precision: 2,
-    deadZone: 0.1,
+    deadZone: 0.02,
   },
 });
 listener.on('gamepad:connected', (event) => {

@@ -38,8 +38,6 @@ export function registerEndpoints(obj: any) {
   });
 }
 
-export function setupApi() {
-  const apis = [new GamepadApi(), new CameraApi()];
-
+export function setupApi(apis: object[]) {
   apis.forEach((api) => registerEndpoints(api));
 }

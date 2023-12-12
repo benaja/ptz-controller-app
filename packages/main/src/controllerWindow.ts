@@ -5,7 +5,7 @@ const WINDOW_TITLE = 'Controller interface';
 
 export async function createWindow() {
   const browserWindow = new BrowserWindow({
-    show: true, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
+    show: false, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -25,10 +25,10 @@ export async function createWindow() {
    * @see https://github.com/electron/electron/issues/25012 for the afford mentioned issue.
    */
   browserWindow.on('ready-to-show', () => {
-    browserWindow?.show();
+    // browserWindow?.show();
 
     if (import.meta.env.DEV) {
-      browserWindow?.webContents.openDevTools();
+      // browserWindow?.webContents.openDevTools();
     }
   });
 
@@ -50,7 +50,7 @@ export async function createWindow() {
      * @see https://github.com/nodejs/node/issues/12682
      * @see https://github.com/electron/electron/issues/6869
      */
-    await browserWindow.loadFile(resolve(__dirname, '../../renderer/dist/index.html'));
+    await browserWindow.loadFile(resolve(__dirname, '../../renderer/dist/gamepad.html'));
   }
 
   return browserWindow;
@@ -61,7 +61,7 @@ export async function createWindow() {
  */
 export async function resoreOrCreateControllerWindow() {
   let window = BrowserWindow.getAllWindows().find(
-    (w) => !w.isDestroyed() && w.getTitle() === WINDOW_TITLE
+    (w) => !w.isDestroyed() && w.getTitle() === WINDOW_TITLE,
   );
 
   if (window === undefined) {

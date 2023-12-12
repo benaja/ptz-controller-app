@@ -9,6 +9,7 @@
     "url": "https://kozack.me"
   },
   "main": "packages/main/dist/index.cjs",
+  "type": "module",
   "scripts": {
     "build": "npm run build:main && npm run build:preload && npm run build:renderer",
     "build:main": "cd ./packages/main && vite build",
@@ -21,6 +22,7 @@
     "test:preload": "vitest run -r packages/preload --passWithNoTests",
     "test:renderer": "vitest run -r packages/renderer --passWithNoTests",
     "dev": "node scripts/watch.mjs",
+    "camera-mocks": "node scripts/camera-mocks.js",
     "lint": "eslint . --ext js,mjs,cjs,ts,mts,cts,vue",
     "typecheck:main": "tsc --noEmit -p packages/main/tsconfig.json",
     "typecheck:preload": "tsc --noEmit -p packages/preload/tsconfig.json",
@@ -31,6 +33,7 @@
   },
   "devDependencies": {
     "@electron-toolkit/tsconfig": "^1.0.1",
+    "@types/ip": "^1.1.3",
     "@types/node": "20.9.0",
     "@types/react": "^18.2.42",
     "@types/react-dom": "^18.2.17",
@@ -68,7 +71,9 @@
     "clsx": "^2.0.0",
     "electron-updater": "6.1.4",
     "gamepad.js": "^2.1.0",
+    "ip": "^1.1.8",
     "react-router-dom": "^6.20.1",
+    "strict-event-emitter": "^0.5.1",
     "tailwind-merge": "^2.1.0",
     "ws": "^8.14.2",
     "zod": "^3.22.4"

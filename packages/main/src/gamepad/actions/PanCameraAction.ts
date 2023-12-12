@@ -1,14 +1,8 @@
-import { CgfPtzCameraState } from '@/core/CameraConnection/CgfPtzCamera/CgfPtzCameraState';
-import { IAxisAction } from './BaseAction';
+import { getCurrentCameraConnection } from '@/core/CameraConnection/CameraConnectionHandler';
+import { AxisAction } from './BaseAction';
 
-export class PanCameraAction implements IAxisAction {
-  state: CgfPtzCameraState;
-
-  constructor(state: CgfPtzCameraState) {
-    this.state = state;
-  }
-
+export class PanCameraAction extends AxisAction {
   hanlde(value: number): void {
-    this.state.pan = Math.round(value * 255);
+    getCurrentCameraConnection()?.pan(Math.round(value * 255));
   }
 }

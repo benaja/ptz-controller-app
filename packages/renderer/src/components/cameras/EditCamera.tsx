@@ -15,9 +15,7 @@ export default function EditCamera() {
   const [camera, setCamera] = useState<CameraConfig | null>(null);
 
   const [form, setForm] = useState({
-    name: '',
     ip: '',
-    port: 3001,
     number: 0,
   });
 
@@ -31,9 +29,7 @@ export default function EditCamera() {
       id,
     }).then(() => {
       setForm({
-        name: '',
         ip: '',
-        port: 3001,
         number: 0,
       });
 

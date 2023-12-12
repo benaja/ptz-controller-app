@@ -2,9 +2,7 @@ import { on } from 'events';
 import TextField from '../ui/TextField';
 
 export type CameraForm = {
-  name: string;
   ip: string;
-  port: number;
   number: number;
 };
 
@@ -24,21 +22,9 @@ export default function CameraForm({ form, onChange }: Props) {
   return (
     <>
       <TextField
-        label="Name"
-        value={form.name}
-        onChange={(name) => set('name', name)}
-        required
-      />
-      <TextField
         label="Ip"
         value={form.ip}
         onChange={(ip) => set('ip', ip)}
-        required
-      />
-      <TextField
-        label="Port"
-        value={form.port.toString()}
-        onChange={(value) => set('port', parseInt(value))}
         required
       />
       <TextField

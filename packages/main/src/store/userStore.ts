@@ -5,13 +5,14 @@ import { randomUUID } from 'crypto';
 import { PanCameraAction } from '@/gamepad/actions/PanCameraAction';
 import { TiltCameraAction } from '@/gamepad/actions/TiltCameraAction';
 import { ZoomCameraAction } from '@/gamepad/actions/ZoomCameraAction';
+import { FocusCameraAction } from '@/gamepad/actions/FocusCameraAction';
+import { ToggleAutofocusAction } from '@/gamepad/actions/ToggleAutofocusAction';
+import { ToggleTallyAction } from '@/gamepad/actions/ToggleTallyAction';
 
 const cameraConfigSchema = z.object({
   id: z.string(),
   number: z.number(),
   ip: z.string(),
-  name: z.string(),
-  port: z.number(),
 });
 
 const gamepadConfigSchema = z.object({
@@ -67,9 +68,12 @@ export const userConfigStore = new Store<UserConfig>({
       primaryGamepad: {
         id: null,
         keyBindings: {
-          [TiltCameraAction.name]: 0,
-          [PanCameraAction.name]: 1,
+          [TiltCameraAction.name]: 1,
+          [PanCameraAction.name]: 0,
           [ZoomCameraAction.name]: 3,
+          [FocusCameraAction.name]: 2,
+          [ToggleAutofocusAction.name]: 0,
+          [ToggleTallyAction.name]: 1,
         },
       },
       secondaryGamepad: {
