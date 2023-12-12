@@ -21,7 +21,7 @@
     "test:preload": "vitest run -r packages/preload --passWithNoTests",
     "test:renderer": "vitest run -r packages/renderer --passWithNoTests",
     "dev": "node scripts/watch.mjs",
-    "camera-mocks": "node scripts/camera-mocks.mjs",
+    "mock-cameras": "node scripts/camera-mocks.mjs",
     "lint": "eslint . --ext js,mjs,cjs,ts,mts,cts,vue",
     "typecheck:main": "tsc --noEmit -p packages/main/tsconfig.json",
     "typecheck:preload": "tsc --noEmit -p packages/preload/tsconfig.json",
