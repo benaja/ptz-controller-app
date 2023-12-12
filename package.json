@@ -1,12 +1,11 @@
 {
-  "name": "vite-electron-builder",
-  "description": "Secure boilerplate for Electron app based on Vite",
+  "name": "ptz-controller-app",
+  "description": "A desktop app for controlling PTZ cameras",
   "version": "1.0.2",
-  "private": true,
+  "private": false,
   "author": {
-    "email": "kozackunisoft@gmail.com",
-    "name": "Alex Kozack",
-    "url": "https://kozack.me"
+    "email": "benhu00@outlook.com",
+    "name": "Benaja Hunzinger"
   },
   "main": "packages/main/dist/index.cjs",
   "scripts": {
