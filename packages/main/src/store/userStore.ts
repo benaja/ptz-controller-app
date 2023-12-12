@@ -50,9 +50,7 @@ export const userConfigStore = new Store<UserConfig>({
     cameras: [
       {
         id: randomUUID(),
-        name: 'Camera 1',
         ip: '192.168.0.31',
-        port: 3000,
         number: 1,
       },
     ],
@@ -67,14 +65,7 @@ export const userConfigStore = new Store<UserConfig>({
     selectedGamepads: {
       primaryGamepad: {
         id: null,
-        keyBindings: {
-          [TiltCameraAction.name]: 1,
-          [PanCameraAction.name]: 0,
-          [ZoomCameraAction.name]: 3,
-          [FocusCameraAction.name]: 2,
-          [ToggleAutofocusAction.name]: 0,
-          [ToggleTallyAction.name]: 1,
-        },
+        keyBindings: {},
       },
       secondaryGamepad: {
         id: null,

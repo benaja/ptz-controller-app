@@ -30,10 +30,7 @@ export class GamepadController {
       // new FocusCameraAction(this.currentState),
     ];
 
-    this.buttonActions = [
-      new ToggleAutofocusAction(() => this.selectedCamera),
-      new ToggleTallyAction(() => this.selectedCamera),
-    ];
+    this.buttonActions = [new ToggleAutofocusAction(), new ToggleTallyAction()];
   }
 
   onAxis(axis: AxisEventPayload) {

@@ -1,4 +1,5 @@
 import { emit } from '@/events/eventBus';
+import { defaultSecondaryKeyBindings, defualtPrimaryKeyBindings } from '@/gamepad/GamepadControls';
 import { userConfigStore } from '@/store/userStore';
 
 export type Gamepad = {
@@ -56,6 +57,19 @@ export type GamepadEvent =
 
 const connectedGamepads: Gamepad[] = [];
 
+function mergeKeyBindings(
+  defaultKeyBindings: Record<string, number>,
+  customzedKeyBindings: Record<string, number>,
+): Record<string, number> {
+  const mergedKeyBindings = { ...defaultKeyBindings };
+
+  Object.keys(customzedKeyBindings).forEach((key) => {
+    mergedKeyBindings[key] = customzedKeyBindings[key];
+  });
+
+  return mergedKeyBindings;
+}
+
 export function getPrimaryGamepad() {
   const selectedGamepads = userConfigStore.get('selectedGamepads');
   if (!selectedGamepads.primaryGamepad.id) return null;
@@ -63,14 +77,18 @@ export function getPrimaryGamepad() {
   const primaryGamepad = connectedGamepads.find(
     (gamepad) => gamepad.id === selectedGamepads.primaryGamepad.id,
   );
+  const keyBindings = mergeKeyBindings(
+    defualtPrimaryKeyBindings,
+    selectedGamepads.primaryGamepad.keyBindings,
+  );
   if (!primaryGamepad) {
     return {
       id: selectedGamepads.primaryGamepad.id,
       connectionIndex: -1,
-      keyBindings: selectedGamepads.primaryGamepad.keyBindings,
+      keyBindings,
     };
   }
-  primaryGamepad.keyBindings = selectedGamepads.primaryGamepad.keyBindings;
+  primaryGamepad.keyBindings = keyBindings;
 
   return primaryGamepad;
 }
@@ -85,15 +103,19 @@ export function getSecondaryGamepad(): Gamepad | null {
       gamepad.id === selectedGamepads.secondaryGamepad.id &&
       gamepad.connectionIndex !== primaryGamepad?.connectionIndex,
   );
+  const keyBindings = mergeKeyBindings(
+    defaultSecondaryKeyBindings,
+    selectedGamepads.secondaryGamepad.keyBindings,
+  );
   if (!secondaryGamepad) {
     return {
       id: selectedGamepads.secondaryGamepad.id,
       connectionIndex: -1,
-      keyBindings: selectedGamepads.secondaryGamepad.keyBindings,
+      keyBindings,
     };
   }
 
-  secondaryGamepad.keyBindings = selectedGamepads.secondaryGamepad.keyBindings;
+  secondaryGamepad.keyBindings = keyBindings;
 
   return secondaryGamepad;
 }

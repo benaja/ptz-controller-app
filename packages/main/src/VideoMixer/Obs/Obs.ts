@@ -1,7 +1,4 @@
-import { IConfig, IConnection, IImageSelectionChange, IVideoMixer } from '@main/core';
-
 import { EventEmitter } from 'events';
-import { StrictEventEmitter } from 'strict-event-emitter-types';
 import ObsWebSocket from 'obs-websocket-js';
 import { throttle } from '@/utils/throttle';
 import { debounce } from 'lodash';
