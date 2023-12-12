@@ -23,7 +23,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 Windows:
 [Download from Github](https://github.com/coreybutler/nvm-windows)
 
-### [pnpm](https://pnpm.js.org/) (v8)
+#### [pnpm](https://pnpm.js.org/) (v8)
 
 Install pnpm by running:
 
@@ -47,7 +47,7 @@ pnpm dev
 
 This will start the app in development mode. The electron app will be opened automatically.
 
-### mocking camers
+### Mocking camers
 
 To mock the cameras we run a websocket on virtual network interfaces, so they have different IP addresses.
 
