@@ -1,5 +1,5 @@
 import { CameraConfig, userConfigStore } from '@/store/userStore';
-import { CameraConnection } from './CameraConnection';
+import { CameraConnection } from './ArduinoPtzCamera/ArduinoPtzCamera';
 import { eventEmitter } from '@/events/eventEmitter';
 import { IDisposable } from '../GenericFactory/IDisposable';
 import { useVideoMixHanlder } from '@/VideoMixer/VideoMixHanlder';

@@ -1,5 +1,4 @@
 import { IBuilder } from './IBuilder';
-import { IConfig } from '../Configuration/IConfig';
 import { IDisposable } from './IDisposable';
 
 export class Factory<TConcrete extends IDisposable> implements IDisposable {
@@ -8,33 +7,6 @@ export class Factory<TConcrete extends IDisposable> implements IDisposable {
 
   public get(instance: number): TConcrete | undefined {
     return this._instances[`${instance}`];
-  }
-
-  // public getAll(): TConcrete[] {
-  //   return this._instances;
-  // }
-
-  public async parseConfig(config: any): Promise<void> {
-    if (this._instances[config.instance]) {
-      console.log(`Factory: Instance for index:${config.instance} is already available`);
-      return;
-    }
-
-    const builder = this._builders[config.type];
-    if (builder === undefined) {
-      console.error(`Factory: Could not find builder for type:${config.type}`);
-    } else {
-      try {
-        const instance = await builder.build(config);
-        this._instances[config.instance] = instance;
-      } catch (error) {
-        console.error(
-          `Factory: building instance from configuration(${JSON.stringify(
-            config
-          )}) failed with (${error})`
-        );
-      }
-    }
   }
 
   public async builderAdd(builder: IBuilder<TConcrete>): Promise<void> {

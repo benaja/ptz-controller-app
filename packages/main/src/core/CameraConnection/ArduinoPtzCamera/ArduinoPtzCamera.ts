@@ -1,15 +1,19 @@
 import { CameraConfig } from '@/store/userStore';
-import { ICameraConnection } from './ICameraConnection';
+import { ICameraConnection } from '../ICameraConnection';
 import { WebSocket } from 'ws';
-import { RelativeCameraState } from './CgfPtzCamera/CgfPtzCameraState';
 import { throttle } from '@/utils/throttle';
 import { eventEmitter } from '@/events/eventEmitter';
+import { RelativeCameraState } from './AurduinoPtzCameraState';
+import { CameraConnectionType } from '../CameraConnectionTypes';
 
-export class CameraConnection implements ICameraConnection {
+export class ArduinoPtzCamera implements ICameraConnection {
   private websocket: WebSocket | undefined;
   private _connected = false;
   private reconnect = true;
   private relativeState = new RelativeCameraState();
+
+  public readonly displayName = 'Arduino Ptz Camera';
+  public readonly type = CameraConnectionType.ArduinoPtzCamera;
 
   constructor(private config: CameraConfig) {
     this.setupWebsocket();
@@ -17,6 +21,10 @@ export class CameraConnection implements ICameraConnection {
 
   public get connected(): boolean {
     return this._connected;
+  }
+
+  public get connectionString(): string {
+    return this.config.ip;
   }
 
   public set connected(v: boolean) {

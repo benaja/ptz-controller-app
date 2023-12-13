@@ -1,13 +1,15 @@
 import { z } from 'zod';
-import { VideoMixerType } from '../VideoMixer';
 import { Store } from '.';
 import { randomUUID } from 'crypto';
 import { ObsMixer } from '@/VideoMixer/Obs/ObsMixer';
+import { CameraConnectionType } from '@/core/CameraConnection/CameraConnectionTypes';
 
 const cameraConfigSchema = z.object({
   id: z.string(),
+  type: z.nativeEnum(CameraConnectionType),
   number: z.number(),
   ip: z.string(),
+  // port: z.number().nullable().if
 });
 
 const gamepadConfigSchema = z.object({
@@ -45,6 +47,7 @@ export const userConfigStore = new Store<UserConfig>({
     cameras: [
       {
         id: randomUUID(),
+        type: CameraConnectionType.ArduinoPtzCamera,
         ip: '192.168.0.31',
         number: 1,
       },
