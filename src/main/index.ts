@@ -1,6 +1,11 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
-import { setupCore } from './core';
+import { setupApp } from './setupApp';
+
+declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
+declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
+declare const GAMEPAD_WINDOW_WEBPACK_ENTRY: string;
+declare const GAMEPAD_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -14,7 +19,7 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
 
@@ -22,25 +27,17 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: GAMEPAD_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
 
-  setupCore();
-
-  // and load the index.html of the app.
-  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-    gamepadWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL + '/gamepad.html');
-    mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
-  } else {
-    gamepadWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/gamepad.html`),
-    );
-    mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
-  }
+  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  gamepadWindow.loadURL(GAMEPAD_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
+  gamepadWindow.webContents.openDevTools();
   mainWindow.webContents.openDevTools();
+  mainWindow.show();
 };
 
 // This method will be called when Electron has finished
@@ -67,3 +64,4 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+setupApp();

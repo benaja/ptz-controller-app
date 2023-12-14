@@ -1,4 +1,4 @@
-import { Gamepad, GamepadEvent } from '@main//api/gamepadApi';
+import { Gamepad, GamepadEvent } from '@core/api/gamepadApi';
 import { useEffect, useState } from 'react';
 import Container from '../ui/Container';
 import Layout from '@renderer/Layout';

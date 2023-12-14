@@ -1,5 +1,5 @@
 import WebSocket, { WebSocketServer } from 'ws';
-import { emit } from './events/eventBus';
+import { emit } from '../core/events/eventBus';
 import ip from 'ip';
 
 let wss: WebSocketServer | null = null;

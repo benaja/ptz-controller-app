@@ -1,6 +1,6 @@
-import { VideoMixerConfig, userConfigStore } from '@main/store/userStore';
-import { IVideoMixer } from './IVideoMixer';
-import { eventEmitter } from '@main/events/eventEmitter';
+import { VideoMixerConfig, userConfigStore } from '@core/store/userStore';
+import { IVideoMixer } from '../../core/VideoMixer/IVideoMixer';
+import { eventEmitter } from '@core/events/eventEmitter';
 
 let videoMixerHandler: VideoMixHanlder | null = null;
 

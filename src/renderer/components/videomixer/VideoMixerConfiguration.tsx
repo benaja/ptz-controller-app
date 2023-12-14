@@ -1,10 +1,10 @@
 import Layout from '@renderer/Layout';
-import { VideoMixerConfig } from '@main//store/userStore';
+import { VideoMixerConfig } from '@core/store/userStore';
 import { useEffect, useState } from 'react';
 import TextField from '../ui/TextField';
 import Select from '../ui/Select';
 import AppButton from '../ui/AppButton';
-import { VideoMixerOption } from '@main//api/videoMixerApi';
+import { VideoMixerOption } from '@core/api/videoMixerApi';
 
 export default function VideoMixerConfiguration() {
   const [videoMixer, setVideoMixer] = useState<VideoMixerConfig | null>(null);

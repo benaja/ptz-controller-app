@@ -1,7 +1,7 @@
 import Layout from '@renderer/Layout';
 import Container from '../ui/Container';
 import { useEffect, useState } from 'react';
-import { CameraConfig } from '@main//store/userStore';
+import { CameraConfig } from '@core/store/userStore';
 import AppButton from '../ui/AppButton';
 import TextField from '../ui/TextField';
 import { useNavigate, useParams } from 'react-router-dom';

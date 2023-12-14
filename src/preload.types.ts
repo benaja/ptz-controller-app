@@ -1,6 +1,6 @@
-import { Gamepad, GamepadEvent } from '@main/api/gamepadApi';
-import { VideoMixerOption } from '@main/api/videoMixerApi';
-import { CameraConfig, VideoMixerConfig } from '@main/store/userStore';
+import { Gamepad, GamepadEvent } from '@core/api/gamepadApi';
+import { VideoMixerOption } from '@core/api/videoMixerApi';
+import { CameraConfig, VideoMixerConfig } from '@core/store/userStore';
 
 export interface IElectronAPI {
   updateSelectedGamepad: (args: {
