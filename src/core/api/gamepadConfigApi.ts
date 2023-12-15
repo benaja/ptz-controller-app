@@ -1,13 +1,7 @@
-import { emit } from '@core/events/eventBus';
 import { GamepadFactory } from '@core/Gamepad/GemepadFactory';
-import { defaultSecondaryKeyBindings, defualtPrimaryKeyBindings } from '@core/Gamepad/KeyBindings';
+import { ConnectedGamepadStore } from '@core/store/ConnectedGamepadsStore';
 import { GamepadConfig, UserConfigStore } from '@core/store/userStore';
 import { randomUUID } from 'crypto';
-
-export enum GamepadType {
-  NodeHid = 'node-hid',
-  WebApi = 'web-api',
-}
 
 export type GamepadResponse = {
   connected: boolean;
@@ -17,35 +11,62 @@ export class GamepadConfigApi {
   public constructor(
     private _gamepadFactory: GamepadFactory,
     private _userConfigStore: UserConfigStore,
+    private _connectedGamepadsStore: ConnectedGamepadStore,
   ) {}
 
-  public async addGamepad(config: Omit<GamepadConfig, 'id'>): Promise<GamepadConfig> {
+  private _getGamepadId(connectionIndex: number) {
+    console.log('connected Gamepads', connectionIndex, this._connectedGamepadsStore.get());
+    const connectedGamepad = this._connectedGamepadsStore
+      .get()
+      .find((c) => c.connectionIndex === connectionIndex);
+    if (!connectedGamepad) {
+      throw new Error('Gamepad not connected');
+    }
+
+    return connectedGamepad;
+  }
+
+  public async addGamepad(
+    config: Omit<GamepadConfig, 'id' | 'connectedGamepadId'>,
+  ): Promise<GamepadConfig> {
     const gamepads = this._userConfigStore.get('gamepads');
 
-    const gamepad = {
-      id: randomUUID(),
+    const connectedGamepad = this._getGamepadId(config.connectionIndex);
+
+    console.log('addGamepad', connectedGamepad);
+
+    const gamepad: GamepadConfig = {
       ...config,
+      id: randomUUID(),
+      connectedGamepadId: connectedGamepad.id,
     };
     gamepads.push(gamepad);
     this._userConfigStore.set('gamepads', gamepads);
+
+    console.log('addGamepad', gamepad);
 
     await this._gamepadFactory.add(gamepad);
 
     return gamepad;
   }
 
-  public async updateGamepad(gamepad: GamepadConfig): Promise<void> {
-    console.log('updateGamepad', gamepad);
+  public async updateGamepad(gamepad: Omit<GamepadConfig, 'connectedGamepadId'>): Promise<void> {
     const gamepads = this._userConfigStore.get('gamepads');
 
     const index = gamepads.findIndex((g) => g.id === gamepad.id);
     if (index === -1) return;
 
-    gamepads[index] = gamepad;
+    const connectedGamepad = this._getGamepadId(gamepad.connectionIndex);
+
+    const updatedGamepad: GamepadConfig = {
+      ...gamepad,
+      connectedGamepadId: connectedGamepad.id,
+    };
+    gamepads[index] = updatedGamepad;
 
     this._userConfigStore.set('gamepads', gamepads);
     await this._gamepadFactory.remove(gamepad.id);
-    await this._gamepadFactory.add(gamepad);
+    await this._gamepadFactory.add(updatedGamepad);
   }
 
   public async removeGamepad(id: string): Promise<void> {

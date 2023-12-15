@@ -1,5 +1,5 @@
 import { IDisposable } from '@core/GenericFactory/IDisposable';
-import { AxisEventPayload, ButtonEventPayload } from '@core/api/gamepadConfigApi';
+import { AxisEventPayload, ButtonEventPayload } from '@core/api/ConnectedGamepadApi';
 
 export interface IGamepadController extends IDisposable {
   isConnected: boolean;

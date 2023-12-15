@@ -1,13 +1,12 @@
-import { useVideoMixHanlder } from '@main/VideoMixer/VideoMixHanlder';
 import { IButtonAction } from './BaseAction';
+import { IVideoMixer } from '@core/VideoMixer/IVideoMixer';
 
 export class PreviousInputAction implements IButtonAction {
+  constructor(private videoMixer: () => IVideoMixer) {}
+
   hanlde(value: 'pressed' | 'released'): void {
     if (value === 'released') return;
 
-    const mixer = useVideoMixHanlder().currentMixer();
-    if (!mixer) return;
-
-    mixer.previousInput();
+    this.videoMixer().previousInput();
   }
 }

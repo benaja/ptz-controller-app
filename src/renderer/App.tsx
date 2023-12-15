@@ -1,6 +1,6 @@
 import ManageGamepads from './components/gamepads/ManageGamepads';
 import { Routes, Route, MemoryRouter } from 'react-router-dom';
-import EditGampadType from './components/gamepads/EditGampadType';
+import EditGampad from './components/gamepads/EditGamepad';
 import { HistoryProvider } from './providers/HistoryProvider';
 import Cameras from './components/cameras/Cameras';
 import AddCamera from './components/cameras/AddCamera';
@@ -9,6 +9,7 @@ import './assets/index.css';
 import VideoMixers from './components/videomixer/VideMixers';
 import AddVideoMixer from './components/videomixer/AddVideoMixer';
 import EditVideoMixer from './components/videomixer/EditVideoMixer';
+import AddGamepad from './components/gamepads/AddGamepad';
 
 function App(): JSX.Element {
   // useEffect(() => {
@@ -32,8 +33,12 @@ function App(): JSX.Element {
             path="/gamepads"
           />
           <Route
-            element={<EditGampadType />}
-            path="/gamepads/:type"
+            element={<AddGamepad />}
+            path="/gamepads/add"
+          />
+          <Route
+            element={<EditGampad />}
+            path="/gamepads/:id"
           />
           <Route
             element={<Cameras />}

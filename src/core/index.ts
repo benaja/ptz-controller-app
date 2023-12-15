@@ -7,6 +7,7 @@ import { ConnectedGamepadApi } from './api/ConnectedGamepadApi';
 import { GamepadConfigApi } from './api/gamepadConfigApi';
 import { CameraApi } from './api/cameraApi';
 import { VideoMixerApi } from './api/videoMixerApi';
+import { ConnectedGamepadStore } from './store/ConnectedGamepadsStore';
 // import { default as OBSWebSocket } from 'obs-websocket-js';
 // import default from '../../../../tailwind.config';
 // import { CameraApi } from '@core/api/cameraApi';
@@ -15,6 +16,7 @@ export class Core implements IDisposable {
   private _camFactory: CameraConnectionFactory;
   private _mixerFactory: VideomixerFactory;
   private _gamepadFactory: GamepadFactory;
+  private readonly _connectedGamepadsStore = new ConnectedGamepadStore();
 
   public readonly gamepadConfigApi: GamepadConfigApi;
   public readonly connectedGamepadApi: ConnectedGamepadApi;
@@ -43,8 +45,16 @@ export class Core implements IDisposable {
     this._camFactory = new CameraConnectionFactory();
     this._mixerFactory = new VideomixerFactory();
     this._gamepadFactory = new GamepadFactory();
-    this.gamepadConfigApi = new GamepadConfigApi(this.gamepadFactory, this.userConfigStore);
-    this.connectedGamepadApi = new ConnectedGamepadApi(this.gamepadFactory, this.userConfigStore);
+    this.gamepadConfigApi = new GamepadConfigApi(
+      this.gamepadFactory,
+      this.userConfigStore,
+      this._connectedGamepadsStore,
+    );
+    this.connectedGamepadApi = new ConnectedGamepadApi(
+      this.gamepadFactory,
+      this.userConfigStore,
+      this._connectedGamepadsStore,
+    );
     this.cameraApi = new CameraApi(this.cameraFactory, this.userConfigStore);
     this.videoMixerApi = new VideoMixerApi(this.mixerFactory, this.userConfigStore);
   }
@@ -53,6 +63,7 @@ export class Core implements IDisposable {
     this.cameraFactory.build(this.userConfigStore.get('cameras'));
     this.mixerFactory.build(this.userConfigStore.get('videoMixers'));
     this.gamepadFactory.build(this.userConfigStore.get('gamepads'));
+
     // for (const cam of validConfig.cams) {
     //   await this._camFactory.parseConfig(cam, logger);
     // }

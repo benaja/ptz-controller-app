@@ -1,8 +1,13 @@
+import { ICameraConnection } from '@core/CameraConnection/ICameraConnection';
 import { AxisAction } from './BaseAction';
 
 export class ZoomCameraAction extends AxisAction {
+  constructor(private getPreviewCamera: () => ICameraConnection) {
+    super();
+  }
+
   hanlde(value: number): void {
     console.log('ZoomCameraAction', value);
-    // getCurrentCameraConnection()?.zoom(-Math.round(value * 8));
+    this.getPreviewCamera()?.zoom(-Math.round(value * 8));
   }
 }

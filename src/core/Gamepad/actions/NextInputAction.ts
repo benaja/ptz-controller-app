@@ -1,7 +1,9 @@
-// import { useVideoMixHanlder } from '@main/VideoMixer/VideoMixHanlder';
+import { IVideoMixer } from '@core/VideoMixer/IVideoMixer';
 import { IButtonAction } from './BaseAction';
 
 export class NextInputAction implements IButtonAction {
+  constructor(private videoMixer: () => IVideoMixer) {}
+
   hanlde(value: 'pressed' | 'released'): void {
     if (value === 'released') return;
 
@@ -12,6 +14,6 @@ export class NextInputAction implements IButtonAction {
 
     // console.log('nextINput');
 
-    // mixer.nextInput();
+    this.videoMixer().nextInput();
   }
 }

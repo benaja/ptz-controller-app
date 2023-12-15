@@ -20,8 +20,8 @@ export interface IConnectedGamepadApi {
 }
 
 export interface IGamepadConfigApi {
-  addGamepad: (config: Omit<GamepadConfig, 'id'>) => Promise<GamepadConfig>;
-  updateGamepad: (gamepad: GamepadConfig) => Promise<void>;
+  addGamepad: (config: Omit<GamepadConfig, 'id' | 'connectedGamepadId'>) => Promise<GamepadConfig>;
+  updateGamepad: (gamepad: Omit<GamepadConfig, 'connectedGamepadId'>) => Promise<void>;
   removeGamepad: (id: string) => Promise<void>;
   getGamepad: (id: string) => Promise<GamepadResponse>;
   getGamepads: () => Promise<GamepadResponse[]>;

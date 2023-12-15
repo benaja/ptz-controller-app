@@ -5,14 +5,15 @@ import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTyp
 import { cameraConfigSchema } from '@core/CameraConnection/CameraConnectionBuilder';
 import { videoMixerConfigSchema } from '@core/VideoMixer/VideoMixerBuilder';
 import { VideoMixerType } from '@core/VideoMixer/VideoMixerType';
+import { GamepadType } from '@core/api/GamepadType';
 
 export const gamepadConfigSchema = z.object({
   id: z.string(),
   name: z.string(),
   connectedGamepadId: z.string().nullable(),
   connectionIndex: z.number(),
-  type: z.string(),
-  videMixerId: z.string().nullable(),
+  type: z.nativeEnum(GamepadType),
+  videoMixerId: z.string().nullable(),
   keyBindings: z.record(z.number()),
 });
 

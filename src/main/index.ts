@@ -13,6 +13,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 const createWindow = () => {
+  setupApp();
   console.log('dirname', path.join(__dirname, 'preload.js'));
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -64,4 +65,3 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
-setupApp();

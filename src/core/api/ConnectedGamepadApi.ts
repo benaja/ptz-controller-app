@@ -1,4 +1,5 @@
 import { GamepadFactory } from '@core/Gamepad/GemepadFactory';
+import { ConnectedGamepadStore } from '@core/store/ConnectedGamepadsStore';
 import { UserConfigStore } from '@core/store/userStore';
 
 export type ConnectedGamepad = {
@@ -37,32 +38,37 @@ function mergeKeyBindings(
 }
 
 export class ConnectedGamepadApi {
-  private _connectedGamepads: ConnectedGamepad[] = [];
-
   public constructor(
     private _gamepadFactory: GamepadFactory,
     private _userConfigStore: UserConfigStore,
+    private _connectedGamepadsStore: ConnectedGamepadStore,
   ) {}
 
   public getConnectedGamepads(): ConnectedGamepadResponse[] {
-    return this._connectedGamepads.map((c) => ({
+    console.log('getConnectedGamepads', this._connectedGamepadsStore.get());
+    return this._connectedGamepadsStore.get().map((c) => ({
       ...c,
       isUse: this._gamepadFactory.getByConnectionIndex(c.connectionIndex) !== undefined,
     }));
   }
 
   public gamepadConnected(gamepad: ConnectedGamepad): void {
+    console.log('camepadConnected', gamepad);
     if (
-      this._connectedGamepads.find((gamepad) => gamepad.connectionIndex === gamepad.connectionIndex)
+      this._connectedGamepadsStore
+        .get()
+        .find((gamepad) => gamepad.connectionIndex === gamepad.connectionIndex)
     ) {
       return;
     }
-    this._connectedGamepads.push(gamepad);
+    this._connectedGamepadsStore.get().push(gamepad);
 
     const gamepads = this._userConfigStore.get('gamepads');
     const availableGamepad = gamepads.find(
       (g) => g.connectedGamepadId === gamepad.id && g.connectionIndex >= 0,
     );
+
+    console.log('availableGamepad', availableGamepad);
 
     if (!availableGamepad) return;
 
@@ -70,15 +76,17 @@ export class ConnectedGamepadApi {
     this._userConfigStore.set('gamepads', gamepads);
 
     this._gamepadFactory.add(availableGamepad);
+
+    console.log('connected pads', this._connectedGamepadsStore.get());
   }
 
   public gamepadDisconnected(gamepad: ConnectedGamepad): void {
-    const index = this._connectedGamepads.findIndex(
-      (c) => c.connectionIndex === gamepad.connectionIndex,
-    );
+    const index = this._connectedGamepadsStore
+      .get()
+      .findIndex((c) => c.connectionIndex === gamepad.connectionIndex);
     if (index === -1) return;
 
-    this._connectedGamepads.splice(index, 1);
+    this._connectedGamepadsStore.get().splice(index, 1);
 
     const gamepads = this._userConfigStore.get('gamepads');
     const availableGamepad = gamepads.find(
@@ -92,12 +100,12 @@ export class ConnectedGamepadApi {
     this._gamepadFactory.remove(availableGamepad.id);
   }
 
-  public updateConnectedGamepads(gemapads: ConnectedGamepad[]): void {
-    const originalGamepads = [...this._connectedGamepads];
+  public updateConnectedGamepads(gamepads: ConnectedGamepad[]): void {
+    const originalGamepads = [...this._connectedGamepadsStore.get()];
 
-    this._connectedGamepads = gemapads;
+    // this._connectedGamepadsStore.set(gemapads);
 
-    const addedGamepads = this._connectedGamepads.filter(
+    const addedGamepads = gamepads.filter(
       (gamepad) =>
         !originalGamepads.find(
           (originalGamepad) =>
@@ -107,7 +115,7 @@ export class ConnectedGamepadApi {
     );
     const removedGamepads = originalGamepads.filter(
       (gamepad) =>
-        !this._connectedGamepads.find(
+        !gamepads.find(
           (connectedGamepad) =>
             connectedGamepad.id === gamepad.id &&
             connectedGamepad.connectionIndex === gamepad.connectionIndex,

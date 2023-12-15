@@ -1,20 +1,50 @@
 import Layout from '@renderer/Layout';
 import Container from '../ui/Container';
+import GamepadForm, { GamepadFormType } from './GamepadForm';
+import { useState } from 'react';
+import { GamepadType } from '@core/api/GamepadType';
+import AppButton from '../ui/AppButton';
 
 export default function AddGamepad() {
+  const [form, setForm] = useState<GamepadFormType>({
+    name: '',
+    type: GamepadType.WebApi,
+    videoMixerId: null,
+    connectionIndex: null,
+  });
+
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    console.log(form);
+
+    window.gamepadConfigApi.addGamepad({
+      ...form,
+      keyBindings: {},
+    });
   }
 
   return (
     <Layout title="Add Gamepad">
-      <Container>
-        <form onSubmit={submit}>
-          <div className="divide-y">
-            <p className="text-gray-400 text-center py-2">No gamepads</p>
+      <form onSubmit={submit}>
+        <Container>
+          <div className="space-y-4 py-4">
+            <GamepadForm
+              form={form}
+              onChange={(value) => setForm(value)}
+            />
           </div>
-        </form>
-      </Container>
+        </Container>
+
+        <div className="flex mt-6">
+          <AppButton
+            type="submit"
+            className="ml-auto"
+          >
+            Save
+          </AppButton>
+        </div>
+      </form>
     </Layout>
   );
 }

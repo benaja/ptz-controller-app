@@ -1,7 +1,6 @@
 import OBSWebSocket from 'obs-websocket-js';
 import { throttle } from '@main/utils/throttle';
 import { IVideoMixer, baseVideoMixerSchema } from '../IVideoMixer';
-import { VideoMixerConfig } from '@core/store/userStore';
 import { z } from 'zod';
 import { VideoMixerType } from '../VideoMixerType';
 
@@ -39,7 +38,7 @@ export class ObsMixer implements IVideoMixer {
     this.connect(_config);
   }
 
-  public connect(config: VideoMixerConfig) {
+  public connect(config: ObsMixerConfig) {
     console.log('connecting to OBS', config.ip);
     this._obs
       .connect(`ws://${config.ip}`, config.password || undefined)
@@ -58,6 +57,10 @@ export class ObsMixer implements IVideoMixer {
         });
         this._obs.on('ConnectionClosed', () => {
           console.log('Connection closed');
+          this.isConnected = false;
+          setTimeout(() => {
+            this.connect(config);
+          }, 1000);
         });
       })
       .catch(() => {

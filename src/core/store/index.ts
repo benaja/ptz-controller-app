@@ -25,7 +25,16 @@ export class Store<T extends Record<string | number | symbol, unknown>> {
 
   // This will just return the property on the `data` object
   get<K extends keyof T>(key: K): T[K] {
-    return this.data[key];
+    const data = this.data[key];
+    if (Array.isArray(data)) {
+      return [...data] as T[K];
+    }
+    if (typeof data === 'object') {
+      return {
+        ...data,
+      };
+    }
+    return data;
   }
 
   // ...and this will set it

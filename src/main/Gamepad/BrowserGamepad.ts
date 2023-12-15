@@ -1,5 +1,5 @@
 import { IGamepadController } from '@core/Gamepad/IGamepadController';
+import { GamepadConfig } from './BrowserGamepadBuilder';
+import { GamepadController } from '@core/Gamepad/GamepadController';
 
-export class BrowserGamepad implements IGamepadController {
-  constructor() {}
-}
+export class BrowserGamepad extends GamepadController implements IGamepadController {}

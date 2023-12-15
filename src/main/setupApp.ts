@@ -9,7 +9,9 @@ export async function setupApp() {
 
   await core.cameraFactory.addBuilder(new CameraConnectionBuilder());
   await core.mixerFactory.addBuilder(new VideoMixerBuilder());
-  await core.gamepadFactory.addBuilder(new BrowserGamepadBuilder());
+  await core.gamepadFactory.addBuilder(
+    new BrowserGamepadBuilder(core.cameraFactory, core.mixerFactory, core.userConfigStore),
+  );
 
   setupElectronApi([
     core.gamepadConfigApi,

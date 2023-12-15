@@ -38,7 +38,7 @@ export enum GamepadAxis {
   // RightTrigger = 5,
 }
 
-export const defualtPrimaryKeyBindings: Record<string, GamepadButtons | GamepadAxis> = {
+export const defaultKeyBindings: Record<string, GamepadButtons | GamepadAxis> = {
   [TiltCameraAction.name]: GamepadAxis.LeftStickY,
   [PanCameraAction.name]: GamepadAxis.LeftStickX,
   [ZoomCameraAction.name]: GamepadAxis.RightStickY,

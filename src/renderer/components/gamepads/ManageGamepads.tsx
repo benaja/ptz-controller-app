@@ -46,6 +46,7 @@ export default function ManageGamepads() {
         <div className="divide-y">
           {gamepads.map((gamepad) => (
             <Link
+              key={gamepad.id}
               to={`/gamepads/${gamepad.id}`}
               className="font-medium flex py-2 items-center"
             >
