@@ -114,6 +114,9 @@ export class ConnectedGamepadApi {
         ),
     );
 
+    console.log('addedGamepads', addedGamepads);
+    console.log('removedGamepads', removedGamepads);
+
     addedGamepads.forEach((gamepad) => {
       this.gamepadConnected(gamepad);
     });

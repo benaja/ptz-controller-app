@@ -1,12 +1,13 @@
 import { CameraConfig } from '@core/CameraConnection/CameraConnectionBuilder';
+import { VideoMixerConfig } from '@core/VideoMixer/VideoMixerBuilder';
 import {
+  AxisEventPayload,
   ButtonEventPayload,
   ConnectedGamepad,
   ConnectedGamepadResponse,
 } from '@core/api/ConnectedGamepadApi';
-import { CameraApi, CameraResponse } from '@core/api/cameraApi';
-import { GamepadConfigApi, GamepadResponse } from '@core/api/gamepadConfigApi';
-import { VideoMixerApi } from '@core/api/videoMixerApi';
+import { CameraResponse } from '@core/api/cameraApi';
+import { GamepadResponse } from '@core/api/gamepadConfigApi';
 import { GamepadConfig } from '@core/store/userStore';
 
 export interface IConnectedGamepadApi {
@@ -15,7 +16,7 @@ export interface IConnectedGamepadApi {
   gamepadDisconnected: (gamepad: ConnectedGamepad) => Promise<void>;
   updateConnectedGamepads: (gamepads: ConnectedGamepad[]) => Promise<void>;
   triggerButtonEvent: (event: ButtonEventPayload) => Promise<void>;
-  triggerAxisEvent: (event: ButtonEventPayload) => Promise<void>;
+  triggerAxisEvent: (event: AxisEventPayload) => Promise<void>;
 }
 
 export interface IGamepadConfigApi {
@@ -34,10 +35,19 @@ export interface ICameraApi {
   getCamera: (id: string) => Promise<CameraResponse | null>;
 }
 
+export interface IVideoMixerApi {
+  getVideoMixers: () => Promise<VideoMixerConfig[]>;
+  getVideoMixer: (id: string) => Promise<VideoMixerConfig | undefined>;
+  addVideoMixer: (videoMixer: Omit<VideoMixerConfig, 'id'>) => Promise<VideoMixerConfig>;
+  removeVideoMixer: (id: string) => Promise<void>;
+  updateVideoMixer: (videoMixer: VideoMixerConfig) => Promise<void>;
+}
+
 declare global {
   interface Window {
     connectedGamepadApi: IConnectedGamepadApi;
-    gamepadConfigApi: IConnectedGamepadApi;
+    gamepadConfigApi: IGamepadConfigApi;
     cameraApi: ICameraApi;
+    videoMixerApi: IVideoMixerApi;
   }
 }

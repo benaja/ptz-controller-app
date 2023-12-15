@@ -3,15 +3,21 @@ import Container from '../ui/Container';
 import Layout from '@renderer/Layout';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-import { GamepadConfig } from '@core/store/userStore';
 import { ConnectedGamepadResponse } from '@core/api/ConnectedGamepadApi';
+import { GamepadResponse } from '@core/api/gamepadConfigApi';
+import AppButton from '../ui/AppButton';
 
 export default function ManageGamepads() {
   const [connectedGamepads, setConnectedGamepads] = useState<ConnectedGamepadResponse[]>([]);
+  const [gamepads, setGamepads] = useState<GamepadResponse[]>([]);
 
   useEffect(() => {
     window.connectedGamepadApi.getConnectedGamepads().then((gamepads) => {
       setConnectedGamepads(gamepads);
+    });
+    window.gamepadConfigApi.getGamepads().then((gamepads) => {
+      setGamepads(gamepads);
+      console.log('gamepads', gamepads);
     });
   }, []);
 
@@ -38,24 +44,28 @@ export default function ManageGamepads() {
         {/* <h2 className="text-xl">Input devices</h2> */}
 
         <div className="divide-y">
-          <Link
-            to="/gamepads/primary"
-            className="font-medium flex py-2 items-center"
-          >
-            <p className="font-medium">Primary</p>
+          {gamepads.map((gamepad) => (
+            <Link
+              to={`/gamepads/${gamepad.id}`}
+              className="font-medium flex py-2 items-center"
+            >
+              <p className="font-medium">{gamepad.name}</p>
 
-            <ChevronRightIcon className="ml-auto h-4 w-4 text-gray-400" />
-          </Link>
-          <Link
-            to="/gamepads/secondary"
-            className="font-medium flex py-2 items-center"
-          >
-            <p className="font-medium">Secondary</p>
-
-            <ChevronRightIcon className="ml-auto h-4 w-4 text-gray-400" />
-          </Link>
+              <ChevronRightIcon className="ml-auto h-4 w-4 text-gray-400" />
+            </Link>
+          ))}
+          {gamepads.length === 0 && <p className="text-gray-400 text-center py-2">No gamepads</p>}
         </div>
       </Container>
+
+      <div className="flex mt-6">
+        <AppButton
+          className="ml-auto"
+          to="/gamepads/add"
+        >
+          Add Gamepad
+        </AppButton>
+      </div>
     </Layout>
   );
 }

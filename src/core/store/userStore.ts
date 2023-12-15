@@ -12,7 +12,7 @@ export const gamepadConfigSchema = z.object({
   connectedGamepadId: z.string().nullable(),
   connectionIndex: z.number(),
   type: z.string(),
-  videMixer: z.string().nullable(),
+  videMixerId: z.string().nullable(),
   keyBindings: z.record(z.number()),
 });
 

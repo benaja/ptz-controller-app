@@ -46,3 +46,14 @@ contextBridge.exposeInMainWorld(
   'gamepadConfigApi',
   registerEndpoints(['addGamepad', 'updateGamepad', 'removeGamepad', 'getGamepad', 'getGamepads']),
 );
+
+contextBridge.exposeInMainWorld(
+  'videoMixerApi',
+  registerEndpoints([
+    'getVideoMixers',
+    'getVideoMixer',
+    'addVideoMixer',
+    'updateVideoMixer',
+    'removeVideoMixer',
+  ]),
+);

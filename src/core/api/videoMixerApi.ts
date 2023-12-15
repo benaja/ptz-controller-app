@@ -1,6 +1,9 @@
 import { useVideoMixHanlder } from '@main/VideoMixer/VideoMixHanlder';
 import { eventEmitter } from '@core/events/eventEmitter';
-import { VideoMixerConfig, userConfigStore } from '@core/store/userStore';
+import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
+import { UserConfigStore } from '@core/store/userStore';
+import { VideoMixerConfig } from '@core/VideoMixer/VideoMixerBuilder';
+import { randomUUID } from 'crypto';
 
 export type VideoMixerOption = {
   name: string;
@@ -8,22 +11,52 @@ export type VideoMixerOption = {
 };
 
 export class VideoMixerApi {
-  getSelectedVideoMixerEndpoint(): VideoMixerConfig {
-    return userConfigStore.get('videoMixer');
+  constructor(
+    private _videoMixerFacotry: VideomixerFactory,
+    private _userConfigStore: UserConfigStore,
+  ) {}
+
+  getVideoMixers(): VideoMixerConfig[] {
+    return this._userConfigStore.get('videoMixers');
   }
 
-  updateSelectedVideoMixerEndpoint(videoMixer: VideoMixerConfig) {
-    eventEmitter.emit('videoMixerUpdated', videoMixer);
-
-    userConfigStore.set('videoMixer', videoMixer);
+  getVideoMixer(id: string): VideoMixerConfig | undefined {
+    return this._userConfigStore.get('videoMixers').find((vm) => vm.id === id);
   }
 
-  getAvailableVideoMixersEndpoint(): VideoMixerOption[] {
-    return useVideoMixHanlder()
-      .getAvailableVideoMixers()
-      .map((vm) => ({
-        name: vm.name,
-        label: vm.label,
-      }));
+  async addVideoMixer(videoMixer: Omit<VideoMixerConfig, 'id'>): Promise<VideoMixerConfig> {
+    const videoMixers = this._userConfigStore.get('videoMixers');
+    const newVideoMixer = {
+      ...videoMixer,
+      id: randomUUID(),
+    } as VideoMixerConfig;
+    videoMixers.push(newVideoMixer);
+    this._userConfigStore.set('videoMixers', videoMixers);
+    await this._videoMixerFacotry.add(newVideoMixer);
+
+    return newVideoMixer;
+  }
+
+  async updateVideoMixer(videoMixer: VideoMixerConfig) {
+    const videoMixers = this._userConfigStore.get('videoMixers');
+    const index = videoMixers.findIndex((vm) => vm.id === videoMixer.id);
+    if (index === -1) return;
+    videoMixers.splice(index, 1, videoMixer);
+    this._userConfigStore.set('videoMixers', videoMixers);
+
+    await this._videoMixerFacotry.remove(videoMixer.id);
+    await this._videoMixerFacotry.add(videoMixer);
+  }
+
+  async removeVideoMixer(id: string) {
+    const videoMixers = this._userConfigStore.get('videoMixers');
+    const index = videoMixers.findIndex((vm) => vm.id === id);
+    const videoMixer = videoMixers[index];
+
+    if (index === -1) return;
+    videoMixers.splice(index, 1);
+    this._userConfigStore.set('videoMixers', videoMixers);
+
+    await this._videoMixerFacotry.remove(videoMixer.id);
   }
 }

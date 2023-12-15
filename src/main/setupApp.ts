@@ -11,7 +11,12 @@ export async function setupApp() {
   await core.mixerFactory.addBuilder(new VideoMixerBuilder());
   await core.gamepadFactory.addBuilder(new BrowserGamepadBuilder());
 
-  setupElectronApi([core.gamepadConfigApi, core.connectedGamepadApi, core.cameraApi]);
+  setupElectronApi([
+    core.gamepadConfigApi,
+    core.connectedGamepadApi,
+    core.cameraApi,
+    core.videoMixerApi,
+  ]);
 
   core.bootstrap();
 }

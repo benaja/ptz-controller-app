@@ -36,6 +36,7 @@ export class ObsMixer implements IVideoMixer {
 
   constructor(private _config: ObsMixerConfig) {
     this._obs = new OBSWebSocket();
+    this.connect(_config);
   }
 
   public connect(config: VideoMixerConfig) {

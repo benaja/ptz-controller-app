@@ -30,8 +30,8 @@ export default function Layout({
       label: 'Cameras',
     },
     {
-      id: 'video-mixer',
-      label: 'Video Mixer',
+      id: 'video-mixers',
+      label: 'Video Mixers',
     },
   ];
 

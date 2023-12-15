@@ -5,8 +5,10 @@ import { HistoryProvider } from './providers/HistoryProvider';
 import Cameras from './components/cameras/Cameras';
 import AddCamera from './components/cameras/AddCamera';
 import EditCamera from './components/cameras/EditCamera';
-import VideoMixerConfiguration from './components/videomixer/VideoMixerConfiguration';
 import './assets/index.css';
+import VideoMixers from './components/videomixer/VideMixers';
+import AddVideoMixer from './components/videomixer/AddVideoMixer';
+import EditVideoMixer from './components/videomixer/EditVideoMixer';
 
 function App(): JSX.Element {
   // useEffect(() => {
@@ -46,8 +48,16 @@ function App(): JSX.Element {
             path="/cameras/:id"
           />
           <Route
-            element={<VideoMixerConfiguration />}
-            path="/video-mixer"
+            element={<VideoMixers />}
+            path="/video-mixers"
+          />
+          <Route
+            element={<AddVideoMixer />}
+            path="/video-mixers/add"
+          />
+          <Route
+            element={<EditVideoMixer />}
+            path="/video-mixers/:id"
           />
         </Routes>
       </HistoryProvider>

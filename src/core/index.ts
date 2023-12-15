@@ -6,6 +6,7 @@ import { GamepadFactory } from './Gamepad/GemepadFactory';
 import { ConnectedGamepadApi } from './api/ConnectedGamepadApi';
 import { GamepadConfigApi } from './api/gamepadConfigApi';
 import { CameraApi } from './api/cameraApi';
+import { VideoMixerApi } from './api/videoMixerApi';
 // import { default as OBSWebSocket } from 'obs-websocket-js';
 // import default from '../../../../tailwind.config';
 // import { CameraApi } from '@core/api/cameraApi';
@@ -18,6 +19,7 @@ export class Core implements IDisposable {
   public readonly gamepadConfigApi: GamepadConfigApi;
   public readonly connectedGamepadApi: ConnectedGamepadApi;
   public readonly cameraApi: CameraApi;
+  public readonly videoMixerApi: VideoMixerApi;
 
   private _userConfigStore = new UserConfigStore();
 
@@ -44,6 +46,7 @@ export class Core implements IDisposable {
     this.gamepadConfigApi = new GamepadConfigApi(this.gamepadFactory, this.userConfigStore);
     this.connectedGamepadApi = new ConnectedGamepadApi(this.gamepadFactory, this.userConfigStore);
     this.cameraApi = new CameraApi(this.cameraFactory, this.userConfigStore);
+    this.videoMixerApi = new VideoMixerApi(this.mixerFactory, this.userConfigStore);
   }
 
   public async bootstrap(): Promise<void> {
