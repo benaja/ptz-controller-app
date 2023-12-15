@@ -1,40 +1,23 @@
-import { setupApi } from '@/electronApi/setupElectronApi';
-import { useCameraConnectionHandler } from './CameraConnection/CameraConnectionHandler';
-import { GamepadApi } from '@core/api/gamepadApi';
-import { CameraApi } from '@core/api/cameraApi';
-import { VideoMixerApi } from '@core/api/videoMixerApi';
 import { IDisposable } from './GenericFactory/IDisposable';
 import { CameraConnectionFactory } from './CameraConnection/CameraConnectionFactory';
-import { setupGamepads } from './Gamepad/setupGamepads';
 import { UserConfigStore } from './store/userStore';
-import { CameraConnectionBuilder } from './CameraConnection/CameraConnectionBuilder';
 import { VideomixerFactory } from './VideoMixer/VideoMixerFactory';
-import { VideoMixerBuilder } from './VideoMixer/VideoMixerBuilder';
+import { GamepadFactory } from './Gamepad/GemepadFactory';
+import { ConnectedGamepadApi } from './api/ConnectedGamepadApi';
+import { GamepadConfigApi } from './api/gamepadConfigApi';
+import { CameraApi } from './api/cameraApi';
 // import { default as OBSWebSocket } from 'obs-websocket-js';
 // import default from '../../../../tailwind.config';
-// const OBSWebSocket = require('obs-websocket-js').default;
-
-export async function setupCore() {
-  console.log('setupCore');
-  // const core = new Core();
-  // await core.cameraFactory.builderAdd(new CgfPtzCameraBuilder());
-  // core.bootstrap();
-  // setupVideoMixHandler([new ObsMixer()]);
-  // setupCameraConnectionHandler();
-  // console.log('websocket', websocket);
-  // websocket.connect({ address: 'localhost:4444' });
-  // setupApi([new GamepadApi(), new CameraApi(), new VideoMixerApi()]);
-  // setupGamepads();
-}
-
-export function teardownCore() {
-  useCameraConnectionHandler()?.dispose();
-}
+// import { CameraApi } from '@core/api/cameraApi';
 
 export class Core implements IDisposable {
   private _camFactory: CameraConnectionFactory;
   private _mixerFactory: VideomixerFactory;
-  private _gamepadFactory: G;
+  private _gamepadFactory: GamepadFactory;
+
+  public readonly gamepadConfigApi: GamepadConfigApi;
+  public readonly connectedGamepadApi: ConnectedGamepadApi;
+  public readonly cameraApi: CameraApi;
 
   private _userConfigStore = new UserConfigStore();
 
@@ -42,25 +25,31 @@ export class Core implements IDisposable {
     return this._camFactory;
   }
 
+  public get mixerFactory(): VideomixerFactory {
+    return this._mixerFactory;
+  }
+
+  public get gamepadFactory(): GamepadFactory {
+    return this._gamepadFactory;
+  }
+
   public get userConfigStore(): UserConfigStore {
     return this._userConfigStore;
   }
 
   constructor() {
-    this._camFactory = new CameraConnectionFactory(new CameraConnectionBuilder());
-    this._mixerFactory = new VideomixerFactory(new VideoMixerBuilder());
-    console.log('Core constructor');
+    this._camFactory = new CameraConnectionFactory();
+    this._mixerFactory = new VideomixerFactory();
+    this._gamepadFactory = new GamepadFactory();
+    this.gamepadConfigApi = new GamepadConfigApi(this.gamepadFactory, this.userConfigStore);
+    this.connectedGamepadApi = new ConnectedGamepadApi(this.gamepadFactory, this.userConfigStore);
+    this.cameraApi = new CameraApi(this.cameraFactory, this.userConfigStore);
   }
 
-  // public get mixerFactory(): VideomixerFactory {
-  //   return this._mixerFactory;
-  // }
-
-  // public get hmiFactory(): HmiFactory {
-  //   return this._hmiFactory;
-  // }
-
   public async bootstrap(): Promise<void> {
+    this.cameraFactory.build(this.userConfigStore.get('cameras'));
+    this.mixerFactory.build(this.userConfigStore.get('videoMixers'));
+    this.gamepadFactory.build(this.userConfigStore.get('gamepads'));
     // for (const cam of validConfig.cams) {
     //   await this._camFactory.parseConfig(cam, logger);
     // }

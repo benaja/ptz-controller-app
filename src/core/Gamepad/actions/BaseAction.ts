@@ -9,17 +9,7 @@ export interface IAxisAction extends IBaseAction {
 }
 
 export class AxisAction implements IAxisAction {
-  cameraConnectionHanlder: CameraConnectionHandler;
-
-  constructor() {
-    this.cameraConnectionHanlder = useCameraConnectionHandler();
-  }
-
   hanlde(value: number): void {
     throw new Error('Method not implemented.');
-  }
-
-  protected currentCameraConnection() {
-    return this.cameraConnectionHanlder.getCurrentCameraConnection();
   }
 }

@@ -2,7 +2,7 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
 import { contextBridge, ipcRenderer } from 'electron';
-import { IElectronAPI } from './preload.types';
+import { ElectronApi, IElectronAPI } from './preload.types';
 
 function registerListener(channel: string, callback: (...args: any[]) => void) {
   ipcRenderer.on(channel, callback);
@@ -13,30 +13,36 @@ function registerListener(channel: string, callback: (...args: any[]) => void) {
   };
 }
 
-const endPoints: (keyof IElectronAPI)[] = [
-  'updateSelectedGamepad',
-  'getSelectedGamepad',
-  'getConnectedGamepads',
-  'gamepadEvent',
-  'addCamera',
-  'removeCamera',
-  'updateCamera',
-  'getCameras',
-];
-const listeners: (keyof IElectronAPI)[] = [
-  'newCammeraConnected',
-  'onGamepadEvent',
-  'onSystemResume',
-];
+function registerEndpoints(endpoints: string[], listeners: string[] = []) {
+  const api = listeners.reduce((acc, listener) => {
+    acc[listener] = (callback) => registerListener(listener, callback);
+    return acc;
+  }, {});
 
-const api = listeners.reduce((acc, listener) => {
-  acc[listener] = (callback) => registerListener(listener, callback);
-  return acc;
-}, {});
+  return endpoints.reduce((acc, endPoint) => {
+    acc[endPoint] = (...args) => ipcRenderer.invoke(endPoint, ...args);
+    return acc;
+  }, api) as IElectronAPI;
+}
 
-const electronApi = endPoints.reduce((acc, endPoint) => {
-  acc[endPoint] = (...args) => ipcRenderer.invoke(endPoint, ...args);
-  return acc;
-}, api) as IElectronAPI;
+contextBridge.exposeInMainWorld(
+  'cameraApi',
+  registerEndpoints(['addCamera', 'removeCamera', 'updateCamera', 'getCameras', 'getCamera']),
+);
 
-contextBridge.exposeInMainWorld('electronApi', electronApi);
+contextBridge.exposeInMainWorld(
+  'connectedGamepadApi',
+  registerEndpoints([
+    'getConnectedGamepads',
+    'gamepadConnected',
+    'gamepadDisconnected',
+    'updateConnectedGamepads',
+    'triggerButtonEvent',
+    'triggerAxisEvent',
+  ]),
+);
+
+contextBridge.exposeInMainWorld(
+  'gamepadConfigApi',
+  registerEndpoints(['addGamepad', 'updateGamepad', 'removeGamepad', 'getGamepad', 'getGamepads']),
+);

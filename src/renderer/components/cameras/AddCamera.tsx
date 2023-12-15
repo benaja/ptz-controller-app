@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 import AppButton from '../ui/AppButton';
 import { useNavigate } from 'react-router-dom';
 import CameraForm from './CameraForm';
+import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTypes';
 
 export default function AddCamera() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
+    type: CameraConnectionType.ArduinoPtzCamera,
     ip: '',
     number: 0,
   });
@@ -16,8 +18,9 @@ export default function AddCamera() {
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    window.electronApi.addCamera(form).then(() => {
+    window.cameraApi.addCamera(form).then(() => {
       setForm({
+        type: CameraConnectionType.ArduinoPtzCamera,
         ip: '',
         number: 0,
       });

@@ -29,6 +29,11 @@ export const rules: Required<ModuleOptions>['rules'] = [
       },
     },
   },
+  {
+    test: /\.ts$/,
+    enforce: 'pre',
+    use: ['source-map-loader'],
+  },
 ];
 
 export const alias: Required<ResolveOptions>['alias'] = {

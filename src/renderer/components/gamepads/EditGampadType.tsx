@@ -2,7 +2,7 @@ import Layout from '@renderer/Layout';
 import { useParams } from 'react-router-dom';
 import Container from '../ui/Container';
 import { useEffect, useState } from 'react';
-import { Gamepad, GamepadEvent } from '@core/api/gamepadApi';
+import { Gamepad, GamepadEvent } from '@core/api/gamepadConfigApi';
 
 export default function EditGampadType() {
   const { type } = useParams<{ type: string }>();

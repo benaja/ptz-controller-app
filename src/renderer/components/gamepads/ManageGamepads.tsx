@@ -1,33 +1,34 @@
-import { Gamepad, GamepadEvent } from '@core/api/gamepadApi';
 import { useEffect, useState } from 'react';
 import Container from '../ui/Container';
 import Layout from '@renderer/Layout';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
+import { GamepadConfig } from '@core/store/userStore';
+import { ConnectedGamepadResponse } from '@core/api/ConnectedGamepadApi';
 
 export default function ManageGamepads() {
-  const [connectedGamepads, setConnectedGamepads] = useState<Gamepad[]>([]);
+  const [connectedGamepads, setConnectedGamepads] = useState<ConnectedGamepadResponse[]>([]);
 
   useEffect(() => {
-    window.electronApi.getConnectedGamepads().then((gamepads) => {
+    window.connectedGamepadApi.getConnectedGamepads().then((gamepads) => {
       setConnectedGamepads(gamepads);
     });
   }, []);
 
   useEffect(() => {
-    const removeGamepadEventListener = window.electronApi.onGamepadEvent(
-      async (event, gamepadEvent: GamepadEvent) => {
-        if (gamepadEvent.type === 'connected') {
-          const gamepads = await window.electronApi.getConnectedGamepads();
-          setConnectedGamepads(gamepads);
-          console.log('gamepads', gamepads);
-        }
-        console.log('onGAmepadConnected', gamepadEvent);
-      },
-    );
+    // const removeGamepadEventListener = window.connectedGamepadApi.onGamepadEvent(
+    //   async (event, gamepadEvent: GamepadEvent) => {
+    //     if (gamepadEvent.type === 'connected') {
+    //       const gamepads = await window.connectedGamepadApi.getConnectedGamepads();
+    //       setConnectedGamepads(gamepads);
+    //       console.log('gamepads', gamepads);
+    //     }
+    //     console.log('onGAmepadConnected', gamepadEvent);
+    //   },
+    // );
 
     return () => {
-      removeGamepadEventListener();
+      // removeGamepadEventListener();
     };
   }, []);
   return (

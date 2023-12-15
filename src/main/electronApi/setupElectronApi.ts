@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { GamepadApi } from '../../core/api/gamepadApi';
+import { GamepadApi } from '../../core/api/gamepadConfigApi';
 import { CameraApi } from '../../core/api/cameraApi';
 
 /**

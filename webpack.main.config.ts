@@ -18,4 +18,7 @@ export const mainConfig: Configuration = {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
     alias,
   },
+  optimization: {
+    minimize: false,
+  },
 };

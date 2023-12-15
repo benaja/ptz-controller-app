@@ -10,7 +10,7 @@ export default function Cameras() {
   const [cameras, setCameras] = useState<CameraResponse[]>([]);
 
   function fetchCameras() {
-    window.electronApi.getCameras().then((cameras) => {
+    window.cameraApi.getCameras().then((cameras) => {
       setCameras(cameras);
       console.log('cameras', cameras);
     });

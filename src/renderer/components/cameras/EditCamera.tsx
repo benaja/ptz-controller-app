@@ -5,7 +5,8 @@ import { CameraConfig } from '@core/store/userStore';
 import AppButton from '../ui/AppButton';
 import TextField from '../ui/TextField';
 import { useNavigate, useParams } from 'react-router-dom';
-import CameraForm from './CameraForm';
+import CameraForm, { CameraFormType } from './CameraForm';
+import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTypes';
 
 export default function EditCamera() {
   const { id } = useParams<{ id: string }>();
@@ -13,7 +14,8 @@ export default function EditCamera() {
   const navigate = useNavigate();
   const [camera, setCamera] = useState<CameraConfig | null>(null);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<CameraFormType>({
+    type: CameraConnectionType.ArduinoPtzCamera,
     ip: '',
     number: 0,
   });
@@ -23,13 +25,14 @@ export default function EditCamera() {
 
     if (!id) return;
 
-    window.electronApi
+    window.cameraApi
       .updateCamera({
         ...form,
         id,
       })
       .then(() => {
         setForm({
+          type: CameraConnectionType.ArduinoPtzCamera,
           ip: '',
           number: 0,
         });
@@ -41,14 +44,17 @@ export default function EditCamera() {
   function deleteCamera() {
     if (!id) return;
 
-    window.electronApi.removeCamera(id).then(() => {
+    window.cameraApi.removeCamera(id).then(() => {
       navigate('/cameras');
     });
   }
 
   useEffect(() => {
     if (!id) return;
-    window.electronApi.getCamera(id).then((camera) => {
+    window.cameraApi.getCamera(id).then((camera) => {
+      if (!camera) {
+        throw new Error('Camera not found');
+      }
       setCamera(camera);
       setForm(camera);
     });

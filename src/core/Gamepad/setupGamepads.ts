@@ -4,7 +4,7 @@ import {
   Gamepad,
   getPrimaryGamepad,
   getSecondaryGamepad,
-} from '@core/api/gamepadApi';
+} from '@core/api/gamepadConfigApi';
 import { registerListener } from '@core/events/eventBus';
 import { GamepadController } from './GamepadController';
 import { userConfigStore } from '@core/store/userStore';

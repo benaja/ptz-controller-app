@@ -6,11 +6,13 @@ import { VideoMixerType } from '../../main/VideoMixer';
 import { ZodRawShape, z } from 'zod';
 import { getValueAtPath, setValueAtPath } from '../../main/utils/objectHelpers';
 
-export class Store<T extends Record<string, unknown>> {
+export class Store<T extends Record<string | number | symbol, unknown>> {
   path: string;
   data: T;
+  schema?: z.ZodObject<ZodRawShape>;
 
   constructor(opts: { configName: string; defaults: T; schema?: z.ZodObject<ZodRawShape> }) {
+    this.schema = opts.schema;
     // Renderer process has to get `app` module via `remote`, whereas the main process can get it directly
     // app.getPath('userData') will return a string of the user's app data directory path. (electron.app || electron.remote.app)
 
@@ -28,6 +30,10 @@ export class Store<T extends Record<string, unknown>> {
 
   // ...and this will set it
   set<K extends keyof T>(key: K, val: T[K]): void {
+    if (this.schema) {
+      // @ts-expect-error key is a string, but we need it to be a keyof T
+      this.schema.pick({ [key]: true }).parse({ [key]: val });
+    }
     this.data[key] = val;
     // Wait, I thought using the node.js' synchronous APIs was bad form?
     // We're not writing a server so there's not nearly the same IO demand on the process

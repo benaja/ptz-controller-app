@@ -1,4 +1,4 @@
-import { AxisEventPayload, ButtonEventPayload, Gamepad } from '@core/api/gamepadApi';
+import { AxisEventPayload, ButtonEventPayload, Gamepad } from '@core/api/gamepadConfigApi';
 import { CgfPtzCameraState } from '@core/CameraConnection/CgfPtzCamera/CgfPtzCameraState';
 import { IAxisAction, IButtonAction } from './actions/BaseAction';
 import { PanCameraAction } from './actions/PanCameraAction';

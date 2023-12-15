@@ -1,4 +1,9 @@
-import { AxisEventPayload, ButtonEventPayload, Gamepad, GamepadEvent } from '@core/api/gamepadApi';
+import {
+  AxisEventPayload,
+  ButtonEventPayload,
+  Gamepad,
+  GamepadEvent,
+} from '@core/api/gamepadConfigApi';
 
 type ListenerTypes = {
   gamepadEvent: (gamepadEvent: GamepadEvent) => void;

@@ -1,4 +1,3 @@
-import { useVideoMixHanlder } from '@main/VideoMixer/VideoMixHanlder';
 import { IButtonAction } from './BaseAction';
 
 export class CutInputAction implements IButtonAction {

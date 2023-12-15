@@ -1,4 +1,3 @@
-import { getCurrentCameraConnection } from '@core/CameraConnection/CameraConnectionHandler';
 import { IButtonAction } from './BaseAction';
 
 export class ToggleTallyAction implements IButtonAction {
@@ -14,6 +13,8 @@ export class ToggleTallyAction implements IButtonAction {
       this.state = 'preview';
     }
 
-    getCurrentCameraConnection()?.setTally(this.state);
+    console.log('ToggleTallyAction', this.state);
+
+    // getCurrentCameraConnection()?.setTally(this.state);
   }
 }

@@ -1,35 +1,55 @@
 import { IBuilder } from './IBuilder';
 import { IDisposable } from './IDisposable';
 
-type Config = Record<string, unknown> & { id: string };
+export type FactoryConfig = Record<string, unknown> & { id: string; type: string };
 
 export class Factory<TConcrete extends IDisposable> implements IDisposable {
   protected _builders: { [key: string]: IBuilder<TConcrete> } = {};
   public _instances: { [key: string]: TConcrete } = {};
-  private _builder: IBuilder<TConcrete>;
 
-  constructor(builder: IBuilder<TConcrete>) {
-    this._builder = builder;
+  public async addBuilder(builder: IBuilder<TConcrete>): Promise<void> {
+    const types = await builder.supportedTypes();
+    console.log('Adding builder', types);
+    for (const type of types) {
+      this._builders[type] = builder;
+    }
+    console.log('Added builder', this._builders);
   }
 
-  public async build(configs: Config[]) {
+  public async build(configs: FactoryConfig[]) {
+    console.log('Building factory', configs, this._builders);
     this._instances = {};
     for (const config of configs) {
-      const instance = await this._builder.build(config);
+      if (!this._builders[config.type]) {
+        throw new Error(`No builder for type ${config.type}`);
+      }
+      const instance = await this._builders[config.type].build(config);
       this._instances[config.id] = instance;
     }
+  }
+
+  public get instances(): TConcrete[] {
+    return Object.values(this._instances);
   }
 
   public get(id: string): TConcrete | undefined {
     return this._instances[id];
   }
 
-  public async add(config: Config): Promise<void> {
-    const instance = await this._builder.build(config);
+  public async add(config: FactoryConfig): Promise<void> {
+    if (this._instances[config.id]) {
+      throw new Error(`Instance with id ${config.id} already exists`);
+    }
+
+    const instance = await this._builders[config.type].build(config);
     this._instances[config.id] = instance;
   }
 
   public async remove(id: string): Promise<void> {
+    if (!this._instances[id]) {
+      throw new Error(`Instance with id ${id} does not exist`);
+    }
+
     const instance = this._instances[id];
     await this.disposeInstance(instance);
     delete this._instances[id];

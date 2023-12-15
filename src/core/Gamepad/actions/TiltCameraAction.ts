@@ -2,6 +2,7 @@ import { AxisAction } from './BaseAction';
 
 export class TiltCameraAction extends AxisAction {
   hanlde(value: number): void {
-    getCurrentCameraConnection()?.tilt(-Math.round(value * 255));
+    console.log('TiltCameraAction', value);
+    // getCurrentCameraConnection()?.tilt(-Math.round(value * 255));
   }
 }

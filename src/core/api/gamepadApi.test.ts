@@ -1,5 +1,5 @@
 import { test } from 'vitest';
-import { GamepadApi } from './gamepadApi';
+import { GamepadApi } from './gamepadConfigApi';
 import { vi } from 'vitest';
 import { expect } from 'vitest';
 import { beforeEach } from 'vitest';
