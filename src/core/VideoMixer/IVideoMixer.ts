@@ -19,11 +19,11 @@ export interface IVideoMixer extends IDisposable {
   connect(config: VideoMixerConfig): void;
 
   /**
-   * Get the index of the scene that is on preview, starting from 0
+   * Get the index of the scene that is on preview, starting from 1
    */
   getPreview(): number;
   /**
-   * Get the index of the scene that is on air, starting from 0
+   * Get the index of the scene that is on air, starting from 1
    */
   getOnAir(): number;
 

@@ -7,7 +7,6 @@ export class TiltCameraAction extends AxisAction {
   }
 
   hanlde(value: number): void {
-    console.log('TiltCameraAction', value);
     this.getPreviewCamera()?.tilt(-Math.round(value * 255));
   }
 }

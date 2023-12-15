@@ -75,11 +75,11 @@ export class ObsMixer implements IVideoMixer {
   }
 
   public getPreview(): number {
-    return this._currentPreview?.sceneIndex || 0;
+    return (this._currentPreview?.sceneIndex || 0) + 1;
   }
 
   public getOnAir(): number {
-    return this._currentOnAir?.sceneIndex || 0;
+    return (this._currentOnAir?.sceneIndex || 0) + 1;
   }
 
   public cut(): void {

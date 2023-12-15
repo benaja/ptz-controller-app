@@ -11,6 +11,7 @@ export class CameraConnectionFactory extends Factory<ICameraConnection> {
   }
 
   getCameraConnection(number: number): ICameraConnection | undefined {
+    console.log('getCameraConnection', number, Object.values(this._instances)[0].number);
     return Object.values(this._instances).find((c) => c.number === number);
   }
 }
