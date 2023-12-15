@@ -39,6 +39,14 @@ export default function EditGampad() {
       });
   }
 
+  function deleteGamepad() {
+    if (!id) return;
+
+    window.gamepadConfigApi.removeGamepad(id).then(() => {
+      navigate('/gamepads');
+    });
+  }
+
   useEffect(() => {
     loadSelectedGamepad();
   }, []);
@@ -57,6 +65,12 @@ export default function EditGampad() {
           </Container>
 
           <div className="mt-6 flex">
+            <AppButton
+              className="border-red-300 text-red-600"
+              onClick={deleteGamepad}
+            >
+              Delete
+            </AppButton>
             <AppButton
               type="submit"
               className="ml-auto"
