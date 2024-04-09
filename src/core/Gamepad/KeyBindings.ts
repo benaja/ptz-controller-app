@@ -4,6 +4,10 @@ import { GetCurrentPositionAction } from './actions/GetCurrentPositionAction';
 import { NextInputAction } from './actions/NextInputAction';
 import { PanCameraAction } from './actions/PanCameraAction';
 import { PreviousInputAction } from './actions/PreviousInputAction';
+import {
+  SetActiveCameraToOnAirAction,
+  SetActiveCameraToPreviewAction,
+} from './actions/SetActiveCameraAction';
 import { TiltCameraAction } from './actions/TiltCameraAction';
 import { ToggleAutofocusAction } from './actions/ToggleAutofocusAction';
 import { ToggleTallyAction } from './actions/ToggleTallyAction';
@@ -47,10 +51,13 @@ export const defaultKeyBindings: Record<string, GamepadButtons | GamepadAxis> = 
 
   [ToggleAutofocusAction.name]: GamepadButtons.A,
   [ToggleTallyAction.name]: GamepadButtons.X,
-  [PreviousInputAction.name]: GamepadButtons.LeftBumper,
-  [NextInputAction.name]: GamepadButtons.RightBumper,
+  // [PreviousInputAction.name]: GamepadButtons.LeftBumper,
+  // [NextInputAction.name]: GamepadButtons.RightBumper,
   [CutInputAction.name]: GamepadButtons.B,
   [GetCurrentPositionAction.name]: GamepadButtons.Y,
+
+  [SetActiveCameraToOnAirAction.name]: GamepadButtons.RightBumper,
+  [SetActiveCameraToPreviewAction.name]: GamepadButtons.LeftBumper,
 };
 
 export const defaultSecondaryKeyBindings: Record<string, GamepadButtons | GamepadAxis> = {};

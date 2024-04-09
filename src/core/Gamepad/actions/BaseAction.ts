@@ -1,14 +1,85 @@
-export interface IBaseAction {}
+import { ICameraConnection } from '@core/CameraConnection/ICameraConnection';
+import { IVideoMixer } from '@core/VideoMixer/IVideoMixer';
 
-export interface IButtonAction extends IBaseAction {
-  hanlde(value: 'pressed' | 'released'): void;
+export type ActionParams = {
+  getPreviewCamera: () => ICameraConnection | null;
+  getOnAirCamera: () => ICameraConnection | null;
+  getVideoMixer: () => IVideoMixer | null;
+  getSelectedCamera: () => ICameraConnection | null;
+  setSelectCamera: (camera: 'preview' | 'onAir') => void;
+};
+export abstract class BaseAction {
+  constructor(protected params: ActionParams) {}
+
+  async getPreviewCamera() {
+    return this.params.getPreviewCamera();
+  }
+
+  async getOnAirCamera() {
+    return this.params.getOnAirCamera();
+  }
+
+  async getVideoMixer() {
+    return this.params.getVideoMixer();
+  }
+
+  async getSelectedCamera() {
+    return this.params.getSelectedCamera();
+  }
 }
 
-export interface IAxisAction extends IBaseAction {
+export interface IButtonAction {
+  hanlde(value: 'pressed' | 'released'): void;
+
+  onRelease?(): void;
+
+  // onPress?(): void;
+
+  onLongPress?(): void;
+}
+
+export interface IAxisAction {
   hanlde(value: number): void;
 }
 
-export class AxisAction implements IAxisAction {
+export abstract class ButtonAction extends BaseAction implements IButtonAction {
+  protected timePresssed = 0;
+  // timeout
+  protected timeout: NodeJS.Timeout | null = null;
+
+  hanlde(value: 'pressed' | 'released'): void {
+    console.log('ButtonAction', value);
+    if (value === 'released') {
+      if (!this.timeout) return;
+
+      clearTimeout(this.timeout);
+      this.timeout = null;
+      this.onRelease?.();
+      return;
+    }
+
+    this.timePresssed = Date.now();
+
+    this.onPress?.();
+
+    if (this.onLongPress) {
+      this.timeout = setTimeout(() => {
+        this.timeout = null;
+        this.onLongPress?.();
+      }, 1000);
+    }
+  }
+
+  onPress() {
+    console.log('onPress');
+  }
+
+  onRelease() {}
+
+  onLongPress() {}
+}
+
+export class AxisAction extends BaseAction implements IAxisAction {
   /**
    * @param value floating value of the axios between -1 and 1
    */

@@ -5,7 +5,9 @@ import { VideoMixerApi } from '@core/api/videoMixerApi';
 
 type AsyncApiMethods<T> = {
   [K in keyof T]: T[K] extends (...args: any[]) => any
-    ? (...args: Parameters<T[K]>) => Promise<ReturnType<T[K]>>
+    ? (
+        ...args: Parameters<T[K]>
+      ) => ReturnType<T[K]> extends Promise<any> ? ReturnType<T[K]> : Promise<ReturnType<T[K]>>
     : never;
 };
 

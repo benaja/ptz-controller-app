@@ -1,15 +1,11 @@
-import { IVideoMixer } from '@core/VideoMixer/IVideoMixer';
-import { IButtonAction } from './BaseAction';
+import { ButtonAction } from './BaseAction';
 
-export class CutInputAction implements IButtonAction {
-  constructor(private videoMixer: () => IVideoMixer) {}
+export class CutInputAction extends ButtonAction {
+  async onPress() {
+    const mixer = await this.getVideoMixer();
 
-  hanlde(value: 'pressed' | 'released'): void {
-    console.log('CutInputAction', value);
-    if (value === 'released') return;
+    if (!mixer) return;
 
-    if (!this.videoMixer()) return;
-
-    this.videoMixer().cut();
+    mixer.cut();
   }
 }

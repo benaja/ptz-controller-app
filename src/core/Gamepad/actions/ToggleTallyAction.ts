@@ -1,9 +1,6 @@
-import { ICameraConnection } from '@core/CameraConnection/ICameraConnection';
-import { IButtonAction } from './BaseAction';
+import { ButtonAction } from './BaseAction';
 
-export class ToggleTallyAction implements IButtonAction {
-  constructor(private getPreviewCamera: () => ICameraConnection) {}
-
+export class ToggleTallyAction extends ButtonAction {
   state: 'preview' | 'live' | '' = '';
 
   hanlde(value: 'pressed' | 'released'): void {
@@ -18,6 +15,6 @@ export class ToggleTallyAction implements IButtonAction {
 
     console.log('ToggleTallyAction', this.state);
 
-    this.getPreviewCamera()?.setTally(this.state);
+    // this.getPreviewCamera()?.setTally(this.state);
   }
 }

@@ -8,6 +8,7 @@ import { GamepadConfigApi } from './api/GamepadConfigApi';
 import { CameraApi } from './api/CameraApi';
 import { VideoMixerApi } from './api/videoMixerApi';
 import { ConnectedGamepadStore } from './store/ConnectedGamepadsStore';
+import { TallyController } from './Tally/TallyController';
 
 export class Core implements IDisposable {
   public readonly cameraFactory: CameraFactory;
@@ -18,6 +19,8 @@ export class Core implements IDisposable {
   public readonly connectedGamepadApi: ConnectedGamepadApi;
   public readonly cameraApi: CameraApi;
   public readonly videoMixerApi: VideoMixerApi;
+
+  public readonly tallyController: TallyController;
 
   public readonly userConfigStore = new UserConfigStore();
   private readonly connectedGamepadsStore = new ConnectedGamepadStore();
@@ -34,6 +37,8 @@ export class Core implements IDisposable {
     );
     this.cameraApi = new CameraApi(this.cameraFactory);
     this.videoMixerApi = new VideoMixerApi(this.mixerFactory);
+
+    this.tallyController = new TallyController(this.cameraFactory, this.mixerFactory);
   }
 
   public async bootstrap(): Promise<void> {

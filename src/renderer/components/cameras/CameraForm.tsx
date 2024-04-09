@@ -1,12 +1,15 @@
 import TextField from '../ui/TextField';
 import Select from '../ui/Select';
 import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTypes';
+import { useEffect, useState } from 'react';
+import { type MixerSource } from '@core/VideoMixer/IVideoMixer';
 
 export type CameraFormType = {
   type: CameraConnectionType;
   ip: string;
   number: number;
   connectionPort?: string;
+  source: string | null;
 };
 
 type Props = {
@@ -15,6 +18,7 @@ type Props = {
 };
 
 export default function CameraForm({ form, onChange }: Props) {
+  const [sources, setSources] = useState<MixerSource[]>([]);
   const cameraTypes = [
     {
       label: 'Arduino PTZ Camera',
@@ -26,12 +30,22 @@ export default function CameraForm({ form, onChange }: Props) {
     },
   ];
 
-  function set(name: keyof CameraFormType, value: string | number) {
+  function set(name: keyof CameraFormType, value: string | number | null) {
     onChange({
       ...form,
       [name]: value,
     });
   }
+
+  function fetchSources() {
+    window.videoMixerApi.getScources().then((sources) => {
+      setSources(sources);
+    });
+  }
+
+  useEffect(() => {
+    fetchSources();
+  }, []);
 
   return (
     <>
@@ -53,6 +67,16 @@ export default function CameraForm({ form, onChange }: Props) {
         onChange={(value) => set('number', parseInt(value))}
         required
         type="number"
+      />
+      <Select
+        label="Quelle"
+        items={sources.map((source) => ({
+          label: source.name,
+          value: source.id,
+        }))}
+        value={form.source}
+        onChange={(value) => set('source', value)}
+        required
       />
       {form.type === CameraConnectionType.CgfPtzCamera && (
         <TextField

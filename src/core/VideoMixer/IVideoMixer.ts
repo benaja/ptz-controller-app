@@ -11,6 +11,11 @@ export const baseVideoMixerSchema = z.object({
 
 export type BaseVideoMixerConfig = z.infer<typeof baseVideoMixerSchema>;
 
+export type MixerSource = {
+  id: string;
+  name: string;
+};
+
 export interface IVideoMixer extends IDisposable {
   readonly name: VideoMixerType;
   readonly label: string;
@@ -18,15 +23,6 @@ export interface IVideoMixer extends IDisposable {
   readonly isConnected: boolean;
 
   connect(config: Record<string, any>): void;
-
-  /**
-   * Get the index of the scene that is on preview, starting from 1
-   */
-  getPreview(): number;
-  /**
-   * Get the index of the scene that is on air, starting from 1
-   */
-  getOnAir(): number;
 
   cut(): void;
   changeInput(input: number): Promise<void>;
@@ -46,4 +42,11 @@ export interface IVideoMixer extends IDisposable {
    * @param aux The aux output which's selected source is of interest
    */
   getAuxilarySelection(aux: number): Promise<number>;
+
+  getSources(): Promise<MixerSource[]>;
+  getPreview(): Promise<MixerSource | null>;
+  getOnAir(): Promise<MixerSource | null>;
+
+  getPreviewSources(): Promise<MixerSource[]>;
+  getOnAirSources(): Promise<MixerSource[]>;
 }

@@ -4,6 +4,7 @@ import { throttle } from '@main/utils/throttle';
 import { RelativeCameraState } from './AurduinoPtzCameraState';
 import { CameraConnectionType } from '../CameraConnectionTypes';
 import { z } from 'zod';
+import { registerListener } from '@core/events/eventBus';
 
 export const arduinoPtzCameraSchema = baseCameraConfigSchema.extend({
   type: z.literal(CameraConnectionType.ArduinoPtzCamera),
@@ -21,11 +22,14 @@ export class ArduinoPtzCamera implements ICameraConnection {
   public readonly displayName = 'Arduino Ptz Camera';
   public readonly type = CameraConnectionType.ArduinoPtzCamera;
 
+  public readonly sourceId: string;
+
   public get number(): number {
     return this.config.number;
   }
 
   constructor(private config: ArduionoPtzCameraConfig) {
+    this.sourceId = config.source;
     this.setupWebsocket();
   }
 

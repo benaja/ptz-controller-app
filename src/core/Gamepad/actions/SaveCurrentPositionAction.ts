@@ -1,29 +1,26 @@
-import { IVideoMixer } from '@core/VideoMixer/IVideoMixer';
-import { IButtonAction } from './BaseAction';
-import { ICameraConnection } from '@core/CameraConnection/ICameraConnection';
+import { ButtonAction } from './BaseAction';
 
-export class GetCurrentPositionAction implements IButtonAction {
-  constructor(private getPreviewCamera: () => ICameraConnection) {}
-
+export class GetCurrentPositionAction extends ButtonAction {
   private timePresssed = 0;
   private savedPosition = { pan: 0, tilt: 0, z: 0 };
 
-  hanlde(value: 'pressed' | 'released'): void {
+  async hanlde(value: 'pressed' | 'released') {
     if (value === 'pressed') {
       this.timePresssed = Date.now();
       return;
     }
 
+    const camera = await this.getSelectedCamera();
+    if (!camera) return;
+
     // check if pressed for more than 1 second
     if (Date.now() - this.timePresssed < 1000) {
-      this.getPreviewCamera().getPosition();
+      camera.getPosition();
     }
 
     console.log('CutInputAction', value);
     if (value === 'released') return;
 
-    if (!this.getPreviewCamera()) return;
-
-    this.getPreviewCamera().getPosition();
+    camera.getPosition();
   }
 }

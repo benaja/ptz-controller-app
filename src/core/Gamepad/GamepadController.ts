@@ -1,4 +1,10 @@
-import { IAxisAction, IButtonAction } from './actions/BaseAction';
+import {
+  ActionParams,
+  AxisAction,
+  ButtonAction,
+  IAxisAction,
+  IButtonAction,
+} from './actions/BaseAction';
 import { PanCameraAction } from './actions/PanCameraAction';
 import { TiltCameraAction } from './actions/TiltCameraAction';
 import { ZoomCameraAction } from './actions/ZoomCameraAction';
@@ -12,15 +18,20 @@ import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
 import { AxisEventPayload, ButtonEventPayload } from '@core/api/ConnectedGamepadApi';
 import { GetCurrentPositionAction } from './actions/GetCurrentPositionAction';
+import {
+  SetActiveCameraToOnAirAction,
+  SetActiveCameraToPreviewAction,
+} from './actions/SetActiveCameraAction';
 
 export class GamepadController {
-  public selectedCamera = 1;
   private keyBindings: Record<string, number>;
 
   private axisActions: IAxisAction[];
   private buttonActions: IButtonAction[];
 
   public gamepadId: string;
+
+  private activeCamera: 'preview' | 'onAir' = 'preview';
 
   private getVideoMixer() {
     if (!this._config.videoMixerId) {
@@ -33,12 +44,38 @@ export class GamepadController {
     return videoMixer;
   }
 
-  private getPreviewCamera() {
-    return this._cameraFactory.getCameraConnection(this.getVideoMixer().getPreview());
+  private async getPreviewCamera() {
+    const preview = await this.getVideoMixer().getPreview();
+    if (!preview) {
+      return null;
+    }
+
+    return this._cameraFactory.getCameraConnection(preview);
   }
 
-  private getOnAirCamera() {
-    return this._cameraFactory.getCameraConnection(this.getVideoMixer().getOnAir());
+  private async getOnAirCamera() {
+    const onair = await this.getVideoMixer().getOnAir();
+    if (!onair) {
+      return null;
+    }
+    return this._cameraFactory.getCameraConnection(onair);
+  }
+
+  private async getSelectedCamera() {
+    return this.activeCamera === 'preview' ? this.getPreviewCamera() : this.getOnAirCamera();
+  }
+
+  private registerAction<T>(action: new (params: ActionParams) => T) {
+    return new action({
+      getPreviewCamera: this.getPreviewCamera.bind(this),
+      getOnAirCamera: this.getOnAirCamera.bind(this),
+      getVideoMixer: this.getVideoMixer.bind(this),
+      getSelectedCamera: this.getSelectedCamera.bind(this),
+      setSelectCamera: (camera) => {
+        this.activeCamera = camera;
+        console.log('setSelectCamera', camera);
+      },
+    });
   }
 
   constructor(
@@ -51,21 +88,20 @@ export class GamepadController {
 
     this.gamepadId = _config.gamepadId;
 
-    this.axisActions = [
-      new PanCameraAction(this.getPreviewCamera.bind(this)),
-      new TiltCameraAction(this.getPreviewCamera.bind(this)),
-      new ZoomCameraAction(this.getPreviewCamera.bind(this)),
-      // new FocusCameraAction(this.currentState),
-    ];
+    this.axisActions = [PanCameraAction, TiltCameraAction, ZoomCameraAction].map((action) =>
+      this.registerAction<AxisAction>(action),
+    );
 
     this.buttonActions = [
-      new ToggleAutofocusAction(this.getPreviewCamera.bind(this)),
-      new ToggleTallyAction(this.getPreviewCamera.bind(this)),
-      new CutInputAction(this.getVideoMixer.bind(this)),
-      new NextInputAction(this.getVideoMixer.bind(this)),
-      new PreviousInputAction(this.getVideoMixer.bind(this)),
-      new GetCurrentPositionAction(this.getPreviewCamera.bind(this)),
-    ];
+      ToggleAutofocusAction,
+      ToggleTallyAction,
+      CutInputAction,
+      NextInputAction,
+      PreviousInputAction,
+      GetCurrentPositionAction,
+      SetActiveCameraToOnAirAction,
+      SetActiveCameraToPreviewAction,
+    ].map((action) => this.registerAction<ButtonAction>(action));
   }
 
   onAxis(axis: AxisEventPayload) {
@@ -77,7 +113,7 @@ export class GamepadController {
   }
 
   onButton(button: ButtonEventPayload) {
-    console.log('onButton', button.button);
+    console.log('onButton', button.button, button.pressed ? 'pressed' : 'released');
     this.buttonActions.forEach((action) => {
       if (this.keyBindings[action.constructor.name] === button.button) {
         action.hanlde(button.pressed ? 'pressed' : 'released');

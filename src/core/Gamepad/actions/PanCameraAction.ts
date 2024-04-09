@@ -1,15 +1,11 @@
-import { ICameraConnection } from '@core/CameraConnection/ICameraConnection';
 import { AxisAction } from './BaseAction';
 
 export class PanCameraAction extends AxisAction {
-  constructor(private getPreviewCamera: () => ICameraConnection) {
-    super();
-  }
-
-  hanlde(value: number): void {
+  async hanlde(value: number) {
     const calculatedValue = this.convertValue(value);
     if (!this.hasChanged(calculatedValue)) return;
 
-    this.getPreviewCamera()?.pan(calculatedValue);
+    const camera = await this.getSelectedCamera();
+    camera?.pan(calculatedValue);
   }
 }

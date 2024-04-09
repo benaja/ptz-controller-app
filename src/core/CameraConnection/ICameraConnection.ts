@@ -7,6 +7,7 @@ export const baseCameraConfigSchema = z.object({
   id: z.string().uuid(),
   number: z.number(),
   type: z.nativeEnum(CameraConnectionType),
+  source: z.string(),
 });
 
 export type BaseCameraConfig = z.infer<typeof baseCameraConfigSchema>;
@@ -19,6 +20,8 @@ export interface ICameraConnection extends IDisposable {
   readonly number: number;
 
   readonly connected: boolean;
+
+  readonly sourceId: string;
 
   /**
    * Set the pan speed of the camera.

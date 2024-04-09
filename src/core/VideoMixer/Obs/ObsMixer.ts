@@ -1,8 +1,9 @@
 import OBSWebSocket from 'obs-websocket-js';
 import { throttle } from '@main/utils/throttle';
-import { IVideoMixer, baseVideoMixerSchema } from '../IVideoMixer';
+import { IVideoMixer, MixerSource, baseVideoMixerSchema } from '../IVideoMixer';
 import { z } from 'zod';
 import { VideoMixerType } from '../VideoMixerType';
+import { emit } from '@core/events/eventBus';
 
 type Scene = {
   sceneName: string;
@@ -43,21 +44,27 @@ export class ObsMixer implements IVideoMixer {
     // console.log('connecting to OBS', config.ip);
     this._obs
       .connect(`ws://${config.ip}`, config.password || undefined)
-      .then(() => {
+      .then(async () => {
         this.isConnected = true;
+        const preview = await this._obs.call('GetCurrentPreviewScene');
+        this._currentPreview = await this.getSceneByName(preview.currentPreviewSceneName);
+
+        const onAir = await this._obs.call('GetCurrentProgramScene');
+        this._currentOnAir = await this.getSceneByName(onAir.currentProgramSceneName);
         console.log(`Successfully connected to OBS!`);
 
+        const test = await this._obs.call('GetInputKindList');
+        console.log('test', test);
+
         this._obs.on('CurrentPreviewSceneChanged', async (data) => {
-          await this.previewSceneChanged();
-          const preview = await this.getSceneByName(data.sceneName);
-          console.log('preview', preview);
-          // console.log(data);
-          // this._currentPreview = await this.getSceneByName(data.sceneName);
-          // this.sceneChanged();
+          this._currentPreview = await this.getSceneByName(data.sceneName);
+          const source = await this.getPrimarySourceBySceneName(data.sceneName);
+          emit('previewSourceChanged', source);
         });
         this._obs.on('CurrentProgramSceneChanged', async (data) => {
           this._currentOnAir = await this.getSceneByName(data.sceneName);
-          this.sceneChanged();
+          const source = await this.getPrimarySourceBySceneName(data.sceneName);
+          emit('onAirSourceChanged', source);
         });
         this._obs.on('ConnectionClosed', () => {
           this._obs.removeAllListeners();
@@ -81,12 +88,16 @@ export class ObsMixer implements IVideoMixer {
     this._obs.disconnect();
   }
 
-  public getPreview(): number {
-    return (this._currentPreview?.sceneIndex || 0) + 1;
+  public async getPreview() {
+    if (!this._currentPreview) return null;
+
+    return this.getPrimarySourceBySceneName(this._currentPreview?.sceneName);
   }
 
-  public getOnAir(): number {
-    return (this._currentOnAir?.sceneIndex || 0) + 1;
+  public async getOnAir() {
+    if (!this._currentOnAir) return null;
+
+    return this.getPrimarySourceBySceneName(this._currentOnAir?.sceneName);
   }
 
   public cut(): void {
@@ -157,16 +168,100 @@ export class ObsMixer implements IVideoMixer {
     return 0;
   }
 
+  public async getSources() {
+    const data = await this._obs.call('GetInputList');
+
+    return data.inputs.map((input) => ({
+      id: input.inputName as string,
+      name: input.inputName as string,
+    }));
+  }
+
+  public async getOnAirSources() {
+    if (!this._currentOnAir) {
+      return [];
+    }
+
+    return this.getSourcesBySceneName(this._currentOnAir.sceneName);
+  }
+
+  public async getPreviewSources() {
+    if (!this._currentPreview) {
+      return [];
+    }
+
+    return this.getSourcesBySceneName(this._currentPreview.sceneName);
+  }
+
+  public async getSourcesBySceneName(sceneName: string) {
+    const sceneItems = await this._obs.call('GetSceneItemList', {
+      sceneName,
+    });
+
+    return sceneItems.sceneItems
+      .filter(
+        (s) =>
+          s.inputKind === 'av_capture_input_v2' ||
+          s.inputKind === 'screen_capture' ||
+          s.inputKind === 'ndi_source',
+      )
+      .map((s) => ({
+        id: s.sourceName as string,
+        name: s.sourceName as string,
+      }));
+  }
+
+  private async getPrimarySourceBySceneName(sceneName: string) {
+    const sceneItems = await this._obs.call('GetSceneItemList', {
+      sceneName,
+    });
+
+    console.log('sceneItems', sceneItems.sceneItems);
+
+    const item = sceneItems.sceneItems
+      .filter(
+        (s) =>
+          s.inputKind === 'av_capture_input_v2' ||
+          s.inputKind === 'screen_capture' ||
+          s.inputKind === 'ndi_source',
+      )
+      .sort((a, b) => {
+        // av_capture_input_v2 > screen_capture > ndi_source
+        if (a.inputKind === 'av_capture_input_v2') {
+          return -1;
+        }
+        if (b.inputKind === 'av_capture_input_v2') {
+          return 1;
+        }
+        if (a.inputKind === 'screen_capture') {
+          return -1;
+        }
+        if (b.inputKind === 'screen_capture') {
+          return 1;
+        }
+        if (a.inputKind === 'ndi_source') {
+          return -1;
+        }
+        if (b.inputKind === 'ndi_source') {
+          return 1;
+        }
+        return 0;
+      })[0];
+
+    if (!item) {
+      return null;
+    }
+
+    return {
+      id: item.sourceName as string,
+      name: item.sourceName as string,
+    };
+  }
+
   private sceneChanged = throttle(async () => {
     console.log('preview: ', this._currentPreview);
     console.log('onair: ', this._currentOnAir);
   }, 10);
-
-  private async previewSceneChanged() {
-    const data = await this._obs.call('GetCurrentPreviewScene');
-    console.log('previewSceneChanged', data);
-    // this._currentPreview = await this.getSceneByName(data.name);
-  }
 
   private async getSceneByName(name: string): Promise<Scene> {
     const scenes = await this.getScenes();

@@ -1,20 +1,18 @@
 import { ICameraConnection } from '@core/CameraConnection/ICameraConnection';
-import { IButtonAction } from './BaseAction';
+import { ButtonAction, IButtonAction } from './BaseAction';
 
-export class ToggleAutofocusAction implements IButtonAction {
-  constructor(private getPreviewCamera: () => ICameraConnection) {}
-
+export class ToggleAutofocusAction extends ButtonAction {
   private lastState = false;
 
-  hanlde(value: 'pressed' | 'released'): void {
+  async hanlde(value: 'pressed' | 'released') {
     if (value === 'released') return;
 
     console.log('ToggleAutofocusAction');
 
     this.lastState = !this.lastState;
 
-    this.getPreviewCamera()?.setAutoFocus(this.lastState);
+    const camera = await this.getSelectedCamera();
 
-    // this.getPreviewCamera()?.toggleAutoFocus();
+    camera?.setAutoFocus(this.lastState);
   }
 }

@@ -57,4 +57,11 @@ export class VideoMixerApi {
 
     await this._videoMixerFacotry.remove(videoMixer.id);
   }
+
+  async getScources() {
+    const videoMixer = this._videoMixerFacotry.instances[0];
+    if (!videoMixer) return [];
+
+    return await videoMixer.getSources();
+  }
 }
