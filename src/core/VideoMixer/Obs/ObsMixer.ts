@@ -39,7 +39,7 @@ export class ObsMixer implements IVideoMixer {
   }
 
   public connect(config: ObsMixerConfig) {
-    console.log('connecting to OBS', config.ip);
+    // console.log('connecting to OBS', config.ip);
     this._obs
       .connect(`ws://${config.ip}`, config.password || undefined)
       .then(() => {
@@ -47,15 +47,20 @@ export class ObsMixer implements IVideoMixer {
         console.log(`Successfully connected to OBS!`);
 
         this._obs.on('CurrentPreviewSceneChanged', async (data) => {
-          console.log(data);
-          this._currentPreview = await this.getSceneByName(data.sceneName);
-          this.sceneChanged();
+          await this.previewSceneChanged();
+          const preview = await this.getSceneByName(data.sceneName);
+          console.log('preview', preview);
+          // console.log(data);
+          // this._currentPreview = await this.getSceneByName(data.sceneName);
+          // this.sceneChanged();
         });
         this._obs.on('CurrentProgramSceneChanged', async (data) => {
           this._currentOnAir = await this.getSceneByName(data.sceneName);
           this.sceneChanged();
         });
         this._obs.on('ConnectionClosed', () => {
+          this._obs.removeAllListeners();
+          this._obs.disconnect();
           console.log('Connection closed');
           this.isConnected = false;
           setTimeout(() => {
@@ -64,6 +69,7 @@ export class ObsMixer implements IVideoMixer {
         });
       })
       .catch(() => {
+        // console.log('Failed to connect to OBS');
         setTimeout(() => {
           this.connect(config);
         }, 1000);
@@ -83,7 +89,10 @@ export class ObsMixer implements IVideoMixer {
   }
 
   public cut(): void {
-    if (!this._currentPreview) return;
+    if (!this._currentPreview) {
+      this.nextInput();
+      return;
+    }
 
     this._obs.call('SetCurrentProgramScene', {
       sceneName: this._currentPreview?.sceneName,
@@ -151,6 +160,12 @@ export class ObsMixer implements IVideoMixer {
     console.log('preview: ', this._currentPreview);
     console.log('onair: ', this._currentOnAir);
   }, 10);
+
+  private async previewSceneChanged() {
+    const data = await this._obs.call('GetCurrentPreviewScene');
+    console.log('previewSceneChanged', data);
+    // this._currentPreview = await this.getSceneByName(data.name);
+  }
 
   private async getSceneByName(name: string): Promise<Scene> {
     const scenes = await this.getScenes();

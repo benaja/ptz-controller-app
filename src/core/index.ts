@@ -4,13 +4,10 @@ import { UserConfigStore } from './store/userStore';
 import { VideomixerFactory } from './VideoMixer/VideoMixerFactory';
 import { GamepadFactory } from './Gamepad/GemepadFactory';
 import { ConnectedGamepadApi } from './api/ConnectedGamepadApi';
-import { GamepadConfigApi } from './api/gamepadConfigApi';
-import { CameraApi } from './api/cameraApi';
+import { GamepadConfigApi } from './api/GamepadConfigApi';
+import { CameraApi } from './api/CameraApi';
 import { VideoMixerApi } from './api/videoMixerApi';
 import { ConnectedGamepadStore } from './store/ConnectedGamepadsStore';
-// import { default as OBSWebSocket } from 'obs-websocket-js';
-// import default from '../../../../tailwind.config';
-// import { CameraApi } from '@core/api/cameraApi';
 
 export class Core implements IDisposable {
   private _camFactory: CameraConnectionFactory;
@@ -45,6 +42,7 @@ export class Core implements IDisposable {
     this._camFactory = new CameraConnectionFactory();
     this._mixerFactory = new VideomixerFactory();
     this._gamepadFactory = new GamepadFactory();
+
     this.gamepadConfigApi = new GamepadConfigApi(
       this.gamepadFactory,
       this.userConfigStore,
@@ -63,25 +61,11 @@ export class Core implements IDisposable {
     this.cameraFactory.build(this.userConfigStore.get('cameras'));
     this.mixerFactory.build(this.userConfigStore.get('videoMixers'));
     this.gamepadFactory.build(this.userConfigStore.get('gamepads'));
-
-    // for (const cam of validConfig.cams) {
-    //   await this._camFactory.parseConfig(cam, logger);
-    // }
-    // for (const videoMixer of validConfig.videoMixers) {
-    //   await this._mixerFactory.parseConfig(videoMixer, logger);
-    // }
-    // for (const hmi of validConfig.interfaces) {
-    //   await this._hmiFactory.parseConfig(hmi, logger);
-    // }
   }
 
   public async dispose(): Promise<void> {
-    // await this._camFactory.dispose();
-    // await this._mixerFactory.dispose();
-    // await this._hmiFactory.dispose();
-  }
-
-  private error(logger: ILogger, error: string): void {
-    logger.error(`Core: ${error}`);
+    await this._camFactory.dispose();
+    await this._mixerFactory.dispose();
+    await this._gamepadFactory.dispose();
   }
 }

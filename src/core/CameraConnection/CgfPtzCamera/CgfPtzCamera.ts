@@ -9,8 +9,8 @@ import { CameraConnectionType } from '../CameraConnectionTypes';
 import { z } from 'zod';
 
 export const cgfPtzCamera = baseCameraConfigSchema.extend({
-  type: z.literal(CameraConnectionType.CgfPtzCamera),
-  ip: z.string(),
+  // type: z.literal(CameraConnectionType.CgfPtzCamera),
+  ip: z.string().ip(),
   connectionPort: z.string(),
 });
 

@@ -1,8 +1,6 @@
 import electron from 'electron';
 import path from 'path';
 import fs from 'fs';
-import { UserConfig, userConfigSchema } from './userStore';
-import { VideoMixerType } from '../../main/VideoMixer';
 import { ZodRawShape, z } from 'zod';
 import { getValueAtPath, setValueAtPath } from '../../main/utils/objectHelpers';
 
@@ -17,6 +15,8 @@ export class Store<T extends Record<string | number | symbol, unknown>> {
     // app.getPath('userData') will return a string of the user's app data directory path. (electron.app || electron.remote.app)
 
     const userDataPath = electron.app.getPath('userData');
+
+    console.log('userDataPath', userDataPath);
     // We'll use the `configName` property to set the file name and path.join to bring it all together as a string
     this.path = path.join(userDataPath, opts.configName + '.json');
 

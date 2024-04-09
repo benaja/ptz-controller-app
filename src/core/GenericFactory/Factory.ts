@@ -1,3 +1,4 @@
+import { ZodObject, ZodSchema } from 'zod';
 import { IBuilder } from './IBuilder';
 import { IDisposable } from './IDisposable';
 
@@ -17,7 +18,7 @@ export class Factory<TConcrete extends IDisposable> implements IDisposable {
   }
 
   public async build(configs: FactoryConfig[]) {
-    console.log('Building factory', configs, this._builders);
+    // console.log('Building factory', configs, this._builders);
     this._instances = {};
     for (const config of configs) {
       if (!this._builders[config.type]) {
@@ -60,6 +61,20 @@ export class Factory<TConcrete extends IDisposable> implements IDisposable {
       await this.disposeInstance(this._instances[key]);
     }
     this._instances = {};
+  }
+
+  public validationSchemas(): ZodObject<any>[] {
+    return Object.values(this._builders).map((b) => b.validationSchema());
+  }
+
+  public validationSchema(type: string): ZodObject<any> {
+    const schema = this._builders[type]?.validationSchema();
+
+    if (!schema) {
+      throw new Error(`Gamepad type ${type} not supported`);
+    }
+
+    return schema;
   }
 
   private async disposeInstance(instance: TConcrete): Promise<void> {

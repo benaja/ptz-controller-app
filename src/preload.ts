@@ -20,7 +20,16 @@ function registerEndpoints(endpoints: string[], listeners: string[] = []) {
   }, {});
 
   return endpoints.reduce((acc, endPoint) => {
-    acc[endPoint] = (...args) => ipcRenderer.invoke(endPoint, ...args);
+    acc[endPoint] = (...args) =>
+      ipcRenderer.invoke(endPoint, ...args).catch((e) => {
+        const errorMessage = e.message;
+
+        // Extract the JSON part of the message
+        const jsonPart = errorMessage.replace(/Error invoking remote method '.*': /, '');
+
+        throw JSON.parse(jsonPart);
+      });
+
     return acc;
   }, api) as IElectronAPI;
 }

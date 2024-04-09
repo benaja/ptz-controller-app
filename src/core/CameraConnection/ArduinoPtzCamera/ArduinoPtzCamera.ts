@@ -5,12 +5,12 @@ import { RelativeCameraState } from './AurduinoPtzCameraState';
 import { CameraConnectionType } from '../CameraConnectionTypes';
 import { z } from 'zod';
 
-export const arduinoPtzCamera = baseCameraConfigSchema.extend({
-  type: z.literal(CameraConnectionType.ArduinoPtzCamera),
-  ip: z.string(),
+export const arduinoPtzCameraSchema = baseCameraConfigSchema.extend({
+  // type: z.literal(CameraConnectionType.ArduinoPtzCamera),
+  ip: z.string().ip(),
 });
 
-export type ArduionoPtzCameraConfig = z.infer<typeof arduinoPtzCamera>;
+export type ArduionoPtzCameraConfig = z.infer<typeof arduinoPtzCameraSchema>;
 
 export class ArduinoPtzCamera implements ICameraConnection {
   private websocket: WebSocket | undefined;
@@ -41,19 +41,27 @@ export class ArduinoPtzCamera implements ICameraConnection {
     return this.config.ip;
   }
 
+  private pingInterval: NodeJS.Timeout | undefined;
+
   setupWebsocket() {
+    console.log('setting up websocket: ', this.config.ip);
     // if (!this.reconnect || this.websocket?.readyState === WebSocket.OPEN) return;
     this.websocket = new WebSocket(`ws://${this.config.ip}:3004`);
 
     this.websocket.on('open', () => {
       console.log('websocket connected: ', this.config.ip);
       this.connected = true;
+
+      this.pingInterval = setInterval(() => {
+        this.websocket?.ping();
+      }, 1000);
     });
 
-    this.websocket.on('close', () => {
+    this.websocket.on('close', (e, reason) => {
       this.connected = false;
+      clearInterval(this.pingInterval);
       if (this.reconnect) {
-        console.log('websocket closed, retrying in 5s: ', this.config.ip);
+        console.log('websocket closed, retrying in 5s: ', this.config.ip, e, reason);
         setTimeout(this.setupWebsocket.bind(this), 5000);
       }
     });
@@ -61,6 +69,10 @@ export class ArduinoPtzCamera implements ICameraConnection {
     this.websocket.on('error', (error) => {
       console.log('websocket error', error, this.config.ip);
     });
+
+    // this.websocket.on('message', (data: WebSocket.Data) => {
+    //   console.log('message from server:', data.toString());
+    // });
   }
 
   dispose(): void {
@@ -69,43 +81,75 @@ export class ArduinoPtzCamera implements ICameraConnection {
   }
 
   pan(value: number): void {
-    this.relativeState.panRel = value;
-    this.sheduleUpdate(this.relativeState);
+    this.relativeState.pan = value;
+    this.sheduleUpdate('move', this.relativeState);
   }
 
   tilt(value: number): void {
-    this.relativeState.tiltRel = value;
-    this.sheduleUpdate(this.relativeState);
+    this.relativeState.tilt = value;
+    this.sheduleUpdate('move', this.relativeState);
   }
 
   zoom(value: number): void {
-    this.relativeState.zoomRel = value;
-    this.sheduleUpdate(this.relativeState);
+    this.relativeState.zoom = value;
+    this.sheduleUpdate('move', this.relativeState);
   }
 
   focus(value: number): void {
-    this.sendUpdate({
-      focus: value,
-    });
+    this.sendUpdate('focus', { value });
+  }
+
+  setAutoFocus(value: boolean): void {
+    this.sendUpdate('setAutofocus', { value });
   }
 
   toggleAutoFocus(): void {
-    this.sendUpdate({
-      autofocus: true,
-    });
+    this.sendUpdate('toggleAutofocus');
   }
 
   setTally(state: 'preview' | 'live' | ''): void {
-    this.sendUpdate({
+    this.sendUpdate('setTally', {
       tally: state,
     });
   }
 
-  sheduleUpdate = throttle((data: Record<string, any>) => {
-    this.sendUpdate(data);
+  sheduleUpdate = throttle((action: string, data?: Record<string, any>) => {
+    this.sendUpdate(action, data);
   }, 20);
 
-  sendUpdate(data: Record<string, any>): void {
-    this.websocket?.send(JSON.stringify(data));
+  sendUpdate(action: string, data?: Record<string, any>): void {
+    console.log('sending update to', this.config.ip, action, data);
+    try {
+      this.websocket?.send(
+        JSON.stringify({
+          action,
+          payload: data,
+        }),
+      );
+    } catch (error) {
+      console.log('error sending update');
+    }
+  }
+
+  getPosition(): Promise<{
+    pan: number;
+    tilt: number;
+    zoom: number;
+    focus: number;
+  }> {
+    return new Promise((resolve, reject) => {
+      this.websocket?.once('message', (data: WebSocket.Data) => {
+        const response = JSON.parse(data.toString());
+
+        resolve(response.payload);
+
+        console.log('message from server:', data.toString());
+      });
+      this.sendUpdate('getCurrentPosition');
+    });
+  }
+
+  goToPosition(position: { pan: number; tilt: number; speed: number }): void {
+    this.sendUpdate('goToPosition', position);
   }
 }

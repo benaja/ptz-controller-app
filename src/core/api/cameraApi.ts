@@ -11,12 +11,17 @@ export class CameraApi {
     private _userConfigStore: UserConfigStore,
   ) {}
 
-  async addCamera(camera: Omit<CameraConfig, 'id'>) {
+  async addCamera(data: Omit<CameraConfig, 'id'>) {
+    const schema = this._cameraConnectionFactory.validationSchema(data.type);
+
+    schema.omit({ id: true }).parse(data);
+
     const cameras = this._userConfigStore.get('cameras');
     const newCamera = {
-      ...camera,
+      ...data,
       id: randomUUID(),
-    };
+    } as CameraConfig;
+
     cameras.push(newCamera);
     this._userConfigStore.set('cameras', cameras);
     await this._cameraConnectionFactory.add(newCamera);
@@ -33,15 +38,19 @@ export class CameraApi {
     await this._cameraConnectionFactory.remove(camera.id);
   }
 
-  async updateCamera(camera: CameraConfig) {
+  async updateCamera(data: CameraConfig) {
+    const schema = this._cameraConnectionFactory.validationSchema(data.type);
+
+    schema.omit({ id: true }).parse(data);
+
     const cameras = this._userConfigStore.get('cameras');
-    const index = cameras.findIndex((c) => c.id === camera.id);
+    const index = cameras.findIndex((c) => c.id === data.id);
     if (index === -1) return;
-    cameras.splice(index, 1, camera);
+    cameras.splice(index, 1, data);
     this._userConfigStore.set('cameras', cameras);
 
-    await this._cameraConnectionFactory.remove(camera.id);
-    await this._cameraConnectionFactory.add(camera);
+    await this._cameraConnectionFactory.remove(data.id);
+    await this._cameraConnectionFactory.add(data);
   }
 
   getCameras(): CameraResponse[] {

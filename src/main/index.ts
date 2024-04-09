@@ -17,7 +17,7 @@ const createWindow = () => {
   console.log('dirname', path.join(__dirname, 'preload.js'));
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: 1200,
     height: 600,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
@@ -30,13 +30,14 @@ const createWindow = () => {
     webPreferences: {
       preload: GAMEPAD_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
+    show: false,
   });
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
   gamepadWindow.loadURL(GAMEPAD_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
-  gamepadWindow.webContents.openDevTools();
+  // gamepadWindow.webContents.openDevTools();
   mainWindow.webContents.openDevTools();
   mainWindow.show();
 };

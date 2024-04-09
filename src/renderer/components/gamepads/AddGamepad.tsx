@@ -4,8 +4,11 @@ import GamepadForm, { GamepadFormType } from './GamepadForm';
 import { useState } from 'react';
 import { GamepadType } from '@core/api/GamepadType';
 import AppButton from '../ui/AppButton';
+import { useNavigate } from 'react-router-dom';
 
 export default function AddGamepad() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState<GamepadFormType>({
     name: '',
     type: GamepadType.WebApi,
@@ -18,10 +21,17 @@ export default function AddGamepad() {
 
     console.log(form);
 
-    window.gamepadConfigApi.addGamepad({
-      ...form,
-      keyBindings: {},
-    });
+    window.gamepadConfigApi
+      .addGamepad({
+        ...form,
+        keyBindings: {},
+      })
+      .then(() => {
+        navigate('/gamepads');
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   return (

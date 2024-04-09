@@ -1,4 +1,4 @@
-import { GamepadConfigApi } from '@core/api/gamepadConfigApi';
+import { GamepadConfigApi } from '@core/api/GamepadConfigApi';
 import { GamepadConfig } from '@core/store/userStore';
 
 export class ElectronGamepadConfigApi {

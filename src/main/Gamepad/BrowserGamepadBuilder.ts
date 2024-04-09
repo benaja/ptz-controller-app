@@ -21,13 +21,15 @@ export class BrowserGamepadBuilder implements IBuilder<IGamepadController> {
     return [GamepadType.WebApi];
   }
 
-  public schemas() {
-    return [gamepadConfigSchema];
+  public validationSchema() {
+    return gamepadConfigSchema;
   }
 
   public async build(config: GamepadConfig): Promise<IGamepadController> {
     // const gamepads = this._userConfigStore.get('gamepads');
     // const gamepad = gamepads.find((g) => g.id === config.id);
+
+    console.log('build browser gamepad', config);
 
     switch (config.type) {
       case GamepadType.WebApi:

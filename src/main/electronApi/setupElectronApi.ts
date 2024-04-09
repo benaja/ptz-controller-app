@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
-import { GamepadApi } from '../../core/api/gamepadConfigApi';
-import { CameraApi } from '../../core/api/cameraApi';
+import { GamepadApi } from '../../core/api/GamepadConfigApi';
+import { CameraApi } from '../../core/api/CameraApi';
 
 /**
  * Dynamically registers IPC (Inter-Process Communication) handlers based on the methods of the provided object.

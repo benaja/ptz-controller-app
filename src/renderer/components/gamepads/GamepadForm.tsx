@@ -2,7 +2,7 @@ import { GamepadType } from '@core/api/GamepadType';
 import Select from '../ui/Select';
 import TextField from '../ui/TextField';
 import { useEffect, useState } from 'react';
-import { GamepadResponse } from '@core/api/gamepadConfigApi';
+import { GamepadResponse } from '@core/api/GamepadConfigApi';
 import { ConnectedGamepadResponse } from '@core/api/ConnectedGamepadApi';
 
 export type GamepadFormType = {
@@ -59,7 +59,6 @@ export default function GamepadForm({ form, onChange, original }: Props) {
 
   function fetchConnectedGamepads() {
     window.connectedGamepadApi.getConnectedGamepads().then((gamepads) => {
-      console.log('connectedGamepads', gamepads);
       setConnectedGamepads(gamepads);
     });
   }
@@ -90,7 +89,6 @@ export default function GamepadForm({ form, onChange, original }: Props) {
         value={form.connectionIndex}
         items={availabelGamepads}
         onChange={(value) => set('connectionIndex', value)}
-        required
       />
 
       <Select
@@ -98,7 +96,6 @@ export default function GamepadForm({ form, onChange, original }: Props) {
         value={form.videoMixerId}
         items={videoMixers}
         onChange={(value) => set('videoMixerId', value)}
-        required
       />
     </>
   );

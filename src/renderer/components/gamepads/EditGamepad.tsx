@@ -4,7 +4,7 @@ import Container from '../ui/Container';
 import { useEffect, useState } from 'react';
 import GamepadForm, { type GamepadFormType } from './GamepadForm';
 import AppButton from '../ui/AppButton';
-import { GamepadResponse } from '@core/api/gamepadConfigApi';
+import { GamepadResponse } from '@core/api/GamepadConfigApi';
 
 export default function EditGampad() {
   const { id } = useParams<{ id: string }>();

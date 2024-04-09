@@ -20,7 +20,6 @@ export default function Select({
 }: SelectProps) {
   function onChangeHandler(value: string) {
     const itemValue = items.find((item) => `${item.value}` == value)?.value;
-    console.log('onChangeHandler', value, itemValue);
 
     onChange(itemValue === undefined ? null : itemValue);
   }

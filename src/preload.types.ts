@@ -6,8 +6,8 @@ import {
   ConnectedGamepad,
   ConnectedGamepadResponse,
 } from '@core/api/ConnectedGamepadApi';
-import { CameraResponse } from '@core/api/cameraApi';
-import { GamepadResponse } from '@core/api/gamepadConfigApi';
+import { CameraResponse } from '@core/api/CameraApi';
+import { GamepadResponse } from '@core/api/GamepadConfigApi';
 import { GamepadConfig } from '@core/store/userStore';
 
 export interface IConnectedGamepadApi {

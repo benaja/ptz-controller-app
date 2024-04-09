@@ -1,0 +1,37 @@
+{
+  "action": "move",
+  "payload": {
+    "pan": 0, // -255 to 255
+    "tilt": 0, // -255 to 255
+    "zoom": 0, // -8 to 8
+  },
+},
+
+{
+  "action": "goToPostion",
+  "payload": {
+    "pan": 0, // -255 to 255
+    "tilt": 0, // -255 to 255
+    "zoom": 0, // -8 to 8
+    "speed": 0, // 0 to 255
+  },
+},
+
+{
+  "action": "toggleAutofocus",
+  "payload": true,
+}
+
+{
+  "action": "getCurrentPosition",
+}
+
+
+{
+  "action": "currentPostion",
+  "payload": {
+    "pan": 0, // -255 to 255
+    "tilt": 0, // -255 to 255
+    "zoom": 0, // -8 to 8
+  },
+}

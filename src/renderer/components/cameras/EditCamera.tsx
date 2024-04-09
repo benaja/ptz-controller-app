@@ -1,12 +1,11 @@
 import Layout from '@renderer/Layout';
 import Container from '../ui/Container';
 import { useEffect, useState } from 'react';
-import { CameraConfig } from '@core/store/userStore';
 import AppButton from '../ui/AppButton';
-import TextField from '../ui/TextField';
 import { useNavigate, useParams } from 'react-router-dom';
 import CameraForm, { CameraFormType } from './CameraForm';
 import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTypes';
+import { CameraConfig } from '@core/CameraConnection/CameraConnectionBuilder';
 
 export default function EditCamera() {
   const { id } = useParams<{ id: string }>();

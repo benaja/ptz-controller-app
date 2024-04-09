@@ -19,8 +19,9 @@ export class GamepadConfigApi {
     const connectedGamepad = this._connectedGamepadsStore
       .get()
       .find((c) => c.connectionIndex === connectionIndex);
+
     if (!connectedGamepad) {
-      throw new Error('Gamepad not connected');
+      return null;
     }
 
     return connectedGamepad;
@@ -29,16 +30,18 @@ export class GamepadConfigApi {
   public async addGamepad(
     config: Omit<GamepadConfig, 'id' | 'connectedGamepadId'>,
   ): Promise<GamepadConfig> {
+    const schema = this._gamepadFactory.validationSchema(config.type);
+
+    schema.omit({ id: true, connectedGamepadId: true }).parse(config);
+
     const gamepads = this._userConfigStore.get('gamepads');
 
     const connectedGamepad = this._getGamepadId(config.connectionIndex);
 
-    console.log('addGamepad', connectedGamepad);
-
     const gamepad: GamepadConfig = {
       ...config,
       id: randomUUID(),
-      connectedGamepadId: connectedGamepad.id,
+      connectedGamepadId: connectedGamepad?.id,
     };
     gamepads.push(gamepad);
     this._userConfigStore.set('gamepads', gamepads);

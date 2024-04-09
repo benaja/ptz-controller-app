@@ -4,7 +4,7 @@ import Layout from '@renderer/Layout';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { ConnectedGamepadResponse } from '@core/api/ConnectedGamepadApi';
-import { GamepadResponse } from '@core/api/gamepadConfigApi';
+import { GamepadResponse } from '@core/api/GamepadConfigApi';
 import AppButton from '../ui/AppButton';
 
 export default function ManageGamepads() {
@@ -17,7 +17,6 @@ export default function ManageGamepads() {
     });
     window.gamepadConfigApi.getGamepads().then((gamepads) => {
       setGamepads(gamepads);
-      console.log('gamepads', gamepads);
     });
   }, []);
 

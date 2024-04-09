@@ -7,7 +7,9 @@ export class PanCameraAction extends AxisAction {
   }
 
   hanlde(value: number): void {
-    console.log('PanCameraAction', value);
-    this.getPreviewCamera()?.pan(Math.round(value * 255));
+    const calculatedValue = this.convertValue(value);
+    if (!this.hasChanged(calculatedValue)) return;
+
+    this.getPreviewCamera()?.pan(calculatedValue);
   }
 }

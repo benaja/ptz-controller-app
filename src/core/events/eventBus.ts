@@ -3,7 +3,7 @@ import {
   ButtonEventPayload,
   Gamepad,
   GamepadEvent,
-} from '@core/api/gamepadConfigApi';
+} from '@core/api/GamepadConfigApi';
 
 type ListenerTypes = {
   gamepadEvent: (gamepadEvent: GamepadEvent) => void;

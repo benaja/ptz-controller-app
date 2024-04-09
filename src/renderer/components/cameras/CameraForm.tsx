@@ -4,7 +4,7 @@ import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTyp
 
 export type CameraFormType = {
   type: CameraConnectionType;
-  ip: string | null;
+  ip: string;
   number: number;
   connectionPort?: string;
 };

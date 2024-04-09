@@ -11,6 +11,7 @@ import { GamepadConfig } from '@core/store/userStore';
 import { CameraConnectionFactory } from '@core/CameraConnection/CameraConnectionFactory';
 import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
 import { AxisEventPayload, ButtonEventPayload } from '@core/api/ConnectedGamepadApi';
+import { GetCurrentPositionAction } from './actions/GetCurrentPositionAction';
 
 export class GamepadController {
   public selectedCamera = 1;
@@ -49,6 +50,7 @@ export class GamepadController {
     this.keyBindings = keyBindings;
 
     this.connectionIndex = _config.connectionIndex;
+    this.isConnected = _config.connectionIndex !== undefined;
 
     this.axisActions = [
       new PanCameraAction(this.getPreviewCamera.bind(this)),
@@ -63,6 +65,7 @@ export class GamepadController {
       new CutInputAction(this.getVideoMixer.bind(this)),
       new NextInputAction(this.getVideoMixer.bind(this)),
       new PreviousInputAction(this.getVideoMixer.bind(this)),
+      new GetCurrentPositionAction(this.getPreviewCamera.bind(this)),
     ];
   }
 
@@ -76,7 +79,6 @@ export class GamepadController {
 
   onButton(button: ButtonEventPayload) {
     console.log('onButton', button.button);
-    console.log(this.buttonActions);
     this.buttonActions.forEach((action) => {
       if (this.keyBindings[action.constructor.name] === button.button) {
         action.hanlde(button.pressed ? 'pressed' : 'released');

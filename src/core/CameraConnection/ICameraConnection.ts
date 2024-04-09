@@ -1,9 +1,10 @@
-import { number, z } from 'zod';
+import { z } from 'zod';
 import { IDisposable } from '../GenericFactory/IDisposable';
 import { CameraConnectionType } from './CameraConnectionTypes';
+import { CameraPosition } from './ArduinoPtzCamera/AurduinoPtzCameraState';
 
 export const baseCameraConfigSchema = z.object({
-  id: z.string(),
+  id: z.string().uuid(),
   number: z.number(),
   type: z.nativeEnum(CameraConnectionType),
 });
@@ -51,9 +52,15 @@ export interface ICameraConnection extends IDisposable {
    */
   toggleAutoFocus(): void;
 
+  setAutoFocus(value: boolean): void;
+
   /**
    * Set the tally light of the camera.
    * @param state the state of the tally light. Can be 'preview', 'live' or ''
    */
   setTally(state: 'preview' | 'live' | ''): void;
+
+  getPosition(): Promise<CameraPosition>;
+
+  goToPosition(position: { pan: number; tilt: number; speed: number }): void;
 }

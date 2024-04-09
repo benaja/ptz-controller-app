@@ -18,15 +18,20 @@ export default function AddCamera() {
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    window.cameraApi.addCamera(form).then(() => {
-      setForm({
-        type: CameraConnectionType.ArduinoPtzCamera,
-        ip: '',
-        number: 0,
-      });
+    window.cameraApi
+      .addCamera(form)
+      .then(() => {
+        setForm({
+          type: CameraConnectionType.ArduinoPtzCamera,
+          ip: '',
+          number: 0,
+        });
 
-      navigate('/cameras');
-    });
+        navigate('/cameras');
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   return (
