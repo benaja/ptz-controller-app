@@ -4,7 +4,7 @@ import { ICameraConnection } from '../ICameraConnection';
 import { CameraConfig } from '@core/store/userStore';
 import { CameraConnectionType } from '../CameraConnectionTypes';
 
-export class CgfPtzCameraBuilder implements IBuilder<ICameraConnection> {
+export class CgfPtzArduinoPtzCamera implements IBuilder<ICameraConnection> {
   public async supportedTypes(): Promise<string[]> {
     return [CameraConnectionType.CgfPtzCamera];
   }

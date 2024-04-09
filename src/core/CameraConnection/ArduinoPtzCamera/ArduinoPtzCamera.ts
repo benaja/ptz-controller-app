@@ -6,7 +6,7 @@ import { CameraConnectionType } from '../CameraConnectionTypes';
 import { z } from 'zod';
 
 export const arduinoPtzCameraSchema = baseCameraConfigSchema.extend({
-  // type: z.literal(CameraConnectionType.ArduinoPtzCamera),
+  type: z.literal(CameraConnectionType.ArduinoPtzCamera),
   ip: z.string().ip(),
 });
 

@@ -10,7 +10,7 @@ type Scene = {
 };
 
 export const obsMixerConfigSchema = baseVideoMixerSchema.extend({
-  type: z.literal(VideoMixerType.OBS),
+  // type: z.literal(VideoMixerType.OBS),
   password: z.string().nullable(),
 });
 
@@ -19,6 +19,7 @@ export type ObsMixerConfig = z.infer<typeof obsMixerConfigSchema>;
 export class ObsMixer implements IVideoMixer {
   public readonly name = VideoMixerType.OBS;
   public readonly label = 'OBS';
+  public static readonly type = VideoMixerType.OBS;
 
   private _currentOnAir: Scene | null = null;
   private _currentPreview: Scene | null = null;

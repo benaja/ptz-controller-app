@@ -1,6 +1,6 @@
 import * as gamepadConfig from '../../../../Gamepad/controllers/logitech/dualshock4.json';
 
-import { CameraConnectionFactory, VideomixerFactory } from '../../../..';
+import { CameraFactory, VideomixerFactory } from '../../../..';
 import {
   IConfig as IGamepadConfig,
   NodeGamepad,
@@ -18,7 +18,7 @@ export class Dualshock4 extends Ps4Gamepad {
   constructor(
     config: CameraConfig,
     mixerFactory: VideomixerFactory,
-    cameraConnectionFactory: CameraConnectionFactory,
+    cameraConnectionFactory: CameraFactory,
   ) {
     super(config, mixerFactory, cameraConnectionFactory);
     const padConfig = gamepadConfig as IGamepadConfig;

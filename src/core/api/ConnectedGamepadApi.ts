@@ -1,14 +1,13 @@
 import { GamepadFactory } from '@core/Gamepad/GemepadFactory';
 import { ConnectedGamepadStore } from '@core/store/ConnectedGamepadsStore';
-import { UserConfigStore } from '@core/store/userStore';
 
 export type ConnectedGamepad = {
   id: string;
-  connectionIndex: number;
+  name: string;
 };
 
 export type ConnectedGamepadResponse = {
-  isUse: boolean;
+  inUse: boolean;
 } & ConnectedGamepad;
 
 export type ButtonEventPayload = {
@@ -40,7 +39,6 @@ function mergeKeyBindings(
 export class ConnectedGamepadApi {
   public constructor(
     private _gamepadFactory: GamepadFactory,
-    private _userConfigStore: UserConfigStore,
     private _connectedGamepadsStore: ConnectedGamepadStore,
   ) {}
 
@@ -48,54 +46,34 @@ export class ConnectedGamepadApi {
     console.log('getConnectedGamepads', this._connectedGamepadsStore.get());
     return this._connectedGamepadsStore.get().map((c) => ({
       ...c,
-      isUse: this._gamepadFactory.getByConnectionIndex(c.connectionIndex) !== undefined,
+      inUse: !!this._gamepadFactory.getByGamepadId(c.id),
     }));
   }
 
   public gamepadConnected(gamepad: ConnectedGamepad): void {
     console.log('camepadConnected', gamepad);
-    if (
-      this._connectedGamepadsStore
-        .get()
-        .find((gamepad) => gamepad.connectionIndex === gamepad.connectionIndex)
-    ) {
+    if (this._connectedGamepadsStore.get().find((g) => g.id === gamepad.id)) {
       return;
     }
     this._connectedGamepadsStore.get().push(gamepad);
 
-    const gamepads = this._userConfigStore.get('gamepads');
-    const availableGamepad = gamepads.find(
-      (g) => g.connectedGamepadId === gamepad.id && g.connectionIndex >= 0,
-    );
-
-    console.log('availableGamepad', availableGamepad);
+    const gamepads = this._gamepadFactory.store.get('gamepads');
+    const availableGamepad = gamepads.find((g) => g.gamepadId === gamepad.id);
 
     if (!availableGamepad) return;
 
-    availableGamepad.connectionIndex = gamepad.connectionIndex;
-    this._userConfigStore.set('gamepads', gamepads);
-
     this._gamepadFactory.add(availableGamepad);
-
-    console.log('connected pads', this._connectedGamepadsStore.get());
   }
 
   public gamepadDisconnected(gamepad: ConnectedGamepad): void {
-    const index = this._connectedGamepadsStore
-      .get()
-      .findIndex((c) => c.connectionIndex === gamepad.connectionIndex);
+    const index = this._connectedGamepadsStore.get().findIndex((c) => c.id === gamepad.id);
     if (index === -1) return;
 
     this._connectedGamepadsStore.get().splice(index, 1);
 
-    const gamepads = this._userConfigStore.get('gamepads');
-    const availableGamepad = gamepads.find(
-      (g) => g.connectedGamepadId === gamepad.id && g.connectionIndex === gamepad.connectionIndex,
-    );
+    const gamepads = this._gamepadFactory.store.get('gamepads');
+    const availableGamepad = gamepads.find((g) => g.gamepadId === gamepad.id);
     if (!availableGamepad) return;
-
-    availableGamepad.connectionIndex = -1;
-    this._userConfigStore.set('gamepads', gamepads);
 
     this._gamepadFactory.remove(availableGamepad.id);
   }
@@ -103,27 +81,12 @@ export class ConnectedGamepadApi {
   public updateConnectedGamepads(gamepads: ConnectedGamepad[]): void {
     const originalGamepads = [...this._connectedGamepadsStore.get()];
 
-    // this._connectedGamepadsStore.set(gemapads);
-
     const addedGamepads = gamepads.filter(
-      (gamepad) =>
-        !originalGamepads.find(
-          (originalGamepad) =>
-            originalGamepad.id === gamepad.id &&
-            originalGamepad.connectionIndex === gamepad.connectionIndex,
-        ),
+      (gamepad) => !originalGamepads.find((originalGamepad) => originalGamepad.id === gamepad.id),
     );
     const removedGamepads = originalGamepads.filter(
-      (gamepad) =>
-        !gamepads.find(
-          (connectedGamepad) =>
-            connectedGamepad.id === gamepad.id &&
-            connectedGamepad.connectionIndex === gamepad.connectionIndex,
-        ),
+      (gamepad) => !gamepads.find((connectedGamepad) => connectedGamepad.id === gamepad.id),
     );
-
-    console.log('addedGamepads', addedGamepads);
-    console.log('removedGamepads', removedGamepads);
 
     addedGamepads.forEach((gamepad) => {
       this.gamepadConnected(gamepad);
@@ -134,14 +97,14 @@ export class ConnectedGamepadApi {
   }
 
   public triggerButtonEvent(event: ButtonEventPayload) {
-    const gamepad = this._gamepadFactory.getByConnectionIndex(event.gamepad.connectionIndex);
+    const gamepad = this._gamepadFactory.getByGamepadId(event.gamepad.id);
     if (!gamepad) return;
 
     gamepad.onButton(event);
   }
 
   public triggerAxisEvent(event: AxisEventPayload) {
-    const gamepad = this._gamepadFactory.getByConnectionIndex(event.gamepad.connectionIndex);
+    const gamepad = this._gamepadFactory.getByGamepadId(event.gamepad.id);
     if (!gamepad) return;
 
     gamepad.onAxis(event);

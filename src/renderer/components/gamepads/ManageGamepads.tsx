@@ -8,17 +8,18 @@ import { GamepadResponse } from '@core/api/GamepadConfigApi';
 import AppButton from '../ui/AppButton';
 
 export default function ManageGamepads() {
-  const [connectedGamepads, setConnectedGamepads] = useState<ConnectedGamepadResponse[]>([]);
   const [gamepads, setGamepads] = useState<GamepadResponse[]>([]);
 
   useEffect(() => {
-    window.connectedGamepadApi.getConnectedGamepads().then((gamepads) => {
-      setConnectedGamepads(gamepads);
-    });
+    fetchGamepads();
+  }, []);
+
+  function fetchGamepads() {
     window.gamepadConfigApi.getGamepads().then((gamepads) => {
       setGamepads(gamepads);
+      console.log(gamepads);
     });
-  }, []);
+  }
 
   useEffect(() => {
     // const removeGamepadEventListener = window.connectedGamepadApi.onGamepadEvent(
@@ -37,7 +38,10 @@ export default function ManageGamepads() {
     };
   }, []);
   return (
-    <Layout title="Gamepads">
+    <Layout
+      title="Gamepads"
+      actions={<AppButton onClick={fetchGamepads}>Refresh</AppButton>}
+    >
       <p className="font-bold ml-2 mb-1 ">Input devices</p>
       <Container>
         {/* <h2 className="text-xl">Input devices</h2> */}
@@ -47,11 +51,15 @@ export default function ManageGamepads() {
             <Link
               key={gamepad.id}
               to={`/gamepads/${gamepad.id}`}
-              className="font-medium flex py-2 items-center"
+              className="font-medium flex py-2"
             >
               <p className="font-medium">{gamepad.name}</p>
 
-              <ChevronRightIcon className="ml-auto h-4 w-4 text-gray-400" />
+              <span className="ml-auto  px-1 py-0 border-gray-200 border rounded">
+                {gamepad.connected ? 'connected' : 'disconnected'}
+              </span>
+
+              <ChevronRightIcon className="h-4 w-4 text-gray-400" />
             </Link>
           ))}
           {gamepads.length === 0 && <p className="text-gray-400 text-center py-2">No gamepads</p>}

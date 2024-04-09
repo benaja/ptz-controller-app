@@ -5,7 +5,7 @@ import AppButton from '../ui/AppButton';
 import { useNavigate, useParams } from 'react-router-dom';
 import CameraForm, { CameraFormType } from './CameraForm';
 import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTypes';
-import { CameraConfig } from '@core/CameraConnection/CameraConnectionBuilder';
+import { CameraConfig } from '@core/CameraConnection/ArduinoPtzCameraBuilder';
 
 export default function EditCamera() {
   const { id } = useParams<{ id: string }>();

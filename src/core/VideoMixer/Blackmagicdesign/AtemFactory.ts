@@ -79,8 +79,6 @@ class AtemConnection implements IAtemConnection {
 export class AtemFactory {
   private connections = new Map<string, { connection: AtemConnection; usages: number }>();
 
-  constructor(private logger: ILogger) {}
-
   get(ip: string): IAtemConnection {
     const requestedConnection = this.connections.get(ip);
     if (requestedConnection !== undefined) {

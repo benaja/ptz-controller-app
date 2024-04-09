@@ -5,6 +5,7 @@ import AppButton from '../ui/AppButton';
 import { useNavigate } from 'react-router-dom';
 import CameraForm from './CameraForm';
 import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTypes';
+import { parseErrorMessage } from '@renderer/lib/utils';
 
 export default function AddCamera() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export default function AddCamera() {
     ip: '',
     number: 0,
   });
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -30,7 +32,7 @@ export default function AddCamera() {
         navigate('/cameras');
       })
       .catch((e) => {
-        console.log(e);
+        setErrorMessage(parseErrorMessage(e));
       });
   }
 
@@ -45,6 +47,9 @@ export default function AddCamera() {
             form={form}
             onChange={(newForm) => setForm(newForm)}
           />
+
+          {errorMessage && <div className="text-red-500 text-sm">{errorMessage}</div>}
+
           <div className="flex mt-6">
             <AppButton
               type="submit"

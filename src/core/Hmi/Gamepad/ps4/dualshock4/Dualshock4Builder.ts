@@ -1,12 +1,9 @@
-import { CameraConnectionFactory, IBuilder, IHmi, VideomixerFactory } from '@core';
+import { CameraFactory, IBuilder, IHmi, VideomixerFactory } from '@core';
 import { Dualshock4 } from './Dualshock4';
 import { CameraConfig } from '@core/store/userStore';
 
 export class Dualshock4Builder implements IBuilder<IHmi> {
-  constructor(
-    private mixerFactory: VideomixerFactory,
-    private cameraFactory: CameraConnectionFactory,
-  ) {}
+  constructor(private mixerFactory: VideomixerFactory, private cameraFactory: CameraFactory) {}
   supportedTypes(): Promise<string[]> {
     return Promise.resolve(['ps4/dualshock4']);
   }

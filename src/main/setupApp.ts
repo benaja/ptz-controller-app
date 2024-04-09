@@ -1,16 +1,17 @@
 import { Core } from '@core/index';
 import { setupElectronApi } from './electronApi/setupElectronApi';
-import { CameraConnectionBuilder } from '@core/CameraConnection/CameraConnectionBuilder';
-import { VideoMixerBuilder } from '@core/VideoMixer/VideoMixerBuilder';
-import { BrowserGamepadBuilder } from './Gamepad/BrowserGamepadBuilder';
+import { ArduinoPtzCameraBuilder } from '@core/CameraConnection/ArduinoPtzCameraBuilder';
+import { BrowserGamepadBuilder } from '../core/Gamepad/BrowserGamepad/BrowserGamepadBuilder';
+import { ObsVideoMixerBuilder } from '@core/VideoMixer/Obs/ObsVideoMixerBuilder';
 
 export async function setupApp() {
   const core = new Core();
 
-  await core.cameraFactory.addBuilder(new CameraConnectionBuilder());
-  await core.mixerFactory.addBuilder(new VideoMixerBuilder());
+  await core.cameraFactory.addBuilder(new ArduinoPtzCameraBuilder());
+  await core.mixerFactory.addBuilder(new ObsVideoMixerBuilder());
+
   await core.gamepadFactory.addBuilder(
-    new BrowserGamepadBuilder(core.cameraFactory, core.mixerFactory, core.userConfigStore),
+    new BrowserGamepadBuilder(core.cameraFactory, core.mixerFactory),
   );
 
   setupElectronApi([

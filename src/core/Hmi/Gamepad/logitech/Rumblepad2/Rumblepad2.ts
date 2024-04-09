@@ -1,6 +1,6 @@
 import * as gamepadConfig from 'gamepad/controllers/logitech/rumblepad2.json';
 
-import { CameraConnectionFactory, ILogger, VideomixerFactory } from '@core';
+import { CameraFactory, ILogger, VideomixerFactory } from '@core';
 import { IConfig as IGamepadConfig, NodeGamepad, ILogger as NodeGamepadLogger } from 'gamepad';
 
 import { EButtonDirection } from '../../Shared/GamepadConfiguration';
@@ -14,7 +14,7 @@ export class Rumblepad2 extends LogitechGamepad {
     config: IRumblepad2Config,
     logger: ILogger,
     mixerFactory: VideomixerFactory,
-    cameraConnectionFactory: CameraConnectionFactory,
+    cameraConnectionFactory: CameraFactory,
   ) {
     super(config, logger, mixerFactory, cameraConnectionFactory);
     const padConfig = gamepadConfig as IGamepadConfig;

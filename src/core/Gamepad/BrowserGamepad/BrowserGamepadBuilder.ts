@@ -1,10 +1,10 @@
 import { IBuilder } from '@core/GenericFactory/IBuilder';
 import { z } from 'zod';
-import { IGamepadController } from '../../core/Gamepad/IGamepadController';
+import { IGamepadController } from '../IGamepadController';
 import { UserConfigStore, gamepadConfigSchema } from '@core/store/userStore';
 import { GamepadType } from '@core/api/GamepadType';
 import { BrowserGamepad } from './BrowserGamepad';
-import { CameraConnectionFactory } from '@core/CameraConnection/CameraConnectionFactory';
+import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
 import { defaultKeyBindings } from '@core/Gamepad/KeyBindings';
 
@@ -12,12 +12,11 @@ export type GamepadConfig = z.infer<typeof gamepadConfigSchema>;
 
 export class BrowserGamepadBuilder implements IBuilder<IGamepadController> {
   public constructor(
-    private _cameraFactory: CameraConnectionFactory,
+    private _cameraFactory: CameraFactory,
     private _videoMixerFactory: VideomixerFactory,
-    private _userConfigStore: UserConfigStore,
   ) {}
 
-  public async supportedTypes(): Promise<string[]> {
+  public supportedTypes(): string[] {
     return [GamepadType.WebApi];
   }
 

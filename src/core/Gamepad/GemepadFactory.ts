@@ -1,20 +1,23 @@
-import { Factory, FactoryConfig } from '../GenericFactory/Factory';
+import { Store } from '@core/store';
+import { Factory } from '../GenericFactory/Factory';
 import { IGamepadController } from './IGamepadController';
+import { z } from 'zod';
+import { browserGamepadSchema } from './BrowserGamepad/BrowserGamepad';
 
-type GamepadFactoryConfig = FactoryConfig & {
-  connectionIndex: number;
-};
+// const gamepadConfigSchema = z.union([browserGamepadSchema, z.any()]);
 
 export class GamepadFactory extends Factory<IGamepadController> {
-  public async build(config: GamepadFactoryConfig[]) {
-    super.build(config);
-  }
+  public store = new Store({
+    configName: 'gamepad',
+    schema: z.object({
+      gamepads: z.array(browserGamepadSchema),
+    }),
+    defaults: {
+      gamepads: [],
+    },
+  });
 
-  public async add(config: GamepadFactoryConfig): Promise<void> {
-    super.add(config);
-  }
-
-  public getByConnectionIndex(connectionIndex: number): IGamepadController | undefined {
-    return this.instances.find((i) => i.connectionIndex === connectionIndex);
+  public getByGamepadId(gamepadId: string): IGamepadController | undefined {
+    return this.instances.find((i) => i.gamepadId === gamepadId);
   }
 }

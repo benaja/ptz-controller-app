@@ -14,7 +14,7 @@ export default function EditVideoMixer() {
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!id) return;
+    if (!id || !form) return;
 
     window.videoMixerApi
       .updateVideoMixer({

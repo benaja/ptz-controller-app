@@ -11,7 +11,7 @@ import { IImageSelectionChange } from '../IImageSelectionChange';
 import { IConnection } from '@core/GenericFactory/IConnection';
 
 export const atemMixerConfigSchema = baseVideoMixerSchema.extend({
-  type: z.literal(VideoMixerType.BlackmagicAtem),
+  // type: z.literal(VideoMixerType.BlackmagicAtem),
   mixEffectBlock: z.number(),
 });
 

@@ -9,7 +9,7 @@ export type GamepadFormType = {
   name: string;
   type: GamepadType;
   videoMixerId: string | null;
-  connectionIndex: number | null;
+  gamepadId: string | null;
 };
 
 type Props = {
@@ -23,11 +23,12 @@ export default function GamepadForm({ form, onChange, original }: Props) {
   const [connectedGamepads, setConnectedGamepads] = useState<ConnectedGamepadResponse[]>([]);
 
   const availabelGamepads = connectedGamepads
-    .filter((g) => !g.isUse || g.connectionIndex === original?.connectionIndex)
+    .filter((g) => !g.inUse || g.id === original?.gamepadId)
     .map((c) => ({
-      value: c.connectionIndex,
-      label: c.id,
+      value: c.id,
+      label: c.name,
     }));
+
   const gamepadTypes = [
     {
       label: 'Web',
@@ -66,6 +67,14 @@ export default function GamepadForm({ form, onChange, original }: Props) {
   useEffect(() => {
     fetchVideoMixers();
     fetchConnectedGamepads();
+
+    const interval = setInterval(() => {
+      fetchConnectedGamepads();
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   return (
@@ -86,9 +95,9 @@ export default function GamepadForm({ form, onChange, original }: Props) {
 
       <Select
         label="Gamepad"
-        value={form.connectionIndex}
+        value={form.gamepadId}
         items={availabelGamepads}
-        onChange={(value) => set('connectionIndex', value)}
+        onChange={(value) => set('gamepadId', value)}
       />
 
       <Select

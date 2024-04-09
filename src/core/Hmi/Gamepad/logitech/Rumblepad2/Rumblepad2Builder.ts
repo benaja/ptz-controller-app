@@ -1,13 +1,6 @@
 import * as ConfigSchema from './IRumblepad2Config.json';
 
-import {
-  CameraConnectionFactory,
-  IBuilder,
-  IConfig,
-  IHmi,
-  ILogger,
-  VideomixerFactory,
-} from '@core';
+import { CameraFactory, IBuilder, IConfig, IHmi, ILogger, VideomixerFactory } from '@core';
 import { ConfigValidator } from '../../../../ConfigValidator';
 import { IRumblepad2Config } from './IRumblepad2Config';
 import { Rumblepad2 } from './Rumblepad2';
@@ -16,7 +9,7 @@ export class Rumblepad2Builder implements IBuilder<IHmi> {
   constructor(
     private logger: ILogger,
     private mixerFactory: VideomixerFactory,
-    private cameraFactory: CameraConnectionFactory,
+    private cameraFactory: CameraFactory,
   ) {}
   supportedTypes(): Promise<string[]> {
     return Promise.resolve(['logitech/Rumblepad2']);

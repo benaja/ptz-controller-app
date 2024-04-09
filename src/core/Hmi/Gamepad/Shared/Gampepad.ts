@@ -1,5 +1,5 @@
 import {
-  CameraConnectionFactory,
+  CameraFactory,
   ICameraConnection,
   IConnection,
   IHmi,
@@ -49,7 +49,7 @@ export abstract class Gamepad implements IHmi {
   constructor(
     config: InterfaceConfig,
     mixerFactory: VideomixerFactory,
-    cameraConnectionFactory: CameraConnectionFactory,
+    cameraConnectionFactory: CameraFactory,
   ) {
     this.mixer = mixerFactory.get(config.videoMixer);
 

@@ -4,10 +4,11 @@ import AppButton from '../ui/AppButton';
 import Container from '../ui/Container';
 import { Link } from 'react-router-dom';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import { VideoMixerConfig } from '@core/VideoMixer/VideoMixerBuilder';
+import { VideoMixerConfig } from '@core/VideoMixer/VideoMixerFactory';
+import { VideoMixerApi } from '@core/api/videoMixerApi';
 
 export default function VideoMixers() {
-  const [videoMixers, setVideoMixers] = useState<VideoMixerConfig[]>([]);
+  const [videoMixers, setVideoMixers] = useState([] as ReturnType<VideoMixerApi['getVideoMixers']>);
 
   function fetchVideoMixers() {
     window.videoMixerApi.getVideoMixers().then((mixers) => {
@@ -22,7 +23,9 @@ export default function VideoMixers() {
   return (
     <Layout
       title="Video Mixer Configuration"
-      actions={<AppButton onClick={fetchVideoMixers}>Refresh</AppButton>}
+      actions={
+        videoMixers.length ? <AppButton onClick={fetchVideoMixers}>Refresh</AppButton> : null
+      }
     >
       <Container className="divide-y">
         {videoMixers.length === 0 && <p className="py-2">No video mixers</p>}

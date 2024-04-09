@@ -1,8 +1,9 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
+// import { CameraApi } from '@core/api/CameraApi';
+import { CameraApi } from '@core/api/CameraApi';
 import { contextBridge, ipcRenderer } from 'electron';
-import { ElectronApi, IElectronAPI } from './preload.types';
 
 function registerListener(channel: string, callback: (...args: any[]) => void) {
   ipcRenderer.on(channel, callback);
@@ -26,6 +27,8 @@ function registerEndpoints(endpoints: string[], listeners: string[] = []) {
 
         // Extract the JSON part of the message
         const jsonPart = errorMessage.replace(/Error invoking remote method '.*': /, '');
+
+        console.log(jsonPart);
 
         throw JSON.parse(jsonPart);
       });

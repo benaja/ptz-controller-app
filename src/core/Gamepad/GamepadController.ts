@@ -8,7 +8,7 @@ import { CutInputAction } from './actions/CutInputAction';
 import { NextInputAction } from './actions/NextInputAction';
 import { PreviousInputAction } from './actions/PreviousInputAction';
 import { GamepadConfig } from '@core/store/userStore';
-import { CameraConnectionFactory } from '@core/CameraConnection/CameraConnectionFactory';
+import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
 import { AxisEventPayload, ButtonEventPayload } from '@core/api/ConnectedGamepadApi';
 import { GetCurrentPositionAction } from './actions/GetCurrentPositionAction';
@@ -20,7 +20,7 @@ export class GamepadController {
   private axisActions: IAxisAction[];
   private buttonActions: IButtonAction[];
 
-  public connectionIndex: number;
+  public gamepadId: string;
 
   private getVideoMixer() {
     if (!this._config.videoMixerId) {
@@ -43,14 +43,13 @@ export class GamepadController {
 
   constructor(
     private _config: GamepadConfig,
-    private _cameraFactory: CameraConnectionFactory,
+    private _cameraFactory: CameraFactory,
     private _videoMixerFactory: VideomixerFactory,
     keyBindings: Record<string, number>,
   ) {
     this.keyBindings = keyBindings;
 
-    this.connectionIndex = _config.connectionIndex;
-    this.isConnected = _config.connectionIndex !== undefined;
+    this.gamepadId = _config.gamepadId;
 
     this.axisActions = [
       new PanCameraAction(this.getPreviewCamera.bind(this)),

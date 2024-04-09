@@ -10,11 +10,9 @@ export class Factory<TConcrete extends IDisposable> implements IDisposable {
 
   public async addBuilder(builder: IBuilder<TConcrete>): Promise<void> {
     const types = await builder.supportedTypes();
-    console.log('Adding builder', types);
     for (const type of types) {
       this._builders[type] = builder;
     }
-    console.log('Added builder', this._builders);
   }
 
   public async build(configs: FactoryConfig[]) {
@@ -63,12 +61,8 @@ export class Factory<TConcrete extends IDisposable> implements IDisposable {
     this._instances = {};
   }
 
-  public validationSchemas(): ZodObject<any>[] {
-    return Object.values(this._builders).map((b) => b.validationSchema());
-  }
-
   public validationSchema(type: string): ZodObject<any> {
-    const schema = this._builders[type]?.validationSchema();
+    const schema = this._builders[type]?.validationSchema(type);
 
     if (!schema) {
       throw new Error(`Gamepad type ${type} not supported`);

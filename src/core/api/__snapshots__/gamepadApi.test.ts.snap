@@ -5,13 +5,13 @@ exports[`can handle two gamepads with same id 1`] = `
   {
     "connectionIndex": 0,
     "id": "test",
-    "isUse": true,
+    "inUse": true,
     "type": "primary",
   },
   {
     "connectionIndex": 1,
     "id": "test",
-    "isUse": true,
+    "inUse": true,
     "type": "secondary",
   },
 ]
@@ -22,13 +22,13 @@ exports[`update selected gamepad 1`] = `
   {
     "connectionIndex": 0,
     "id": "test",
-    "isUse": true,
+    "inUse": true,
     "type": "primary",
   },
   {
     "connectionIndex": 1,
     "id": "test",
-    "isUse": false,
+    "inUse": false,
     "type": undefined,
   },
 ]

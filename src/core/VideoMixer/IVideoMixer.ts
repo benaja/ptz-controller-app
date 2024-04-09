@@ -1,5 +1,4 @@
-import { VideoMixerConfig } from '@core/store/userStore';
-import { z } from 'zod';
+import { ZodObject, ZodRawShape, z } from 'zod';
 import { VideoMixerType } from './VideoMixerType';
 import { IDisposable } from '@core/GenericFactory/IDisposable';
 
@@ -16,7 +15,9 @@ export interface IVideoMixer extends IDisposable {
   readonly name: VideoMixerType;
   readonly label: string;
 
-  connect(config: VideoMixerConfig): void;
+  readonly isConnected: boolean;
+
+  connect(config: Record<string, any>): void;
 
   /**
    * Get the index of the scene that is on preview, starting from 1

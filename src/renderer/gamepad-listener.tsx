@@ -1,10 +1,23 @@
 import { ConnectedGamepad } from '@core/api/ConnectedGamepadApi';
 import { GamepadListener } from 'gamepad.js';
 
+/**
+ *
+ * When having multiple gamepads of the same type, the id is the same.
+ * This function generates a unique id for each gamepad. Based on the index their are connected to.
+ */
+function getUniqueId(id: string, index: number) {
+  const gamepads = navigator.getGamepads();
+  const gamepadsWithSameId = gamepads.filter((g) => g && g.id === id);
+
+  const relativeIndex = gamepadsWithSameId.findIndex((g) => g && g.index === index);
+  return id + '-' + relativeIndex;
+}
+
 function convertGamepad(gamepad: any): ConnectedGamepad {
   return {
-    id: gamepad.id,
-    connectionIndex: gamepad.index,
+    name: gamepad.id,
+    id: getUniqueId(gamepad.id, gamepad.index),
   };
 }
 

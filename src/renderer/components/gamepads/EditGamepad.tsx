@@ -5,16 +5,22 @@ import { useEffect, useState } from 'react';
 import GamepadForm, { type GamepadFormType } from './GamepadForm';
 import AppButton from '../ui/AppButton';
 import { GamepadResponse } from '@core/api/GamepadConfigApi';
+import { parseErrorMessage } from '@renderer/lib/utils';
 
 export default function EditGampad() {
   const { id } = useParams<{ id: string }>();
   const [gamepad, setGamepad] = useState<GamepadResponse | null>(null);
   const [form, setForm] = useState<GamepadFormType | null>();
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   function loadSelectedGamepad() {
     if (!id) return;
     window.gamepadConfigApi.getGamepad(id).then((value) => {
+      if (!value) {
+        throw new Error('Gamepad not found');
+      }
+
       console.log('camepad', value);
       setGamepad(value);
       setForm({
@@ -25,17 +31,20 @@ export default function EditGampad() {
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!form || !id || form.connectionIndex === null) return;
+    if (!form || !id) return;
 
     window.gamepadConfigApi
       .updateGamepad({
         id,
         keyBindings: {},
         ...form,
-        connectionIndex: form.connectionIndex,
       })
       .then(() => {
         navigate('/gamepads');
+      })
+      .catch((e) => {
+        console.log(e);
+        setErrorMessage(parseErrorMessage(e));
       });
   }
 
@@ -61,6 +70,8 @@ export default function EditGampad() {
               original={gamepad}
               onChange={(value) => setForm(value)}
             />
+
+            {errorMessage && <div className="text-red-500 text-sm">{errorMessage}</div>}
             {/* <h2 className="text-xl">{type?.charAt(0).toUpperCase() + type?.slice(1)} Gamepad</h2> */}
           </Container>
 

@@ -2,14 +2,7 @@ import * as ConfigSchema from './ILogitechFx10Config.json';
 import * as f310Config from 'gamepad/controllers/logitech/gamepadf310.json';
 import * as f710Config from 'gamepad/controllers/logitech/gamepadf710.json';
 
-import {
-  CameraConnectionFactory,
-  IBuilder,
-  IConfig,
-  IHmi,
-  ILogger,
-  VideomixerFactory,
-} from '@core';
+import { CameraFactory, IBuilder, IConfig, IHmi, ILogger, VideomixerFactory } from '@core';
 import { ConfigValidator } from '../../../../ConfigValidator';
 import { Fx10 } from './Fx10';
 import { ILogitechFx10Config } from './ILogitechFx10Config';
@@ -22,7 +15,7 @@ export class Fx10Builder implements IBuilder<IHmi> {
   constructor(
     private logger: ILogger,
     private mixerFactory: VideomixerFactory,
-    private cameraFactory: CameraConnectionFactory,
+    private cameraFactory: CameraFactory,
   ) {}
 
   public supportedTypes(): Promise<string[]> {

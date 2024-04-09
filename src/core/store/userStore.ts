@@ -2,54 +2,37 @@ import { z } from 'zod';
 import { Store } from '.';
 import { randomUUID } from 'crypto';
 import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTypes';
-import { cameraConfigSchema } from '@core/CameraConnection/CameraConnectionBuilder';
-import { videoMixerConfigSchema } from '@core/VideoMixer/VideoMixerBuilder';
+import { cameraConfigSchema } from '@core/CameraConnection/ArduinoPtzCameraBuilder';
 import { VideoMixerType } from '@core/VideoMixer/VideoMixerType';
 import { GamepadType } from '@core/api/GamepadType';
 
 export const gamepadConfigSchema = z.object({
   id: z.string(),
   name: z.string(),
-  connectedGamepadId: z.string().nullable(),
-  connectionIndex: z.number(),
   type: z.nativeEnum(GamepadType),
   videoMixerId: z.string().nullable(),
   keyBindings: z.record(z.number()),
+  gamepadId: z.string(),
 });
 
 export const userConfigSchema = z.object({
-  cameras: z.array(cameraConfigSchema),
-  videoMixers: z.array(videoMixerConfigSchema),
-  gamepads: z.array(gamepadConfigSchema).max(4),
+  cameras: z.array(z.any()),
+  videoMixers: z.array(z.any()),
+  gamepads: z.array(z.any()).max(4),
 });
 
 export type GamepadConfig = z.infer<typeof gamepadConfigSchema>;
 
 export type UserConfig = z.infer<typeof userConfigSchema>;
 
-export class UserConfigStore extends Store<UserConfig> {
+export class UserConfigStore<T> extends Store<T, typeof userConfigSchema> {
   constructor() {
     super({
       configName: 'userConfig',
       schema: userConfigSchema,
       defaults: {
-        cameras: [
-          {
-            id: randomUUID(),
-            type: CameraConnectionType.ArduinoPtzCamera,
-            ip: '192.168.0.31',
-            number: 1,
-          },
-        ],
-        videoMixers: [
-          {
-            id: randomUUID(),
-            type: VideoMixerType.OBS,
-            name: 'safla',
-            ip: '127.0.0.1:4455',
-            password: '',
-          },
-        ],
+        cameras: [],
+        videoMixers: [],
         gamepads: [],
       },
     });

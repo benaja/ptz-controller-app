@@ -8,13 +8,13 @@ import { ICameraConnection, baseCameraConfigSchema } from '../ICameraConnection'
 import { CameraConnectionType } from '../CameraConnectionTypes';
 import { z } from 'zod';
 
-export const cgfPtzCamera = baseCameraConfigSchema.extend({
-  // type: z.literal(CameraConnectionType.CgfPtzCamera),
+export const cgfPtzCameraSchema = baseCameraConfigSchema.extend({
+  type: z.literal(CameraConnectionType.CgfPtzCamera),
   ip: z.string().ip(),
   connectionPort: z.string(),
 });
 
-export type CgfPtzCameraConfig = z.infer<typeof cgfPtzCamera>;
+export type CgfPtzCameraConfig = z.infer<typeof cgfPtzCameraSchema>;
 
 export class CgfPtzCamera implements ICameraConnection {
   private readonly axios: AxiosInstance;

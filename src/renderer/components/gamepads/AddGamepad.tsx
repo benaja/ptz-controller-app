@@ -5,15 +5,17 @@ import { useState } from 'react';
 import { GamepadType } from '@core/api/GamepadType';
 import AppButton from '../ui/AppButton';
 import { useNavigate } from 'react-router-dom';
+import { parseErrorMessage } from '@renderer/lib/utils';
 
 export default function AddGamepad() {
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [form, setForm] = useState<GamepadFormType>({
     name: '',
     type: GamepadType.WebApi,
     videoMixerId: null,
-    connectionIndex: null,
+    gamepadId: null,
   });
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -30,7 +32,8 @@ export default function AddGamepad() {
         navigate('/gamepads');
       })
       .catch((e) => {
-        console.log(e);
+        setErrorMessage(parseErrorMessage(e));
+        console.error(e);
       });
   }
 
@@ -44,6 +47,8 @@ export default function AddGamepad() {
               onChange={(value) => setForm(value)}
             />
           </div>
+
+          {errorMessage && <div className="text-red-500 text-sm">{errorMessage}</div>}
         </Container>
 
         <div className="flex mt-6">

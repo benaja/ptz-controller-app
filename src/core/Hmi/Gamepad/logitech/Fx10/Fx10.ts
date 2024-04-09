@@ -1,4 +1,4 @@
-import { CameraConnectionFactory, ILogger, VideomixerFactory } from '@core';
+import { CameraFactory, ILogger, VideomixerFactory } from '@core';
 import {
   IConfig as IGamepadConfig,
   NodeGamepad,
@@ -16,7 +16,7 @@ export class Fx10 extends LogitechGamepad {
     config: ILogitechFx10Config,
     logger: ILogger,
     mixerFactory: VideomixerFactory,
-    cameraConnectionFactory: CameraConnectionFactory,
+    cameraConnectionFactory: CameraFactory,
     gamepadConfig: IGamepadConfig,
   ) {
     super(config, logger, mixerFactory, cameraConnectionFactory);
