@@ -1,3 +1,9 @@
+import {
+  CameraPosition1Action,
+  CameraPosition2Action,
+  CameraPosition3Action,
+  CameraPosition4Action,
+} from './actions/CameraPositionAction';
 import { CutInputAction } from './actions/CutInputAction';
 import { FocusCameraAction } from './actions/FocusCameraAction';
 import { GetCurrentPositionAction } from './actions/GetCurrentPositionAction';
@@ -58,6 +64,11 @@ export const defaultKeyBindings: Record<string, GamepadButtons | GamepadAxis> = 
 
   [SetActiveCameraToOnAirAction.name]: GamepadButtons.RightBumper,
   [SetActiveCameraToPreviewAction.name]: GamepadButtons.LeftBumper,
+
+  [CameraPosition1Action.name]: GamepadButtons.DPadUp,
+  [CameraPosition2Action.name]: GamepadButtons.DPadRight,
+  [CameraPosition3Action.name]: GamepadButtons.DPadDown,
+  [CameraPosition4Action.name]: GamepadButtons.DPadLeft,
 };
 
 export const defaultSecondaryKeyBindings: Record<string, GamepadButtons | GamepadAxis> = {};

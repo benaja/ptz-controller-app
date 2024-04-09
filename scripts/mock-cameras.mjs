@@ -18,6 +18,18 @@ function startConnection(cameraId) {
     ws.on('message', (data) => {
       const message = JSON.parse(data.toString());
       log('message from client:', message);
+
+      if (message.action === 'getCurrentPosition') {
+        ws.send(
+          JSON.stringify({
+            payload: {
+              pan: Math.round(Math.random() * 500),
+              tilt: Math.round(Math.random() * 500),
+              zoom: Math.round(Math.random() * 500),
+            },
+          }),
+        );
+      }
     });
 
     ws.on('close', () => {

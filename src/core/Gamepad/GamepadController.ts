@@ -22,6 +22,12 @@ import {
   SetActiveCameraToOnAirAction,
   SetActiveCameraToPreviewAction,
 } from './actions/SetActiveCameraAction';
+import {
+  CameraPosition1Action,
+  CameraPosition2Action,
+  CameraPosition3Action,
+  CameraPosition4Action,
+} from './actions/CameraPositionAction';
 
 export class GamepadController {
   private keyBindings: Record<string, number>;
@@ -75,6 +81,7 @@ export class GamepadController {
         this.activeCamera = camera;
         console.log('setSelectCamera', camera);
       },
+      cameraFacotry: this._cameraFactory,
     });
   }
 
@@ -101,6 +108,10 @@ export class GamepadController {
       GetCurrentPositionAction,
       SetActiveCameraToOnAirAction,
       SetActiveCameraToPreviewAction,
+      CameraPosition1Action,
+      CameraPosition2Action,
+      CameraPosition3Action,
+      CameraPosition4Action,
     ].map((action) => this.registerAction<ButtonAction>(action));
   }
 

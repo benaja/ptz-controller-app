@@ -8,11 +8,22 @@ export const baseCameraConfigSchema = z.object({
   number: z.number(),
   type: z.nativeEnum(CameraConnectionType),
   source: z.string(),
+  positions: z
+    .record(
+      z.number().or(z.string()),
+      z.object({
+        pan: z.number(),
+        tilt: z.number(),
+        zoom: z.number(),
+      }),
+    )
+    .optional(),
 });
 
 export type BaseCameraConfig = z.infer<typeof baseCameraConfigSchema>;
 
 export interface ICameraConnection extends IDisposable {
+  readonly id: string;
   readonly displayName: string;
   readonly type: CameraConnectionType;
 
@@ -63,7 +74,7 @@ export interface ICameraConnection extends IDisposable {
    */
   setTally(state: 'preview' | 'live' | ''): void;
 
-  getPosition(): Promise<CameraPosition>;
+  getCurrentPosition(): Promise<CameraPosition>;
 
-  goToPosition(position: { pan: number; tilt: number; speed: number }): void;
+  goToPosition(position: { pan: number; tilt: number; zoom: number; speed: number }): void;
 }

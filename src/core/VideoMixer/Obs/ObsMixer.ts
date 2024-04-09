@@ -216,8 +216,6 @@ export class ObsMixer implements IVideoMixer {
       sceneName,
     });
 
-    console.log('sceneItems', sceneItems.sceneItems);
-
     const item = sceneItems.sceneItems
       .filter(
         (s) =>

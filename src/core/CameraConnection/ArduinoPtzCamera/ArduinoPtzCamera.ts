@@ -14,6 +14,7 @@ export const arduinoPtzCameraSchema = baseCameraConfigSchema.extend({
 export type ArduionoPtzCameraConfig = z.infer<typeof arduinoPtzCameraSchema>;
 
 export class ArduinoPtzCamera implements ICameraConnection {
+  public id: string;
   private websocket: WebSocket | undefined;
   private _connected = false;
   private reconnect = true;
@@ -30,6 +31,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
 
   constructor(private config: ArduionoPtzCameraConfig) {
     this.sourceId = config.source;
+    this.id = config.id;
     this.setupWebsocket();
   }
 
@@ -135,7 +137,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
     }
   }
 
-  getPosition(): Promise<{
+  getCurrentPosition(): Promise<{
     pan: number;
     tilt: number;
     zoom: number;
@@ -144,6 +146,8 @@ export class ArduinoPtzCamera implements ICameraConnection {
     return new Promise((resolve, reject) => {
       this.websocket?.once('message', (data: WebSocket.Data) => {
         const response = JSON.parse(data.toString());
+
+        console.log('response', response);
 
         resolve(response.payload);
 

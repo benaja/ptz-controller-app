@@ -1,3 +1,4 @@
+import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { ICameraConnection } from '@core/CameraConnection/ICameraConnection';
 import { IVideoMixer } from '@core/VideoMixer/IVideoMixer';
 
@@ -7,6 +8,7 @@ export type ActionParams = {
   getVideoMixer: () => IVideoMixer | null;
   getSelectedCamera: () => ICameraConnection | null;
   setSelectCamera: (camera: 'preview' | 'onAir') => void;
+  cameraFacotry: CameraFactory;
 };
 export abstract class BaseAction {
   constructor(protected params: ActionParams) {}
@@ -48,7 +50,6 @@ export abstract class ButtonAction extends BaseAction implements IButtonAction {
   protected timeout: NodeJS.Timeout | null = null;
 
   hanlde(value: 'pressed' | 'released'): void {
-    console.log('ButtonAction', value);
     if (value === 'released') {
       if (!this.timeout) return;
 
@@ -70,9 +71,7 @@ export abstract class ButtonAction extends BaseAction implements IButtonAction {
     }
   }
 
-  onPress() {
-    console.log('onPress');
-  }
+  onPress() {}
 
   onRelease() {}
 
