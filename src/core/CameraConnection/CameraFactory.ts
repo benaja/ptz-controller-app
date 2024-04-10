@@ -1,6 +1,5 @@
 import { Factory } from '../GenericFactory/Factory';
 import { ICameraConnection } from './ICameraConnection';
-import { MixerSource } from '@core/VideoMixer/IVideoMixer';
 import { CameraRepository } from '../repositories/CameraRepository';
 
 export class CameraFactory extends Factory<ICameraConnection> {

@@ -3,11 +3,13 @@ import { MixerSource } from '@core/VideoMixer/IVideoMixer';
 type ListenerTypes = {
   previewSourceChanged: (source: MixerSource | null) => void;
   onAirSourceChanged: (source: MixerSource | null) => void;
+  tallyUpdate: () => void;
 };
 
 const listeners: { [K in keyof ListenerTypes]: Set<ListenerTypes[K]> } = {
   previewSourceChanged: new Set<ListenerTypes['previewSourceChanged']>(),
   onAirSourceChanged: new Set<ListenerTypes['onAirSourceChanged']>(),
+  tallyUpdate: new Set<ListenerTypes['tallyUpdate']>(),
 };
 
 export function registerListener<K extends keyof ListenerTypes>(

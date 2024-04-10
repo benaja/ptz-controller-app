@@ -10,6 +10,7 @@ export type CameraFormType = {
   number: number;
   connectionPort?: string;
   sourceId: string | null;
+  mixerId: string | null;
 };
 
 type Props = {
@@ -19,6 +20,12 @@ type Props = {
 
 export default function CameraForm({ form, onChange }: Props) {
   const [sources, setSources] = useState<MixerSource[]>([]);
+  const [mixers, setMixers] = useState<
+    {
+      id: string;
+      name: string;
+    }[]
+  >([]);
   const cameraTypes = [
     {
       label: 'Arduino PTZ Camera',
@@ -37,15 +44,27 @@ export default function CameraForm({ form, onChange }: Props) {
     });
   }
 
-  function fetchSources() {
-    window.videoMixerApi.getScources().then((sources) => {
+  function fetchMixers() {
+    window.videoMixerApi.getVideoMixers().then((mixers) => {
+      setMixers(mixers);
+    });
+  }
+
+  function fetchSources(mixerId: string) {
+    window.videoMixerApi.getSources(mixerId).then((sources) => {
       setSources(sources);
     });
   }
 
   useEffect(() => {
-    fetchSources();
+    fetchMixers();
   }, []);
+
+  useEffect(() => {
+    if (form.mixerId) {
+      fetchSources(form.mixerId);
+    }
+  }, [form.mixerId]);
 
   return (
     <>
@@ -68,6 +87,17 @@ export default function CameraForm({ form, onChange }: Props) {
         required
         type="number"
       />
+      <Select
+        label="Mixer"
+        items={mixers.map((mixer) => ({
+          label: mixer.name,
+          value: mixer.id,
+        }))}
+        value={form.mixerId}
+        onChange={(value) => set('mixerId', value)}
+        required
+      />
+
       <Select
         label="Source"
         items={sources.map((source) => ({

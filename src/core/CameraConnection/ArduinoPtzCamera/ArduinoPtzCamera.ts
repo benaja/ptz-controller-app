@@ -28,7 +28,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
     return this.config.number;
   }
 
-  constructor(private config: ArduionoPtzCameraConfig) {
+  constructor(public config: ArduionoPtzCameraConfig) {
     this.sourceId = config.sourceId;
     this.id = config.id;
     this.setupWebsocket();
@@ -66,13 +66,13 @@ export class ArduinoPtzCamera implements ICameraConnection {
       this.connected = false;
       clearInterval(this.pingInterval);
       if (this.reconnect) {
-        console.log('websocket closed, retrying in 5s: ', this.config.ip, e, reason);
+        // console.log('websocket closed, retrying in 5s: ', this.config.ip, e, reason);
         setTimeout(this.setupWebsocket.bind(this), 5000);
       }
     });
 
     this.websocket.on('error', (error) => {
-      console.log('websocket error', error, this.config.ip);
+      // console.log('websocket error', error, this.config.ip);
     });
 
     // this.websocket.on('message', (data: WebSocket.Data) => {

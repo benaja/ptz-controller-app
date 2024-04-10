@@ -7,7 +7,7 @@ import { GamepadConfigApi } from './api/GamepadConfigApi';
 import { CameraApi } from './api/CameraApi';
 import { VideoMixerApi } from './api/videoMixerApi';
 import { ConnectedGamepadStore } from './store/ConnectedGamepadsStore';
-import { TallyController } from './Tally/TallyController';
+import { TallyHub } from './Tally/TallyHub';
 import { CameraRepository } from './repositories/CameraRepository';
 import { VideoMixerRepository } from './repositories/VideoMixerRepository';
 import { GamepadRepository } from './repositories/GamepadRepository';
@@ -26,7 +26,7 @@ export class Core implements IDisposable {
   public readonly mixerRepository: VideoMixerRepository;
   public readonly gamepadRepository: GamepadRepository;
 
-  public readonly tallyController: TallyController;
+  public readonly tallyController: TallyHub;
 
   private readonly connectedGamepadsStore = new ConnectedGamepadStore();
 
@@ -52,7 +52,7 @@ export class Core implements IDisposable {
     this.cameraApi = new CameraApi(this.cameraFactory, this.cameraRepository);
     this.videoMixerApi = new VideoMixerApi(this.mixerFactory, this.mixerRepository);
 
-    this.tallyController = new TallyController(this.cameraFactory, this.mixerFactory);
+    this.tallyController = new TallyHub(this.cameraFactory, this.mixerFactory);
   }
 
   public async bootstrap(): Promise<void> {

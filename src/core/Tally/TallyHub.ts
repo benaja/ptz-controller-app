@@ -1,22 +1,25 @@
 import { debounce } from '@main/utils/debounce';
 import { CameraFactory } from '@core/CameraConnection/CameraFactory';
-import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
 import { registerListener } from '@core/events/eventBus';
+import { IVideoMixer } from '@core/VideoMixer/IVideoMixer';
+import { ITallyHub } from './ITallyHub';
 
-export class TallyController {
-  constructor(private _cameraFactory: CameraFactory, private _mixerFactory: VideomixerFactory) {
+export class TallyHub implements ITallyHub {
+  constructor(private _cameraFactory: CameraFactory, private _mixer: IVideoMixer) {
     registerListener('onAirSourceChanged', this.debounceTallyUpdate.bind(this));
     registerListener('previewSourceChanged', this.debounceTallyUpdate.bind(this));
+    registerListener('tallyUpdate', this.debounceTallyUpdate.bind(this));
   }
 
-  debounceTallyUpdate = debounce(async () => {
-    const mixer = this._mixerFactory.instances[0];
-    if (!mixer) return;
+  public updateTally() {
+    this.debounceTallyUpdate();
+  }
 
-    const onAir = await mixer.getOnAirSources();
-    const preview = await mixer.getPreviewSources();
+  private debounceTallyUpdate = debounce(async () => {
+    const onAir = await this._mixer.getOnAirSources();
+    const preview = await this._mixer.getPreviewSources();
 
-    const allSouces = await mixer.getSources();
+    const allSouces = await this._mixer.getSources();
 
     const notLiveSources = allSouces.filter(
       (source) =>

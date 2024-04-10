@@ -30,7 +30,6 @@ export function registerEndpoints(obj: any) {
   methods.forEach((method) => {
     const endpointName = method.replace('Endpoint', '');
     ipcMain.removeHandler(endpointName);
-    console.log('registering endpoint', endpointName);
     ipcMain.handle(endpointName, (event, args) => {
       return obj[method](args);
     });

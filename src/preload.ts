@@ -67,6 +67,6 @@ contextBridge.exposeInMainWorld(
     'addVideoMixer',
     'updateVideoMixer',
     'removeVideoMixer',
-    'getScources',
+    'getSources',
   ]),
 );

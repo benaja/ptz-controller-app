@@ -9,8 +9,8 @@ export async function setupApp() {
   const core = new Core();
 
   await core.cameraFactory.addBuilder(new ArduinoPtzCameraBuilder());
-  await core.mixerFactory.addBuilder(new ObsVideoMixerBuilder());
-  await core.mixerFactory.addBuilder(new VMixBuilder());
+  await core.mixerFactory.addBuilder(new ObsVideoMixerBuilder(core.cameraFactory));
+  await core.mixerFactory.addBuilder(new VMixBuilder(core.cameraFactory));
 
   await core.gamepadFactory.addBuilder(
     new BrowserGamepadBuilder(core.cameraFactory, core.mixerFactory),

@@ -61,6 +61,8 @@
     "electron-squirrel-startup": "^1.0.0",
     "gamepad.js": "^2.1.0",
     "ip": "^1.1.8",
+    "lodash": "^4.17.21",
+    "node-ray": "^2.1.2",
     "node-vmix": "^1.6.1",
     "obs-websocket-js": "^5.0.3",
     "react": "^18.2.0",
@@ -70,6 +72,7 @@
     "tailwind-merge": "^2.1.0",
     "vmix-js-utils": "^4.0.16",
     "ws": "^8.15.1",
+    "xml2js": "^0.6.2",
     "zod": "^3.22.4"
   }
 }

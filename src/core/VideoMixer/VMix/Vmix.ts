@@ -3,6 +3,9 @@ import { IVideoMixer, baseVideoMixerSchema } from '../IVideoMixer';
 import { VideoMixerType } from '../VideoMixerType';
 import { Connection } from 'node-vmix';
 import { XmlApi } from 'vmix-js-utils';
+import { TallyHub } from '@core/Tally/TallyHub';
+import { CameraFactory } from '@core/CameraConnection/CameraFactory';
+import { ITallyHub } from '@core/Tally/ITallyHub';
 
 type Scene = {
   sceneName: string;
@@ -25,6 +28,13 @@ export class Vmix implements IVideoMixer {
   private _currentPreview: Scene | null = null;
   private _isConnected = false;
   private _connection: Connection;
+  private _tallyState: string;
+  private _tallyInterval: NodeJS.Timeout | null;
+
+  private _xmlData: Document | null = null;
+  private _dataInterval: NodeJS.Timeout | null;
+
+  private _tallyHub: ITallyHub;
 
   public get isConnected(): boolean {
     return this._isConnected;
@@ -34,38 +44,44 @@ export class Vmix implements IVideoMixer {
     this._isConnected = value;
   }
 
-  constructor(private _config: VmixConfig) {
+  constructor(private _config: VmixConfig, private _cameraFactory: CameraFactory) {
     this.connect(_config);
+
+    this._tallyHub = new TallyHub(_cameraFactory, this);
   }
 
   private connect(config: VmixConfig) {
-    this._connection = new Connection(config.ip, { debug: true, autoReconnect: true });
+    this._connection = new Connection(config.ip, { debug: false, autoReconnect: true });
 
-    this._connection.on('xml', (xmlData) => {
-      const xmlContent = XmlApi.DataParser.parse(xmlData);
+    this._connection.on('close', () => {
+      if (this._tallyInterval) {
+        clearInterval(this._tallyInterval);
+        this._tallyInterval = null;
+      }
 
-      // Extract input data and
-      // manipulate to desired format
-      const inputsRawData = XmlApi.Inputs.extractInputsFromXML(xmlContent);
-      const inputs = XmlApi.Inputs.map(inputsRawData);
+      if (this._dataInterval) {
+        clearInterval(this._dataInterval);
+        this._dataInterval = null;
+      }
 
-      console.log('inputs', inputs);
+      console.log('close');
+    });
 
-      // Your logic here!
-      // See example to parse the XML correctly
-      console.log('xml', xmlData);
+    this._connection.on('error', (error) => {
+      console.error('error', error);
     });
 
     // Listener for tally
-    this._connection.on('tally', (tally) => {
-      // Your logic here!
-      console.log('tally', tally);
-    });
+    this._connection.on('tally', async (tally) => {
+      if (this._tallyState === tally) return;
+      this._tallyState = tally;
 
-    // Listener for data such as tally
-    this._connection.on('data', (data) => {
-      console.log('data', data);
+      if (!this._connection.connected()) return;
+
+      this._xmlData = await this.getXmlData();
+
       // Your logic here!
+      this._tallyHub.updateTally();
     });
 
     this._connection.on('connect', () => {
@@ -74,6 +90,18 @@ export class Vmix implements IVideoMixer {
 
       // Request vMix tally info by sending message 'TALLY'
       this._connection.send('TALLY');
+
+      this._tallyInterval = setInterval(() => {
+        if (!this._connection.connected()) return;
+
+        this._connection.send('TALLY');
+      }, 100);
+
+      this._dataInterval = setInterval(async () => {
+        if (!this._connection.connected()) return;
+
+        this._xmlData = await this.getXmlData();
+      }, 5000);
     });
 
     setInterval(() => {
@@ -81,7 +109,82 @@ export class Vmix implements IVideoMixer {
     }, 1000);
   }
 
-  public getSources() {
-    // Your logic here!
+  public async getSources() {
+    if (!this._xmlData) return [];
+
+    const inputsRawData = XmlApi.Inputs.extractInputsFromXML(this._xmlData);
+    const inputs = XmlApi.Inputs.map(inputsRawData);
+    return inputs.map((input) => ({
+      id: input.number + '',
+      name: input.title,
+    }));
   }
+
+  public async getPreview() {
+    if (!this._xmlData) return null;
+
+    const preview = XmlApi.Inputs.extractPreviewInputNumber(this._xmlData);
+
+    const sources = await this.getSources();
+    return sources.find((source) => source.id == `${preview}`) ?? null;
+  }
+
+  public async getOnAir() {
+    if (!this._xmlData) return null;
+
+    const program = XmlApi.Inputs.extractProgramInputNumber(this._xmlData);
+
+    const sources = await this.getSources();
+    return sources.find((source) => source.id == `${program}`) ?? null;
+  }
+
+  public async getPreviewSources() {
+    if (!this._xmlData) return [];
+
+    const tally = XmlApi.Inputs.mapTallyInfo(this._xmlData);
+
+    const sources = await this.getSources();
+
+    return sources.filter((source) => tally.preview.includes(parseInt(source.id)));
+  }
+
+  public async getOnAirSources() {
+    if (!this._xmlData) return [];
+
+    const tally = XmlApi.Inputs.mapTallyInfo(this._xmlData);
+
+    const sources = await this.getSources();
+
+    return sources.filter((source) => tally.program.includes(parseInt(source.id)));
+  }
+
+  private getXmlData() {
+    if (!this._connection.connected()) return Promise.resolve(null);
+
+    return new Promise<Document>((resolve) => {
+      const onReceiveData = (xmlData: any) => {
+        const xmlContent = XmlApi.DataParser.parse(xmlData);
+
+        resolve(xmlContent);
+      };
+
+      this._connection.on('xml', onReceiveData);
+      this._connection.send('XML');
+    });
+  }
+
+  // private async getSourcesByTallyInfo(state: '0' | '1' | '2') {
+  //   if (!this._tallyState) return null;
+
+  //   const sources = await this.getSources();
+  //   return this._tallyState
+  //     .split('')
+  //     .map((s, index) => {
+  //       if (s === state) {
+  //         return sources[index];
+  //       }
+  //       return null;
+  //     })
+  //     .filter((s) => s !== null);
+  // }
 }

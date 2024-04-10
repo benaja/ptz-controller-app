@@ -4,6 +4,9 @@ import { IVideoMixer, MixerSource, baseVideoMixerSchema } from '../IVideoMixer';
 import { z } from 'zod';
 import { VideoMixerType } from '../VideoMixerType';
 import { emit } from '@core/events/eventBus';
+import { ITallyHub } from '@core/Tally/ITallyHub';
+import { TallyHub } from '@core/Tally/TallyHub';
+import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 
 type Scene = {
   sceneName: string;
@@ -27,6 +30,8 @@ export class ObsMixer implements IVideoMixer {
   private _obs: OBSWebSocket;
   private _isConnected = false;
 
+  private _tallyHub: ITallyHub;
+
   public get isConnected(): boolean {
     return this._isConnected;
   }
@@ -35,9 +40,11 @@ export class ObsMixer implements IVideoMixer {
     this._isConnected = value;
   }
 
-  constructor(private _config: ObsMixerConfig) {
+  constructor(private _config: ObsMixerConfig, private _cameraFactory: CameraFactory) {
     this._obs = new OBSWebSocket();
     this.connect(_config);
+
+    this._tallyHub = new TallyHub(_cameraFactory, this);
   }
 
   public connect(config: ObsMixerConfig) {
@@ -53,18 +60,15 @@ export class ObsMixer implements IVideoMixer {
         this._currentOnAir = await this.getSceneByName(onAir.currentProgramSceneName);
         console.log(`Successfully connected to OBS!`);
 
-        const test = await this._obs.call('GetInputKindList');
-        console.log('test', test);
+        this._tallyHub.updateTally();
 
         this._obs.on('CurrentPreviewSceneChanged', async (data) => {
           this._currentPreview = await this.getSceneByName(data.sceneName);
-          const source = await this.getPrimarySourceBySceneName(data.sceneName);
-          emit('previewSourceChanged', source);
+          this._tallyHub.updateTally();
         });
         this._obs.on('CurrentProgramSceneChanged', async (data) => {
           this._currentOnAir = await this.getSceneByName(data.sceneName);
-          const source = await this.getPrimarySourceBySceneName(data.sceneName);
-          emit('onAirSourceChanged', source);
+          this._tallyHub.updateTally();
         });
         this._obs.on('ConnectionClosed', () => {
           this._obs.removeAllListeners();
@@ -212,6 +216,8 @@ export class ObsMixer implements IVideoMixer {
   }
 
   private async getPrimarySourceBySceneName(sceneName: string) {
+    if (!this.isConnected) return Promise.resolve(null);
+
     const sceneItems = await this._obs.call('GetSceneItemList', {
       sceneName,
     });
