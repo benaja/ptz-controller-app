@@ -23,17 +23,17 @@ export class TallyController {
         !onAir.find((s) => s.id === source.id) && !preview.find((s) => s.id === source.id),
     );
     notLiveSources.forEach(async (source) => {
-      this._cameraFactory.getCameraConnection(source)?.setTally('');
+      this._cameraFactory.getCameraConnection(source.id)?.setTally('');
     });
 
     onAir.forEach(async (source) => {
-      this._cameraFactory.getCameraConnection(source)?.setTally('live');
+      this._cameraFactory.getCameraConnection(source.id)?.setTally('live');
     });
 
     preview
       .filter((source) => !onAir.find((s) => s.id === source.id))
       .forEach(async (source) => {
-        this._cameraFactory.getCameraConnection(source)?.setTally('preview');
+        this._cameraFactory.getCameraConnection(source.id)?.setTally('preview');
       });
   }, 100);
 }

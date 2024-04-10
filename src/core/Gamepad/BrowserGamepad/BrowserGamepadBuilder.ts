@@ -1,14 +1,14 @@
 import { IBuilder } from '@core/GenericFactory/IBuilder';
 import { z } from 'zod';
-import { IGamepadController } from '../IGamepadController';
-import { UserConfigStore, gamepadConfigSchema } from '@core/store/userStore';
+import { IGamepadController, baseGamepadSchema } from '../IGamepadController';
 import { GamepadType } from '@core/api/GamepadType';
 import { BrowserGamepad } from './BrowserGamepad';
 import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
 import { defaultKeyBindings } from '@core/Gamepad/KeyBindings';
+import { GamepadConfig } from '@core/repositories/GamepadRepository';
 
-export type GamepadConfig = z.infer<typeof gamepadConfigSchema>;
+export type BrowserGamepadConfig = z.infer<typeof baseGamepadSchema>;
 
 export class BrowserGamepadBuilder implements IBuilder<IGamepadController> {
   public constructor(
@@ -21,7 +21,7 @@ export class BrowserGamepadBuilder implements IBuilder<IGamepadController> {
   }
 
   public validationSchema() {
-    return gamepadConfigSchema;
+    return baseGamepadSchema;
   }
 
   public async build(config: GamepadConfig): Promise<IGamepadController> {

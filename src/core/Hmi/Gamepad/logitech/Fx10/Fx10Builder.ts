@@ -6,7 +6,6 @@ import { CameraFactory, IBuilder, IConfig, IHmi, ILogger, VideomixerFactory } fr
 import { ConfigValidator } from '../../../../ConfigValidator';
 import { Fx10 } from './Fx10';
 import { ILogitechFx10Config } from './ILogitechFx10Config';
-import { UserConfig } from '@core/store/userStore';
 
 export class Fx10Builder implements IBuilder<IHmi> {
   private readonly f310Name = 'logitech/F310';

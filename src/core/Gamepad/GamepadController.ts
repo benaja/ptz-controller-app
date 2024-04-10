@@ -13,7 +13,6 @@ import { ToggleTallyAction } from './actions/ToggleTallyAction';
 import { CutInputAction } from './actions/CutInputAction';
 import { NextInputAction } from './actions/NextInputAction';
 import { PreviousInputAction } from './actions/PreviousInputAction';
-import { GamepadConfig } from '@core/store/userStore';
 import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
 import { AxisEventPayload, ButtonEventPayload } from '@core/api/ConnectedGamepadApi';
@@ -28,6 +27,7 @@ import {
   CameraPosition3Action,
   CameraPosition4Action,
 } from './actions/CameraPositionAction';
+import { GamepadConfig } from '@core/repositories/GamepadRepository';
 
 export class GamepadController {
   private keyBindings: Record<string, number>;
@@ -56,7 +56,7 @@ export class GamepadController {
       return null;
     }
 
-    return this._cameraFactory.getCameraConnection(preview);
+    return this._cameraFactory.getCameraConnection(preview.id);
   }
 
   private async getOnAirCamera() {
@@ -64,7 +64,7 @@ export class GamepadController {
     if (!onair) {
       return null;
     }
-    return this._cameraFactory.getCameraConnection(onair);
+    return this._cameraFactory.getCameraConnection(onair.id);
   }
 
   private async getSelectedCamera() {

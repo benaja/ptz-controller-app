@@ -1,7 +1,6 @@
-import { GamepadConfig } from '@core/Gamepad/BrowserGamepad/BrowserGamepadBuilder';
 import { GamepadFactory } from '@core/Gamepad/GemepadFactory';
+import { GamepadConfig, GamepadRepository } from '@core/repositories/GamepadRepository';
 import { ConnectedGamepadStore } from '@core/store/ConnectedGamepadsStore';
-import { randomUUID } from 'crypto';
 
 export type GamepadResponse = {
   connected: boolean;
@@ -11,21 +10,11 @@ export class GamepadConfigApi {
   public constructor(
     private _gamepadFactory: GamepadFactory,
     private _connectedGamepadsStore: ConnectedGamepadStore,
+    private _gamepadRepository: GamepadRepository,
   ) {}
 
   public async addGamepad(config: any): Promise<GamepadConfig> {
-    const schema = this._gamepadFactory.validationSchema(config.type);
-
-    schema.omit({ id: true }).parse(config);
-
-    const gamepads = this._gamepadFactory.store.get('gamepads');
-
-    const gamepad: GamepadConfig = {
-      ...config,
-      id: randomUUID(),
-    };
-    gamepads.push(gamepad);
-    this._gamepadFactory.store.set('gamepads', gamepads);
+    const gamepad = this._gamepadRepository.add(config);
 
     console.log('addGamepad', gamepad);
 
@@ -34,42 +23,25 @@ export class GamepadConfigApi {
     return gamepad;
   }
 
-  public async updateGamepad(gamepad: GamepadConfig): Promise<void> {
-    const schema = this._gamepadFactory.validationSchema(gamepad.type);
-    schema.parse(gamepad);
+  public async updateGamepad(data: GamepadConfig): Promise<void> {
+    const gamepad = this._gamepadRepository.update(data.id, data);
 
-    const gamepads = this._gamepadFactory.store.get('gamepads');
+    if (!gamepad) return;
 
-    const index = gamepads.findIndex((g) => g.id === gamepad.id);
-    if (index === -1) return;
-
-    const updatedGamepad: GamepadConfig = {
-      ...gamepad,
-    };
-    gamepads[index] = updatedGamepad;
-
-    this._gamepadFactory.store.set('gamepads', gamepads);
-    if (this._gamepadFactory.get(gamepad.id)) {
-      await this._gamepadFactory.remove(gamepad.id);
+    if (this._gamepadFactory.get(data.id)) {
+      await this._gamepadFactory.remove(data.id);
     }
-    await this._gamepadFactory.add(updatedGamepad);
+    await this._gamepadFactory.add(gamepad);
   }
 
   public async removeGamepad(id: string): Promise<void> {
-    const gamepads = this._gamepadFactory.store.get('gamepads');
-
-    const index = gamepads.findIndex((g) => g.id === id);
-    if (index === -1) return;
-
-    gamepads.splice(index, 1);
-
-    this._gamepadFactory.store.set('gamepads', gamepads);
+    this._gamepadRepository.delete(id);
 
     await this._gamepadFactory.remove(id);
   }
 
   public getGamepad(id: string): GamepadResponse | undefined {
-    const gamepad = this._gamepadFactory.store.get('gamepads').find((g) => g.id === id);
+    const gamepad = this._gamepadRepository.getById(id);
 
     if (!gamepad) return undefined;
 
@@ -80,7 +52,7 @@ export class GamepadConfigApi {
   }
 
   public getGamepads(): GamepadResponse[] {
-    return this._gamepadFactory.store.get('gamepads').map((gamepad) => ({
+    return this._gamepadRepository.getAll().map((gamepad) => ({
       ...gamepad,
       connected: !!this._gamepadFactory.get(gamepad.id),
     }));

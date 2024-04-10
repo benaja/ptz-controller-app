@@ -7,7 +7,7 @@ export const baseCameraConfigSchema = z.object({
   id: z.string().uuid(),
   number: z.number(),
   type: z.nativeEnum(CameraConnectionType),
-  source: z.string(),
+  sourceId: z.string(),
   positions: z
     .record(
       z.number().or(z.string()),

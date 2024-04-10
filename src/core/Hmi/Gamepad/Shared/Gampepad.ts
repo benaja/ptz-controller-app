@@ -14,7 +14,6 @@ import { ISpecialFunction } from './SpecialFunctions/ISpecialFunction';
 import { ISpecialFunctionDefinition } from './SpecialFunctions/ISpecialFunctionDefinition';
 import { SpecialFunctionFactory } from './SpecialFunctions/SpecialFunctionFactory';
 import { StrictEventEmitter } from 'strict-event-emitter-types';
-import { InterfaceConfig } from '@core/store/userStore';
 
 enum EAltKey {
   none,

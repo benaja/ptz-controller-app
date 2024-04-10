@@ -10,7 +10,6 @@ import {
 import { IDualshock4Config } from './Dualshock4Config';
 import { Ps4Gamepad } from '../Ps4Gamepad';
 import { EButtonDirection } from '../../Shared/GamepadConfiguration';
-import { CameraConfig } from '@core/store/userStore';
 
 export class Dualshock4 extends Ps4Gamepad {
   private readonly pad: NodeGamepad;

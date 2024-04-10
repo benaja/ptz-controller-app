@@ -1,4 +1,4 @@
-import { ZodObject, ZodRawShape, z } from 'zod';
+import { z } from 'zod';
 import { VideoMixerType } from './VideoMixerType';
 import { IDisposable } from '@core/GenericFactory/IDisposable';
 
@@ -6,7 +6,6 @@ export const baseVideoMixerSchema = z.object({
   id: z.string(),
   name: z.string(),
   ip: z.string(),
-  type: z.nativeEnum(VideoMixerType),
 });
 
 export type BaseVideoMixerConfig = z.infer<typeof baseVideoMixerSchema>;

@@ -6,15 +6,6 @@ import { cameraConfigSchema } from '@core/CameraConnection/ArduinoPtzCameraBuild
 import { VideoMixerType } from '@core/VideoMixer/VideoMixerType';
 import { GamepadType } from '@core/api/GamepadType';
 
-export const gamepadConfigSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  type: z.nativeEnum(GamepadType),
-  videoMixerId: z.string().nullable(),
-  keyBindings: z.record(z.number()),
-  gamepadId: z.string(),
-});
-
 export const userConfigSchema = z.object({
   cameras: z.array(z.any()),
   videoMixers: z.array(z.any()),

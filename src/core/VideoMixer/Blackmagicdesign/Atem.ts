@@ -2,7 +2,6 @@ import { AtemFactory, IAtemConnection } from './AtemFactory';
 
 import { AtemState } from 'atem-connection';
 import { EventEmitter } from 'events';
-import { IAtemConfig } from './IAtemConfig';
 import { MixEffect } from 'atem-connection/dist/state/video';
 import { IVideoMixer, baseVideoMixerSchema } from '../IVideoMixer';
 import { z } from 'zod';
@@ -11,7 +10,7 @@ import { IImageSelectionChange } from '../IImageSelectionChange';
 import { IConnection } from '@core/GenericFactory/IConnection';
 
 export const atemMixerConfigSchema = baseVideoMixerSchema.extend({
-  // type: z.literal(VideoMixerType.BlackmagicAtem),
+  type: z.literal(VideoMixerType.BlackmagicAtem),
   mixEffectBlock: z.number(),
 });
 

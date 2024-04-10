@@ -1,4 +1,5 @@
 import { GamepadFactory } from '@core/Gamepad/GemepadFactory';
+import { GamepadRepository } from '@core/repositories/GamepadRepository';
 import { ConnectedGamepadStore } from '@core/store/ConnectedGamepadsStore';
 
 export type ConnectedGamepad = {
@@ -40,6 +41,7 @@ export class ConnectedGamepadApi {
   public constructor(
     private _gamepadFactory: GamepadFactory,
     private _connectedGamepadsStore: ConnectedGamepadStore,
+    private _gamepadRepository: GamepadRepository,
   ) {}
 
   public getConnectedGamepads(): ConnectedGamepadResponse[] {
@@ -57,7 +59,7 @@ export class ConnectedGamepadApi {
     }
     this._connectedGamepadsStore.get().push(gamepad);
 
-    const gamepads = this._gamepadFactory.store.get('gamepads');
+    const gamepads = this._gamepadRepository.getAll();
     const availableGamepad = gamepads.find((g) => g.gamepadId === gamepad.id);
 
     if (!availableGamepad) return;
@@ -71,7 +73,7 @@ export class ConnectedGamepadApi {
 
     this._connectedGamepadsStore.get().splice(index, 1);
 
-    const gamepads = this._gamepadFactory.store.get('gamepads');
+    const gamepads = this._gamepadRepository.getAll();
     const availableGamepad = gamepads.find((g) => g.gamepadId === gamepad.id);
     if (!availableGamepad) return;
 

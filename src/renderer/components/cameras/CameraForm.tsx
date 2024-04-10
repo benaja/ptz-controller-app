@@ -9,7 +9,7 @@ export type CameraFormType = {
   ip: string;
   number: number;
   connectionPort?: string;
-  source: string | null;
+  sourceId: string | null;
 };
 
 type Props = {
@@ -69,13 +69,13 @@ export default function CameraForm({ form, onChange }: Props) {
         type="number"
       />
       <Select
-        label="Quelle"
+        label="Source"
         items={sources.map((source) => ({
           label: source.name,
           value: source.id,
         }))}
-        value={form.source}
-        onChange={(value) => set('source', value)}
+        value={form.sourceId}
+        onChange={(value) => set('sourceId', value)}
         required
       />
       {form.type === CameraConnectionType.CgfPtzCamera && (

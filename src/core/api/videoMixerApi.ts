@@ -1,61 +1,42 @@
 import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
-import { randomUUID } from 'crypto';
+import { VideoMixerRepository } from '@core/repositories/VideoMixerRepository';
 
 export class VideoMixerApi {
-  constructor(private _videoMixerFacotry: VideomixerFactory) {}
+  constructor(
+    private _videoMixerFacotry: VideomixerFactory,
+    private _mixerRepository: VideoMixerRepository,
+  ) {}
 
   getVideoMixers() {
-    return this._videoMixerFacotry.store.get('videoMixers').map((vm) => ({
+    return this._mixerRepository.getAll().map((vm) => ({
       ...vm,
       connected: this._videoMixerFacotry.get(vm.id)?.isConnected ?? false,
     }));
   }
 
   getVideoMixer(id: string) {
-    return this._videoMixerFacotry.store.get('videoMixers').find((vm) => vm.id === id);
+    return this._mixerRepository.getById(id);
   }
 
-  async addVideoMixer(
-    data: Omit<(typeof this._videoMixerFacotry.store.data.videoMixers)[0], 'id'>,
-  ) {
-    const schema = this._videoMixerFacotry.validationSchema(data.type);
+  async addVideoMixer(data: Omit<(typeof this._mixerRepository)['items'][0], 'id'>) {
+    const mixer = this._mixerRepository.add(data);
+    await this._videoMixerFacotry.add(mixer);
 
-    schema.omit({ id: true }).parse(data);
-
-    const videoMixers = this._videoMixerFacotry.store.get('videoMixers');
-    const newVideoMixer = {
-      ...data,
-      id: randomUUID() as string,
-    } as (typeof videoMixers)[0];
-    videoMixers.push(newVideoMixer);
-
-    this._videoMixerFacotry.store.set('videoMixers', videoMixers);
-    await this._videoMixerFacotry.add(newVideoMixer);
-
-    return newVideoMixer;
+    return mixer;
   }
 
-  async updateVideoMixer(videoMixer: (typeof this._videoMixerFacotry.store.data.videoMixers)[0]) {
-    const videoMixers = this._videoMixerFacotry.store.get('videoMixers');
-    const index = videoMixers.findIndex((vm) => vm.id === videoMixer.id);
-    if (index === -1) return;
-    videoMixers.splice(index, 1, videoMixer);
-    this._videoMixerFacotry.store.set('videoMixers', videoMixers);
+  async updateVideoMixer(data: (typeof this._mixerRepository)['items'][0]) {
+    const videoMixer = this._mixerRepository.update(data.id, data);
+    if (!videoMixer) return;
 
     await this._videoMixerFacotry.remove(videoMixer.id);
     await this._videoMixerFacotry.add(videoMixer);
   }
 
   async removeVideoMixer(id: string) {
-    const videoMixers = this._videoMixerFacotry.store.get('videoMixers');
-    const index = videoMixers.findIndex((vm) => vm.id === id);
-    const videoMixer = videoMixers[index];
+    this._mixerRepository.delete(id);
 
-    if (index === -1) return;
-    videoMixers.splice(index, 1);
-    this._videoMixerFacotry.store.set('videoMixers', videoMixers);
-
-    await this._videoMixerFacotry.remove(videoMixer.id);
+    await this._videoMixerFacotry.remove(id);
   }
 
   async getScources() {

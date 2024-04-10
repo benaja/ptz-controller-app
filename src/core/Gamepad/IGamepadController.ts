@@ -5,7 +5,9 @@ import { z } from 'zod';
 export const baseGamepadSchema = z.object({
   id: z.string(),
   name: z.string(),
-  ip: z.string(),
+  videoMixerId: z.string().nullable(),
+  keyBindings: z.record(z.number()),
+  gamepadId: z.string(),
 });
 
 export type BaseGamepadConfig = z.infer<typeof baseGamepadSchema>;
