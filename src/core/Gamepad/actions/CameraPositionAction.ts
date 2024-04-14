@@ -9,9 +9,11 @@ class CameraPositionAction extends ButtonAction {
     const camera = await this.getSelectedCamera();
     if (!camera) return;
 
-    const cameraConfig = await this.params.cameraFacotry.store
-      .get('cameras')
-      .filter((c) => c.id === camera.id)[0];
+    const cameraConfig = await this.params.cameraFacotry.cameraRepository
+      .getAll()
+      .find((c) => c.id === camera.id);
+    if (!cameraConfig) return;
+
     const positions = cameraConfig.positions;
     const position = positions?.[this.positionNumber];
     if (!position) return;
@@ -26,14 +28,19 @@ class CameraPositionAction extends ButtonAction {
     const camera = await this.getSelectedCamera();
     if (!camera) return;
 
-    const cameraConfig = await this.params.cameraFacotry.store.get('cameras');
+    const cameraConfig = await this.params.cameraFacotry.cameraRepository.getAll();
 
-    const currentCameraConfig = cameraConfig.filter((c) => c.id === camera.id)[0];
+    const currentCameraConfig = cameraConfig.find((c) => c.id === camera.id);
+    if (!currentCameraConfig) return;
+
     if (!currentCameraConfig.positions) {
       currentCameraConfig.positions = {};
     }
     currentCameraConfig.positions[this.positionNumber] = await camera.getCurrentPosition();
-    await this.params.cameraFacotry.store.set('cameras', cameraConfig);
+    await this.params.cameraFacotry.cameraRepository.update(
+      currentCameraConfig.id,
+      currentCameraConfig,
+    );
   }
 }
 

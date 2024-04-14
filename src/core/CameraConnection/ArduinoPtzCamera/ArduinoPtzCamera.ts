@@ -120,7 +120,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
 
   sheduleUpdate = throttle((action: string, data?: Record<string, any>) => {
     this.sendUpdate(action, data);
-  }, 20);
+  }, 50);
 
   sendUpdate(action: string, data?: Record<string, any>): void {
     console.log('sending update to', this.config.ip, action, data);

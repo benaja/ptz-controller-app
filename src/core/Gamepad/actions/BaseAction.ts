@@ -1,6 +1,7 @@
 import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { ICameraConnection } from '@core/CameraConnection/ICameraConnection';
 import { IVideoMixer } from '@core/VideoMixer/IVideoMixer';
+import { CameraRepository } from '@core/repositories/CameraRepository';
 
 export type ActionParams = {
   getPreviewCamera: () => ICameraConnection | null;
