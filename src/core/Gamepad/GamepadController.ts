@@ -28,6 +28,7 @@ import {
   CameraPosition4Action,
 } from './actions/CameraPositionAction';
 import { GamepadConfig } from '@core/repositories/GamepadRepository';
+import { INotificationApi } from '@core/api/INotificationApi';
 
 export class GamepadController {
   private keyBindings: Record<string, number>;
@@ -77,6 +78,7 @@ export class GamepadController {
       getOnAirCamera: this.getOnAirCamera.bind(this),
       getVideoMixer: this.getVideoMixer.bind(this),
       getSelectedCamera: this.getSelectedCamera.bind(this),
+      notificationApi: this._notificationApi,
       setSelectCamera: (camera) => {
         this.activeCamera = camera;
         console.log('setSelectCamera', camera);
@@ -89,6 +91,7 @@ export class GamepadController {
     private _config: GamepadConfig,
     private _cameraFactory: CameraFactory,
     private _videoMixerFactory: VideomixerFactory,
+    private _notificationApi: INotificationApi,
     keyBindings: Record<string, number>,
   ) {
     this.keyBindings = keyBindings;

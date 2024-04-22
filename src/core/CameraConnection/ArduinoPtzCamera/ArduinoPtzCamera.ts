@@ -4,6 +4,7 @@ import { throttle } from '@main/utils/throttle';
 import { RelativeCameraState } from './AurduinoPtzCameraState';
 import { CameraConnectionType } from '../CameraConnectionTypes';
 import { z } from 'zod';
+import { INotificationApi } from '@core/api/INotificationApi';
 
 export const arduinoPtzCameraSchema = baseCameraConfigSchema.extend({
   type: z.literal(CameraConnectionType.ArduinoPtzCamera),
@@ -146,7 +147,10 @@ export class ArduinoPtzCamera implements ICameraConnection {
       this.websocket?.once('message', (data: WebSocket.Data) => {
         const response = JSON.parse(data.toString());
 
-        console.log('response', response);
+        console.log('response', response.payload);
+        if (response.payload.zoom && typeof response.payload.zoom === 'string') {
+          response.payload.zoom = 0;
+        }
 
         resolve(response.payload);
 

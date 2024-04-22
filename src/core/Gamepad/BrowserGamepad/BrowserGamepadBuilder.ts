@@ -7,6 +7,7 @@ import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
 import { defaultKeyBindings } from '@core/Gamepad/KeyBindings';
 import { GamepadConfig } from '@core/repositories/GamepadRepository';
+import { INotificationApi } from '@core/api/INotificationApi';
 
 export type BrowserGamepadConfig = z.infer<typeof baseGamepadSchema>;
 
@@ -14,6 +15,7 @@ export class BrowserGamepadBuilder implements IBuilder<IGamepadController> {
   public constructor(
     private _cameraFactory: CameraFactory,
     private _videoMixerFactory: VideomixerFactory,
+    private _notificationApi: INotificationApi,
   ) {}
 
   public supportedTypes(): string[] {
@@ -36,6 +38,7 @@ export class BrowserGamepadBuilder implements IBuilder<IGamepadController> {
           config,
           this._cameraFactory,
           this._videoMixerFactory,
+          this._notificationApi,
           defaultKeyBindings,
         );
       default:

@@ -1,6 +1,7 @@
 import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { ICameraConnection } from '@core/CameraConnection/ICameraConnection';
 import { IVideoMixer } from '@core/VideoMixer/IVideoMixer';
+import { INotificationApi } from '@core/api/INotificationApi';
 import { CameraRepository } from '@core/repositories/CameraRepository';
 
 export type ActionParams = {
@@ -9,6 +10,7 @@ export type ActionParams = {
   getVideoMixer: () => IVideoMixer | null;
   getSelectedCamera: () => ICameraConnection | null;
   setSelectCamera: (camera: 'preview' | 'onAir') => void;
+  notificationApi: INotificationApi;
   cameraFacotry: CameraFactory;
 };
 export abstract class BaseAction {

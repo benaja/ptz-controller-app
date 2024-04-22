@@ -70,3 +70,5 @@ contextBridge.exposeInMainWorld(
     'getSources',
   ]),
 );
+
+contextBridge.exposeInMainWorld('notificationApi', registerEndpoints(['notify']));

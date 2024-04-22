@@ -1,12 +1,18 @@
-import { IBuilder, IConfig, IVideoMixer } from '@core';
-import { Passthrough } from './Passthrough';
+import { IBuilder } from '@core/GenericFactory/IBuilder';
+import { IVideoMixer } from '../IVideoMixer';
+import { Passthrough, PassthroughMixerConfig, passthroughMixerConfigSchema } from './Passthrough';
+import { VideoMixerType } from '../VideoMixerType';
 
 export class PassthroughBuilder implements IBuilder<IVideoMixer> {
-  public supportedTypes(): Promise<string[]> {
-    return Promise.resolve(['passthrough/default']);
+  public supportedTypes() {
+    return [VideoMixerType.Passthrough];
   }
 
-  public async build(config: IConfig): Promise<IVideoMixer> {
+  public validationSchema() {
+    return passthroughMixerConfigSchema;
+  }
+
+  public async build(config: PassthroughMixerConfig): Promise<IVideoMixer> {
     const mixer = new Passthrough(config);
     return mixer;
   }

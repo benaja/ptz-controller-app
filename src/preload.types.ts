@@ -2,6 +2,7 @@ import { ConnectedGamepadApi } from '@core/api/ConnectedGamepadApi';
 import { CameraApi } from '@core/api/CameraApi';
 import { GamepadConfigApi } from '@core/api/GamepadConfigApi';
 import { VideoMixerApi } from '@core/api/videoMixerApi';
+import { NotificationApi } from '@core/api/NotificationApi';
 
 type AsyncApiMethods<T> = {
   [K in keyof T]: T[K] extends (...args: any[]) => any
@@ -17,5 +18,6 @@ declare global {
     gamepadConfigApi: AsyncApiMethods<GamepadConfigApi>;
     cameraApi: AsyncApiMethods<CameraApi>;
     videoMixerApi: AsyncApiMethods<VideoMixerApi>;
+    notificationApi: AsyncApiMethods<NotificationApi>;
   }
 }

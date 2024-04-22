@@ -1,72 +1,91 @@
-import { IConfig, IConnection, IImageSelectionChange, IVideoMixer } from '@core';
+import { IVideoMixer, MixerSource, baseVideoMixerSchema } from '../IVideoMixer';
+import { z } from 'zod';
+import { VideoMixerType } from '../VideoMixerType';
 
-import { EventEmitter } from 'events';
-import { StrictEventEmitter } from 'strict-event-emitter-types';
+export const passthroughMixerConfigSchema = baseVideoMixerSchema.extend({
+  type: z.literal(VideoMixerType.Passthrough),
+});
+
+export type PassthroughMixerConfig = z.infer<typeof passthroughMixerConfigSchema>;
 
 export class Passthrough implements IVideoMixer {
-  private readonly _selectedChangeEmitter = new EventEmitter() as StrictEventEmitter<
-    EventEmitter,
-    IImageSelectionChange
-  >;
-  private _currentOnAir = 0;
-  private _currentPreview = 0;
+  readonly name: VideoMixerType = VideoMixerType.Passthrough;
+  readonly label: string = 'Passthrough';
 
-  constructor(_config: IConfig) {
-    // nothing to construc here
-  }
+  readonly isConnected: boolean = true;
+
+  private _currentOnAir = 0;
+  private _currentPreview = 1;
+
+  constructor(private _config: PassthroughMixerConfig) {}
 
   public get connectionString(): string {
     return 'passthrough';
   }
 
-  public async isKeySet(_key: number): Promise<boolean> {
-    return false;
+  connect(config: Record<string, any>) {
+    return;
   }
 
-  public async getAuxilarySelection(_aux: number): Promise<number> {
+  cut(): void {
+    const onAir = this._currentOnAir;
+    this._currentOnAir = this._currentPreview;
+    this._currentPreview = onAir;
+  }
+  changeInput(input: number): Promise<void> {
+    return Promise.resolve();
+  }
+  nextInput(): Promise<void> {
+    return Promise.resolve();
+  }
+  previousInput(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  toggleKey(key: number): void {}
+  runMacro(macro: number): void {}
+  /**
+   * This function allows to get whether the key is set or not
+   * @param key The key which's state is requested
+   */
+  isKeySet(key: number): Promise<boolean> {
+    return Promise.resolve(false);
+  }
+
+  /**
+   * Get the current selected output for the given auxilary output
+   * @param aux The aux output which's selected source is of interest
+   */
+  getAuxilarySelection(aux: number): Promise<number> {
     return Promise.resolve(0);
   }
 
-  public imageSelectionChangeGet(): StrictEventEmitter<EventEmitter, IImageSelectionChange> {
-    return this._selectedChangeEmitter;
+  async getSources(): Promise<MixerSource[]> {
+    return [
+      { id: '0', name: 'Passthrough 1' },
+      { id: '1', name: 'Passthrough 2' },
+      { id: '2', name: 'Passthrough 3' },
+      { id: '3', name: 'Passthrough 4' },
+    ];
+  }
+  async getPreview(): Promise<MixerSource | null> {
+    const sources = await this.getSources();
+    return sources[this._currentPreview];
+  }
+  async getOnAir(): Promise<MixerSource | null> {
+    const sources = await this.getSources();
+    return sources[this._currentOnAir];
   }
 
-  public cut(): void {
-    const oldPreview = this._currentPreview;
-    this._currentPreview = this._currentOnAir;
-    this._currentOnAir = oldPreview;
-    this._selectedChangeEmitter.emit('previewChange', this._currentOnAir, false);
+  async getPreviewSources(): Promise<MixerSource[]> {
+    const preview = await this.getPreview();
+    return preview ? [preview] : [];
   }
 
-  public auto(): void {
-    const oldPreview = this._currentPreview;
-    this._currentPreview = this._currentOnAir;
-    this._currentOnAir = oldPreview;
-    this._selectedChangeEmitter.emit('previewChange', this._currentOnAir, false);
+  async getOnAirSources(): Promise<MixerSource[]> {
+    const onAir = await this.getOnAir();
+    return onAir ? [onAir] : [];
   }
 
-  public changeInput(newInput: number): void {
-    this._currentPreview = newInput;
-    this._selectedChangeEmitter.emit('previewChange', this._currentOnAir, false);
-  }
-
-  public toggleKey(_key: number): void {
-    // intentionally nothing
-  }
-
-  public runMacro(_macro: number): void {
-    // intentionally nothing
-  }
-
-  public subscribe(i: IConnection): void {
-    i.change(true);
-  }
-
-  public unsubscribe(_i: IConnection): void {
-    // intentionally nothing
-  }
-
-  dispose(): Promise<void> {
-    return Promise.resolve();
-  }
+  dispose(): void {}
 }

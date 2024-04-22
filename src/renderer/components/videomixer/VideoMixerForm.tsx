@@ -29,6 +29,10 @@ export default function VideoMixerForm({ form, onChange }: Props) {
       label: 'Vmix',
       value: VideoMixerType.Vmix,
     },
+    {
+      label: 'Pass Through',
+      value: VideoMixerType.Passthrough,
+    },
   ];
 
   function set(name: keyof VideoMixerFormType, value: string | number | null) {

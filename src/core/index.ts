@@ -11,6 +11,7 @@ import { TallyHub } from './Tally/TallyHub';
 import { CameraRepository } from './repositories/CameraRepository';
 import { VideoMixerRepository } from './repositories/VideoMixerRepository';
 import { GamepadRepository } from './repositories/GamepadRepository';
+import { NotificationApi } from './api/NotificationApi';
 
 export class Core implements IDisposable {
   public readonly cameraFactory: CameraFactory;
@@ -26,11 +27,15 @@ export class Core implements IDisposable {
   public readonly mixerRepository: VideoMixerRepository;
   public readonly gamepadRepository: GamepadRepository;
 
+  public readonly notificationApi: NotificationApi;
+
   public readonly tallyController: TallyHub;
 
   private readonly connectedGamepadsStore = new ConnectedGamepadStore();
 
   constructor() {
+    this.notificationApi = new NotificationApi();
+
     this.cameraRepository = new CameraRepository();
     this.mixerRepository = new VideoMixerRepository();
     this.gamepadRepository = new GamepadRepository();

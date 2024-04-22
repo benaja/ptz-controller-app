@@ -20,7 +20,7 @@ class CameraPositionAction extends ButtonAction {
 
     camera.goToPosition({
       ...position,
-      speed: 1,
+      speed: 100,
     });
   }
 
@@ -41,6 +41,11 @@ class CameraPositionAction extends ButtonAction {
       currentCameraConfig.id,
       currentCameraConfig,
     );
+
+    this.params.notificationApi.notify({
+      title: `Position ${this.positionNumber} saved`,
+      body: `Position: ${currentCameraConfig.positions[this.positionNumber]}`,
+    });
   }
 }
 
