@@ -2,7 +2,6 @@ import type { Configuration } from 'webpack';
 import path from 'path';
 import { rules, alias } from './webpack.rules';
 import { plugins } from './webpack.plugins';
-import nodeExternals from 'webpack-node-externals';
 
 export const mainConfig: Configuration = {
   /**
@@ -11,7 +10,6 @@ export const mainConfig: Configuration = {
    */
   entry: './src/main/index.ts',
 
-  externals: [nodeExternals()],
   // Put your normal webpack config below here
 
   module: {

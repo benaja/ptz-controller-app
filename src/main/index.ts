@@ -38,7 +38,10 @@ const createWindow = () => {
 
   // Open the DevTools.
   // gamepadWindow.webContents.openDevTools();
-  mainWindow.webContents.openDevTools();
+  // only open dev tools in dev mode
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.webContents.openDevTools();
+  }
   mainWindow.show();
 };
 

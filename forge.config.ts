@@ -11,6 +11,8 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import MakerWix from '@electron-forge/maker-wix';
 import MakerDMG from '@electron-forge/maker-dmg';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const config: ForgeConfig = {
   packagerConfig: {
@@ -20,12 +22,12 @@ const config: ForgeConfig = {
   makers: [
     new MakerSquirrel({}),
     new MakerZIP({}, ['darwin', 'linux', 'win32']),
-    new MakerRpm({}),
-    new MakerDeb({}),
-    new MakerWix({}),
-    new MakerDMG({
-      name: 'PTZ Controller',
-    }),
+    // new MakerRpm({}),
+    // new MakerDeb({}),
+    // new MakerWix({}),
+    // new MakerDMG({
+    //   name: 'PTZ Controller',
+    // }),
   ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
@@ -63,6 +65,19 @@ const config: ForgeConfig = {
       [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
+  ],
+  publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      config: {
+        repository: {
+          owner: 'benaja',
+          name: 'ptz-controller-app',
+        },
+        prerelease: true,
+        authToken: process.env.GITHUB_TOKEN,
+      },
+    },
   ],
 };
 

@@ -5,6 +5,9 @@ const ForkTsCheckerWebpackPlugin: typeof IForkTsCheckerWebpackPlugin = require('
 
 export const plugins = [
   // new ForkTsCheckerWebpackPlugin({
+  //   logger: 'webpack-infrastructure',
+  // }),
+  // new ForkTsCheckerWebpackPlugin({
   //   logger: {
   //     log: (message: string) => {},
   //     error: (message: string) => {},
