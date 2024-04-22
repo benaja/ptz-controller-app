@@ -1,5 +1,6 @@
 name: Release
 on:
+  workflow_dispatch:
   workflow_call:
     inputs:
       dry-run:
@@ -24,7 +25,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [windows-latest]
 
     runs-on: ${{ matrix.os }}
 
