@@ -7,13 +7,12 @@
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    // "noImplicitAny": true,
-    // "sourceMap": true,
+    "noImplicitAny": false,
+    "sourceMap": true,
     "baseUrl": ".",
     "outDir": "dist",
-    // "moduleResolution": "node",
     "strictNullChecks": true,
-    "resolveJsonModule": false,
+    "resolveJsonModule": true,
     "jsx": "react-jsx",
     "paths": {
       "@/*": ["./src/main/*"],
@@ -23,5 +22,5 @@
       "*": ["node_modules/*"]
     }
   },
-  "include": ["src", "*.ts", "*.html", "*.js"]
+  "include": ["src/**/*"]
 }

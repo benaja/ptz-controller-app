@@ -59,7 +59,6 @@
     "@electron-forge/plugin-fuses": "^7.4.0",
     "@heroicons/react": "^2.0.18",
     "@microsoft/signalr": "^8.0.0",
-    "atem-connection": "^3.4.0",
     "axios": "^1.6.2",
     "clsx": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
