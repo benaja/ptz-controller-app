@@ -1,3 +1,3 @@
 export interface IImageSelectionChange {
-    previewChange(preview: number, onAir: boolean): void;
+  previewChange(preview: number, onAir: boolean): void;
 }
