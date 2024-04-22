@@ -4,7 +4,6 @@ import AppButton from '../ui/AppButton';
 import Container from '../ui/Container';
 import { Link } from 'react-router-dom';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import { VideoMixerConfig } from '@core/VideoMixer/VideoMixerFactory';
 import { VideoMixerApi } from '@core/api/videoMixerApi';
 
 export default function VideoMixers() {

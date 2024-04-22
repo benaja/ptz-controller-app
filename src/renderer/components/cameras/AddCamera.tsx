@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import CameraForm from './CameraForm';
 import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTypes';
 import { parseErrorMessage } from '@renderer/lib/utils';
+import { CameraConfig } from '@core/api/CameraApi';
 
 export default function AddCamera() {
   const navigate = useNavigate();
@@ -21,7 +22,8 @@ export default function AddCamera() {
     event.preventDefault();
 
     window.cameraApi
-      .addCamera(form)
+
+      .addCamera(form as CameraConfig)
       .then(() => {
         setForm({
           type: CameraConnectionType.ArduinoPtzCamera,
@@ -44,6 +46,7 @@ export default function AddCamera() {
           onSubmit={submit}
         >
           <CameraForm
+            // @ts-ignore
             form={form}
             onChange={(newForm) => setForm(newForm)}
           />

@@ -31,7 +31,7 @@ export function startWebsocketServer() {
 
       clients.set(cameraId, ws);
 
-      emit('cameraConnected', cameraId);
+      // emit('cameraConnected', cameraId);
     });
 
     ws.on('close', () => {

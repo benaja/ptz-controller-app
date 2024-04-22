@@ -15,8 +15,10 @@ type Permission = Parameters<
  * In development mode you need allow open `VITE_DEV_SERVER_URL`.
  */
 const ALLOWED_ORIGINS_AND_PERMISSIONS = new Map<string, Set<Permission>>(
+  // @ts-ignore
   import.meta.env.DEV && import.meta.env.VITE_DEV_SERVER_URL
-    ? [[new URL(import.meta.env.VITE_DEV_SERVER_URL).origin, new Set()]]
+    ? // @ts-ignore
+      [[new URL(import.meta.env.VITE_DEV_SERVER_URL).origin, new Set()]]
     : [],
 );
 
@@ -50,6 +52,7 @@ app.on('web-contents-created', (_, contents) => {
     // Prevent navigation
     event.preventDefault();
 
+    // @ts-ignore
     if (import.meta.env.DEV) {
       console.warn(`Blocked navigating to disallowed origin: ${origin}`);
     }
@@ -67,6 +70,7 @@ app.on('web-contents-created', (_, contents) => {
     const permissionGranted = !!ALLOWED_ORIGINS_AND_PERMISSIONS.get(origin)?.has(permission);
     callback(permissionGranted);
 
+    // @ts-ignore
     if (!permissionGranted && import.meta.env.DEV) {
       console.warn(`${origin} requested permission for '${permission}', but was rejected.`);
     }
@@ -88,6 +92,7 @@ app.on('web-contents-created', (_, contents) => {
     if (ALLOWED_EXTERNAL_ORIGINS.has(origin as `https://${string}`)) {
       // Open url in default browser.
       shell.openExternal(url).catch(console.error);
+      // @ts-ignore
     } else if (import.meta.env.DEV) {
       console.warn(`Blocked the opening of a disallowed origin: ${origin}`);
     }
@@ -106,6 +111,8 @@ app.on('web-contents-created', (_, contents) => {
   contents.on('will-attach-webview', (event, webPreferences, params) => {
     const { origin } = new URL(params.src);
     if (!ALLOWED_ORIGINS_AND_PERMISSIONS.has(origin)) {
+      // @ts-ignore
+
       if (import.meta.env.DEV) {
         console.warn(`A webview tried to attach ${params.src}, but was blocked.`);
       }

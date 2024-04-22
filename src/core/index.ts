@@ -56,8 +56,6 @@ export class Core implements IDisposable {
     );
     this.cameraApi = new CameraApi(this.cameraFactory, this.cameraRepository);
     this.videoMixerApi = new VideoMixerApi(this.mixerFactory, this.mixerRepository);
-
-    this.tallyController = new TallyHub(this.cameraFactory, this.mixerFactory);
   }
 
   public async bootstrap(): Promise<void> {

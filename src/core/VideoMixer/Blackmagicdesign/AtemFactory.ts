@@ -1,13 +1,8 @@
 import { IConnection } from '@core/GenericFactory/IConnection';
 import { ISubscription } from '@core/GenericFactory/ISubscription';
 import { Atem } from 'atem-connection';
-import { EventEmitter } from 'events';
-import { StrictEventEmitter } from 'strict-event-emitter-types';
 
 class AtemConnectionmanager implements ISubscription<IConnection> {
-  private readonly _connectionEmitter: StrictEventEmitter<EventEmitter, IConnection> =
-    new EventEmitter();
-
   private _connected = false;
 
   constructor(atem: Atem) {
@@ -25,14 +20,10 @@ class AtemConnectionmanager implements ISubscription<IConnection> {
 
   subscribe(i: IConnection): void {
     i.change(this._connected);
-    this._connectionEmitter.on('change', i.change);
   }
-  unsubscribe(i: IConnection): void {
-    this._connectionEmitter.removeListener('change', i.change);
-  }
+  unsubscribe(i: IConnection): void {}
 
   private setConnected(value: boolean) {
-    this._connectionEmitter.emit('change', value);
     this._connected = value;
   }
 }
@@ -49,7 +40,7 @@ class AtemConnection implements IAtemConnection {
   readonly connection: AtemConnectionmanager;
   private startupResult: Promise<void> | undefined = undefined;
 
-  constructor(private ip: string, private logger: ILogger) {
+  constructor(private ip: string) {
     this.atem = new Atem();
 
     this.atem.on('error', (error) => this.error(error));
@@ -68,12 +59,8 @@ class AtemConnection implements IAtemConnection {
     return this.startupResult;
   }
 
-  private error(e: string) {
-    this.logger.error(`Atem-${this.ip}:${e}`);
-  }
-  private log(log: string) {
-    this.logger.log(`Atem-${this.ip}:${log}`);
-  }
+  private error(e: string) {}
+  private log(log: string) {}
 }
 
 export class AtemFactory {
@@ -86,7 +73,7 @@ export class AtemFactory {
       return requestedConnection.connection;
     }
 
-    const retval = new AtemConnection(ip, this.logger);
+    const retval = new AtemConnection(ip);
     this.connections.set(ip, { connection: retval, usages: 1 });
     return retval;
   }

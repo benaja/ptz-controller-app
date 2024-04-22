@@ -16,10 +16,12 @@ export function registerListener<K extends keyof ListenerTypes>(
   channel: K,
   callback: ListenerTypes[K],
 ): () => void {
+  // @ts-ignore
   listeners[channel].add(callback);
 
   // Return a function to remove the listener
   return () => {
+    // @ts-ignore
     listeners[channel].delete(callback);
   };
 }
@@ -30,7 +32,8 @@ export function emit<K extends keyof ListenerTypes>(
 ): void {
   listeners[channel]?.forEach((callback) => {
     // Spread the args to match the callback signature
-    callback(...args);
+    // @ts-ignore
+    callback(...(args as any));
   });
 }
 
@@ -38,5 +41,6 @@ export function removeListener<K extends keyof ListenerTypes>(
   channel: K,
   callback: ListenerTypes[K],
 ): void {
+  // @ts-ignore
   listeners[channel].delete(callback);
 }

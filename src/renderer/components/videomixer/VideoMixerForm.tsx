@@ -1,14 +1,9 @@
 import { VideoMixerType } from '@core/VideoMixer/VideoMixerType';
 import Select from '../ui/Select';
 import TextField from '../ui/TextField';
+import { VideoMixerConfig } from '@core/repositories/VideoMixerRepository';
 
-export type VideoMixerFormType = {
-  type: VideoMixerType;
-  name: string;
-  ip: string;
-  password?: string | null;
-  mixEffectBlock?: number | null;
-};
+export type VideoMixerFormType = VideoMixerConfig;
 
 type Props = {
   form: VideoMixerFormType;
@@ -35,7 +30,7 @@ export default function VideoMixerForm({ form, onChange }: Props) {
     },
   ];
 
-  function set(name: keyof VideoMixerFormType, value: string | number | null) {
+  function set(name: string, value: string | number | null) {
     onChange({
       ...form,
       [name]: value,
@@ -65,11 +60,13 @@ export default function VideoMixerForm({ form, onChange }: Props) {
         required
       />
 
-      <TextField
-        label="Password"
-        value={form.password || ''}
-        onChange={(password) => set('password', password)}
-      />
+      {form.type === VideoMixerType.OBS && (
+        <TextField
+          label="Password"
+          value={form.password || ''}
+          onChange={(password) => set('password', password)}
+        />
+      )}
 
       {form.type === VideoMixerType.BlackmagicAtem && (
         <TextField

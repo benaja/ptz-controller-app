@@ -6,6 +6,7 @@ import GamepadForm, { type GamepadFormType } from './GamepadForm';
 import AppButton from '../ui/AppButton';
 import { GamepadResponse } from '@core/api/GamepadConfigApi';
 import { parseErrorMessage } from '@renderer/lib/utils';
+import { GamepadConfig } from '@core/repositories/GamepadRepository';
 
 export default function EditGampad() {
   const { id } = useParams<{ id: string }>();
@@ -38,7 +39,7 @@ export default function EditGampad() {
         id,
         keyBindings: {},
         ...form,
-      })
+      } as GamepadConfig)
       .then(() => {
         navigate('/gamepads');
       })

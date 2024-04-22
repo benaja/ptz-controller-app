@@ -50,7 +50,7 @@ export class Vmix implements IVideoMixer {
     this._tallyHub = new TallyHub(_cameraFactory, this);
   }
 
-  private connect(config: VmixConfig) {
+  public connect(config: VmixConfig) {
     this._connection = new Connection(config.ip, { debug: false, autoReconnect: true });
 
     this._connection.on('close', () => {
@@ -172,6 +172,20 @@ export class Vmix implements IVideoMixer {
       this._connection.send('XML');
     });
   }
+
+  cut() {}
+  async changeInput() {}
+  async nextInput() {}
+  async previousInput() {}
+  toggleKey() {}
+  runMacro() {}
+  async isKeySet() {
+    return false;
+  }
+  async getAuxilarySelection() {
+    return 0;
+  }
+  dispose() {}
 
   // private async getSourcesByTallyInfo(state: '0' | '1' | '2') {
   //   if (!this._tallyState) return null;

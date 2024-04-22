@@ -7,13 +7,26 @@ import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-nati
 import { WebpackPlugin } from '@electron-forge/plugin-webpack';
 import { mainConfig } from './webpack.main.config';
 import { rendererConfig } from './webpack.renderer.config';
+import { FuseV1Options, FuseVersion } from '@electron/fuses';
+import { FusesPlugin } from '@electron-forge/plugin-fuses';
+import MakerWix from '@electron-forge/maker-wix';
+import MakerDMG from '@electron-forge/maker-dmg';
 
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
   },
   rebuildConfig: {},
-  makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
+  makers: [
+    new MakerSquirrel({}),
+    new MakerZIP({}, ['darwin', 'linux', 'win32']),
+    new MakerRpm({}),
+    new MakerDeb({}),
+    new MakerWix({}),
+    new MakerDMG({
+      name: 'PTZ Controller',
+    }),
+  ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({
@@ -41,27 +54,15 @@ const config: ForgeConfig = {
       },
       loggerPort: 9001,
     }),
-    // new VitePlugin({
-    //   // `build` can specify multiple entry builds, which can be Main process, Preload scripts, Worker process, etc.
-    //   // If you are familiar with Vite configuration, it will look really familiar.
-    //   build: [
-    //     {
-    //       // `entry` is just an alias for `build.lib.entry` in the corresponding file of `config`.
-    //       entry: 'src/main/index.ts',
-    //       config: 'vite.main.config.ts',
-    //     },
-    //     {
-    //       entry: 'src/preload.ts',
-    //       config: 'vite.preload.config.ts',
-    //     },
-    //   ],
-    //   renderer: [
-    //     {
-    //       name: 'main_window',
-    //       config: 'vite.renderer.config.ts',
-    //     },
-    //   ],
-    // }),
+    new FusesPlugin({
+      version: FuseVersion.V1,
+      [FuseV1Options.RunAsNode]: false,
+      [FuseV1Options.EnableCookieEncryption]: true,
+      [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
+      [FuseV1Options.EnableNodeCliInspectArguments]: false,
+      [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
+      [FuseV1Options.OnlyLoadAppFromAsar]: true,
+    }),
   ],
 };
 

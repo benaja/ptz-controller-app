@@ -1,12 +1,10 @@
 import { AtemFactory, IAtemConnection } from './AtemFactory';
 
 import { AtemState } from 'atem-connection';
-import { EventEmitter } from 'events';
 import { MixEffect } from 'atem-connection/dist/state/video';
 import { IVideoMixer, baseVideoMixerSchema } from '../IVideoMixer';
 import { z } from 'zod';
 import { VideoMixerType } from '../VideoMixerType';
-import { IImageSelectionChange } from '../IImageSelectionChange';
 import { IConnection } from '@core/GenericFactory/IConnection';
 
 export const atemMixerConfigSchema = baseVideoMixerSchema.extend({
@@ -18,10 +16,7 @@ export type AtemMixerConfig = z.infer<typeof atemMixerConfigSchema>;
 
 export class Atem implements IVideoMixer {
   private readonly connection: IAtemConnection;
-  private readonly _selectedChangeEmitter = new EventEmitter() as StrictEventEmitter<
-    EventEmitter,
-    IImageSelectionChange
-  >;
+
   private readonly _currentConnection: {
     selectedInput: number;
     onAir: boolean;
@@ -62,10 +57,6 @@ export class Atem implements IVideoMixer {
 
   public startup(): Promise<void> {
     return this.connection.startup();
-  }
-
-  public imageSelectionChangeGet(): StrictEventEmitter<EventEmitter, IImageSelectionChange> {
-    return this._selectedChangeEmitter;
   }
 
   public cut(): void {
@@ -133,7 +124,6 @@ export class Atem implements IVideoMixer {
     ) {
       return;
     }
-    this._selectedChangeEmitter.emit('previewChange', state.previewInput, newPreviewIsOnAir);
 
     this._currentConnection.selectedInput = state.previewInput;
     this._currentConnection.onAir = newPreviewIsOnAir;
@@ -167,5 +157,25 @@ export class Atem implements IVideoMixer {
         });
       }
     });
+  }
+
+  isConnected = false;
+  async nextInput() {}
+  async previousInput() {}
+  connect() {}
+  async getSources() {
+    return [];
+  }
+  async getPreview() {
+    return null;
+  }
+  async getOnAir() {
+    return null;
+  }
+  async getPreviewSources() {
+    return [];
+  }
+  async getOnAirSources() {
+    return [];
   }
 }

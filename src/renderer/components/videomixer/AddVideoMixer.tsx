@@ -1,21 +1,20 @@
 import Layout from '@renderer/Layout';
 import Container from '../ui/Container';
-import { useEffect, useState } from 'react';
 import AppButton from '../ui/AppButton';
 import { useNavigate } from 'react-router-dom';
-import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTypes';
 import { VideoMixerType } from '@core/VideoMixer/VideoMixerType';
 import VideoMixerForm, { VideoMixerFormType } from './VideoMixerForm';
+import { useState } from 'react';
 
 export default function AddVideoMixer() {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState<VideoMixerFormType>({
+  const [form, setForm] = useState<Omit<VideoMixerFormType, 'id'>>({
     type: VideoMixerType.OBS,
     name: '',
     ip: '',
+    // @ts-ignore
     password: '',
-    mixEffectBlock: 0,
   });
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -26,6 +25,7 @@ export default function AddVideoMixer() {
         type: VideoMixerType.OBS,
         name: '',
         ip: '',
+        // @ts-ignore
         password: '',
         mixEffectBlock: 0,
       });
@@ -42,6 +42,7 @@ export default function AddVideoMixer() {
           onSubmit={submit}
         >
           <VideoMixerForm
+            // @ts-ignore
             form={form}
             onChange={(newForm) => setForm(newForm)}
           />

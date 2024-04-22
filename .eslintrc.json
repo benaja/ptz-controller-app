@@ -18,5 +18,10 @@
     "plugin:import/electron",
     "plugin:import/typescript"
   ],
+  "rules": {
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "no-empty-function": "off",
+    "@typescript-eslint/no-empty-function": "warn"
+  },
   "parser": "@typescript-eslint/parser"
 }

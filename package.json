@@ -1,12 +1,13 @@
 {
-  "name": "my-new-app",
-  "productName": "my-new-app",
-  "version": "1.0.0",
-  "description": "My Electron application description",
+  "name": "ptz-controller-app",
+  "productName": "ptz-controller-app",
+  "version": "0.0.1",
+  "description": "An App to control PTZ cameras",
   "main": ".webpack/main",
   "scripts": {
     "mock-cameras": "node scripts/mock-cameras.mjs",
     "start": "electron-forge start",
+    "package1": "tsc || exit 0",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
@@ -53,6 +54,9 @@
     "webpack": "^5.89.0"
   },
   "dependencies": {
+    "@electron-forge/maker-dmg": "^7.4.0",
+    "@electron-forge/maker-wix": "^7.4.0",
+    "@electron-forge/plugin-fuses": "^7.4.0",
     "@heroicons/react": "^2.0.18",
     "@microsoft/signalr": "^8.0.0",
     "atem-connection": "^3.4.0",
@@ -71,6 +75,7 @@
     "strict-event-emitter": "^0.5.1",
     "tailwind-merge": "^2.1.0",
     "vmix-js-utils": "^4.0.16",
+    "webpack-node-externals": "^3.0.0",
     "ws": "^8.15.1",
     "xml2js": "^0.6.2",
     "zod": "^3.22.4"

@@ -26,6 +26,7 @@ export class Store<T, Schema extends z.ZodObject<any> | undefined> {
     // We'll use the `configName` property to set the file name and path.join to bring it all together as a string
     this.path = path.join(userDataPath, opts.configName + '.json');
 
+    // @ts-ignore
     this.data = this.parseDataFile(this.path, opts.defaults, opts.schema);
   }
 

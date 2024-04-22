@@ -22,17 +22,18 @@ export const rules: Required<ModuleOptions>['rules'] = [
   {
     test: /\.tsx?$/,
     exclude: /(node_modules|\.webpack)/,
-    use: {
-      loader: 'ts-loader',
-      options: {
-        transpileOnly: true,
-      },
+    loader: 'ts-loader',
+    options: {
+      transpileOnly: true,
     },
   },
   {
     test: /\.ts$/,
-    enforce: 'pre',
-    use: ['source-map-loader'],
+    exclude: /(node_modules|\.webpack)/,
+    loader: 'ts-loader',
+    options: {
+      transpileOnly: true,
+    },
   },
 ];
 

@@ -16,7 +16,6 @@ import { PreviousInputAction } from './actions/PreviousInputAction';
 import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
 import { AxisEventPayload, ButtonEventPayload } from '@core/api/ConnectedGamepadApi';
-import { GetCurrentPositionAction } from './actions/GetCurrentPositionAction';
 import {
   SetActiveCameraToOnAirAction,
   SetActiveCameraToPreviewAction,
@@ -108,7 +107,6 @@ export class GamepadController {
       CutInputAction,
       NextInputAction,
       PreviousInputAction,
-      GetCurrentPositionAction,
       SetActiveCameraToOnAirAction,
       SetActiveCameraToPreviewAction,
       CameraPosition1Action,

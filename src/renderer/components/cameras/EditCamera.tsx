@@ -5,19 +5,19 @@ import AppButton from '../ui/AppButton';
 import { useNavigate, useParams } from 'react-router-dom';
 import CameraForm, { CameraFormType } from './CameraForm';
 import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTypes';
-import { CameraConfig } from '@core/CameraConnection/ArduinoPtzCameraBuilder';
+import { BaseCameraConfig } from '@core/CameraConnection/ICameraConnection';
 
 export default function EditCamera() {
   const { id } = useParams<{ id: string }>();
 
   const navigate = useNavigate();
-  const [camera, setCamera] = useState<CameraConfig | null>(null);
+  const [camera, setCamera] = useState<BaseCameraConfig | null>(null);
 
   const [form, setForm] = useState<CameraFormType>({
     type: CameraConnectionType.ArduinoPtzCamera,
     ip: '',
     number: 0,
-  });
+  } as CameraFormType);
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -28,8 +28,9 @@ export default function EditCamera() {
       .updateCamera({
         ...form,
         id,
-      })
+      } as Partial<BaseCameraConfig> & { id: string })
       .then(() => {
+        // @ts-ignore
         setForm({
           type: CameraConnectionType.ArduinoPtzCamera,
           ip: '',

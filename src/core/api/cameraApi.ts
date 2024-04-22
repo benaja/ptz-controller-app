@@ -1,7 +1,7 @@
 import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { CameraRepository } from '@core/repositories/CameraRepository';
 
-type CameraConfig = CameraRepository['items'][0];
+export type CameraConfig = CameraRepository['items'][0];
 
 export type CameraResponse = CameraConfig & { connected: boolean };
 

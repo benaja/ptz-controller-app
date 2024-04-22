@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
-    // "target": "ESNext",
-    // "module": "ES2020",
+    "target": "ES6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmitOnError": false,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -11,15 +13,15 @@
     "outDir": "dist",
     // "moduleResolution": "node",
     "strictNullChecks": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": false,
     "jsx": "react-jsx",
     "paths": {
       "@/*": ["./src/main/*"],
       "@core/*": ["./src/core/*"],
       "@main/*": ["./src/main/*"],
-      "@renderer/*": ["./src/renderer/*"]
+      "@renderer/*": ["./src/renderer/*"],
+      "*": ["node_modules/*"]
     }
   },
-  "include": ["src", "*.ts", "*.html", "*.js"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src", "*.ts", "*.html", "*.js"]
 }

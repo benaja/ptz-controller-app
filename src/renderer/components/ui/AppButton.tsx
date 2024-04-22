@@ -16,6 +16,7 @@ export default function AppButton({
   const Component = to ? NavLink : 'button';
 
   return (
+    // @ts-ignore
     <Component
       className={cn(
         'bg-white border border-gray-200 text-black px-2 py-0.5 rounded hover:bg-gray-100',

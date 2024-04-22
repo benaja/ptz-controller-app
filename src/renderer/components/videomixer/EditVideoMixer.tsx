@@ -20,7 +20,7 @@ export default function EditVideoMixer() {
       .updateVideoMixer({
         ...form,
         id,
-      })
+      } as VideoMixerFormType)
       .then(() => {
         navigate('/video-mixers');
       });
