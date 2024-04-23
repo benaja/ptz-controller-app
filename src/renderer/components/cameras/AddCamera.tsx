@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import CameraForm from './CameraForm';
 import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTypes';
 import { parseErrorMessage } from '@renderer/lib/utils';
-import { CameraConfig } from '@core/api/CameraApi';
+import { CameraConfig } from '@core/api/CameraApi1';
 
 export default function AddCamera() {
   const navigate = useNavigate();

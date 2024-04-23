@@ -2,7 +2,7 @@ import { GamepadType } from '@core/api/GamepadType';
 import Select from '../ui/Select';
 import TextField from '../ui/TextField';
 import { useEffect, useState } from 'react';
-import { GamepadResponse } from '@core/api/GamepadConfigApi';
+import { GamepadResponse } from '@core/api/GamepadConfigApi1';
 import { ConnectedGamepadResponse } from '@core/api/ConnectedGamepadApi';
 
 export type GamepadFormType = {

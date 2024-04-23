@@ -3,7 +3,7 @@ import { IBuilder } from '../../GenericFactory/IBuilder';
 import { ICameraConnection } from '../ICameraConnection';
 import { CameraConnectionType } from '../CameraConnectionTypes';
 import { arduinoPtzCameraSchema } from '../ArduinoPtzCamera/ArduinoPtzCamera';
-import { CameraConfig } from '@core/api/CameraApi';
+import { CameraConfig } from '@core/api/CameraApi1';
 
 export class CgfPtzArduinoPtzCamera implements IBuilder<ICameraConnection> {
   public supportedTypes(): string[] {

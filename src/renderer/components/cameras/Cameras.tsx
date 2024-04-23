@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import AppButton from '../ui/AppButton';
 import { Link, NavLink } from 'react-router-dom';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import { CameraResponse } from '@core/api/CameraApi';
+import { CameraResponse } from '@core/api/CameraApi1';
 
 export default function Cameras() {
   const [cameras, setCameras] = useState<CameraResponse[]>([]);

@@ -4,7 +4,7 @@ import Container from '../ui/Container';
 import { useEffect, useState } from 'react';
 import GamepadForm, { type GamepadFormType } from './GamepadForm';
 import AppButton from '../ui/AppButton';
-import { GamepadResponse } from '@core/api/GamepadConfigApi';
+import { GamepadResponse } from '@core/api/GamepadConfigApi1';
 import { parseErrorMessage } from '@renderer/lib/utils';
 import { GamepadConfig } from '@core/repositories/GamepadRepository';
 
