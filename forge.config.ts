@@ -25,9 +25,9 @@ const config: ForgeConfig = {
     // new MakerRpm({}),
     // new MakerDeb({}),
     // new MakerWix({}),
-    // new MakerDMG({
-    //   name: 'PTZ Controller',
-    // }),
+    new MakerDMG({
+      name: 'PTZ Controller',
+    }),
   ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
