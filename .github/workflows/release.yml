@@ -36,12 +36,18 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          cache: 'npm'
+          # cache: 'npm'
           node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        if: matrix.os == 'macos-latest'
+        with:
+          python-version: '3.11'
 
       - name: Install appdmg for macOS
         if: matrix.os == 'macos-latest'
-        run: npm install -g appdmg
+        run: npm i -D appdmg
 
       # - name: Cache node modules
       #   uses: actions/cache@v3
