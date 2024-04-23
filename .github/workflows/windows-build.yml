@@ -1,13 +1,14 @@
 name: Windows Electron Build
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v*'
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
