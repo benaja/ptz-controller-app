@@ -18,14 +18,27 @@ defaults:
     shell: 'bash'
 
 jobs:
-  draft_release:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set_version.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get version from package.json
+        id: set_version
+        run: echo "::set-output name=version::$(jq -r .version package.json)"
+
+  build:
+    needs: setup
     permissions:
       contents: write # Allows this job to create releases
 
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -36,8 +49,16 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          # cache: 'npm'
+          cache: 'npm'
           node-version: '20'
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install Dependencies
         run: npm ci
@@ -45,30 +66,56 @@ jobs:
       - name: Package Electron App
         run: npm run package
 
-      # - name: Compile artifacts ${{ inputs.dry-run && '' || 'and upload them to github release' }}
-      #   # I use this action because it is capable of retrying multiple times if there are any issues with the distribution server
-      #   uses: nick-fields/retry@v2
-      #   with:
-      #     timeout_minutes: 15
-      #     max_attempts: 6
-      #     retry_wait_seconds: 15
-      #     retry_on: error
-      #     shell: 'bash'
-      #     # Due to this issue https://github.com/electron-userland/electron-builder/issues/6411 the build with npx when rebuilding native dependencies hangs forever
-      #     # see https://github.com/cawa-93/vite-electron-builder/pull/953
-      #     command: ./node_modules/.bin/electron-builder --config .electron-builder.config.js --publish ${{ inputs.dry-run && 'never' || 'always' }}
       - name: Build Electron App
         run: npm run make
 
-      - name: Archive Production Artifacts
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: ptz-controller
-          path: out/make/**/*
+          name: ${{ matrix.os }}-artifacts
+          path: out/make/**
+
+      # - name: Archive Production Artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ptz-controller
+      #     path: out/make/**/*
+      #   env:
+      #     # Code Signing params
+      #     # See https://www.electron.build/code-signing
+      #     # CSC_LINK: ''
+      #     # CSC_KEY_PASSWORD: ''
+      #     # Publishing artifacts
+      #     GH_TOKEN: ${{ secrets.github_token }} # GitHub token, automatically provided (No need to define this secret in the repo settings)
+  draft_release:
+    needs: build
+    permissions:
+      contents: write # Allows this job to create releases
+    runs-on: ubuntu-latest
+    # if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: out
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
-          # Code Signing params
-          # See https://www.electron.build/code-signing
-          # CSC_LINK: ''
-          # CSC_KEY_PASSWORD: ''
-          # Publishing artifacts
-          GH_TOKEN: ${{ secrets.github_token }} # GitHub token, automatically provided (No need to define this secret in the repo settings)
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag_name: ${{ needs.setup.outputs.version }}
+          release_name: Release ${{ needs.setup.outputs.version }}
+          draft: true
+          prerelease: true
+
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./out
+          asset_name: .zip
+          asset_content_type: application/zip
