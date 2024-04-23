@@ -4,7 +4,7 @@ import AppButton from '../ui/AppButton';
 import Container from '../ui/Container';
 import { Link } from 'react-router-dom';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
-import { VideoMixerApi } from '@core/api/VideoMixerApi1';
+import { VideoMixerApi } from '@core/api/VideoMixerApi';
 
 export default function VideoMixers() {
   const [videoMixers, setVideoMixers] = useState([] as ReturnType<VideoMixerApi['getVideoMixers']>);
