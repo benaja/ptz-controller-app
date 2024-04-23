@@ -72,6 +72,8 @@ jobs:
 
       - name: Publish
         run: npm run publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
@@ -92,7 +94,7 @@ jobs:
       #     # Publishing artifacts
       #     GH_TOKEN: ${{ secrets.github_token }} # GitHub token, automatically provided (No need to define this secret in the repo settings)
   draft_release:
-    needs: build
+    needs: [setup, build]
     permissions:
       contents: write # Allows this job to create releases
     runs-on: ubuntu-latest
