@@ -28,7 +28,8 @@ jobs:
 
       - name: Get version from package.json
         id: set_version
-        run: echo "::set-output name=version::$(jq -r .version package.json)"
+        run: echo "version=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+        # run: echo "::set-output name=version::$(jq -r .version package.json)"
 
   build:
     needs: setup
@@ -68,6 +69,9 @@ jobs:
 
       - name: Build Electron App
         run: npm run make
+
+      - name: Publish
+        run: npm run publish
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
