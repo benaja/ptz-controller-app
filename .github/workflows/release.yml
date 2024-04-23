@@ -39,7 +39,8 @@ jobs:
           cache: 'npm'
           node-version: '20'
 
-      - name: Install appdmg
+      - name: Install appdmg for macOS
+        if: matrix.os == 'macos-latest'
         run: npm install -g appdmg
 
       # - name: Cache node modules
