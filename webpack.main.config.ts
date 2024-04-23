@@ -1,5 +1,4 @@
 import type { Configuration } from 'webpack';
-import path from 'path';
 import { rules, alias } from './webpack.rules';
 import { plugins } from './webpack.plugins';
 
@@ -11,6 +10,12 @@ export const mainConfig: Configuration = {
   entry: './src/main/index.ts',
 
   // Put your normal webpack config below here
+  externals: [
+    {
+      'utf-8-validate': 'commonjs utf-8-validate',
+      bufferutil: 'commonjs bufferutil',
+    },
+  ],
 
   module: {
     rules,
