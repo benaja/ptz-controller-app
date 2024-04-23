@@ -1,7 +1,7 @@
 {
   "name": "ptz-controller-app",
   "productName": "ptz-controller-app",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An App to control PTZ cameras",
   "main": ".webpack/main",
   "scripts": {
@@ -75,9 +75,14 @@
     "react-router-dom": "^6.20.1",
     "strict-event-emitter": "^0.5.1",
     "tailwind-merge": "^2.1.0",
+    "update-electron-app": "^3.0.0",
     "vmix-js-utils": "^4.0.16",
     "ws": "^8.15.1",
     "xml2js": "^0.6.2",
     "zod": "^3.22.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/benaja/ptz-controller-app.git"
   }
 }

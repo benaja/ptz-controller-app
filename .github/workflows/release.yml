@@ -18,12 +18,12 @@ defaults:
     shell: 'bash'
 
 jobs:
-  draft_release:
+  build:
     permissions:
       contents: write # Allows this job to create releases
 
     strategy:
-      fail-fast: true
+      # fail-fast: true
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
 
@@ -39,36 +39,53 @@ jobs:
           # cache: 'npm'
           node-version: '20'
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        if: matrix.os == 'macos-latest'
+        with:
+          python-version: '3.11'
+
+      - name: Install appdmg for macOS
+        if: matrix.os == 'macos-latest'
+        run: npm i -D appdmg
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install Dependencies
         run: npm ci
 
       - name: Package Electron App
         run: npm run package
 
-      # - name: Compile artifacts ${{ inputs.dry-run && '' || 'and upload them to github release' }}
-      #   # I use this action because it is capable of retrying multiple times if there are any issues with the distribution server
-      #   uses: nick-fields/retry@v2
-      #   with:
-      #     timeout_minutes: 15
-      #     max_attempts: 6
-      #     retry_wait_seconds: 15
-      #     retry_on: error
-      #     shell: 'bash'
-      #     # Due to this issue https://github.com/electron-userland/electron-builder/issues/6411 the build with npx when rebuilding native dependencies hangs forever
-      #     # see https://github.com/cawa-93/vite-electron-builder/pull/953
-      #     command: ./node_modules/.bin/electron-builder --config .electron-builder.config.js --publish ${{ inputs.dry-run && 'never' || 'always' }}
       - name: Build Electron App
         run: npm run make
 
-      - name: Archive Production Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: ptz-controller
-          path: out/make/**/*
+      - name: Publish
+        run: npm run publish
         env:
-          # Code Signing params
-          # See https://www.electron.build/code-signing
-          # CSC_LINK: ''
-          # CSC_KEY_PASSWORD: ''
-          # Publishing artifacts
-          GH_TOKEN: ${{ secrets.github_token }} # GitHub token, automatically provided (No need to define this secret in the repo settings)
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+
+      # - name: Upload Artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ${{ matrix.os }}-artifacts
+      #     path: out/make/**
+
+      # - name: Archive Production Artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ptz-controller
+      #     path: out/make/**/*
+      #   env:
+      #     # Code Signing params
+      #     # See https://www.electron.build/code-signing
+      #     # CSC_LINK: ''
+      #     # CSC_KEY_PASSWORD: ''
+      #     # Publishing artifacts
+      #     GH_TOKEN: ${{ secrets.github_token }} # GitHub token, automatically provided (No need to define this secret in the repo settings)

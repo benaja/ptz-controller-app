@@ -1,7 +1,7 @@
 import { ConnectedGamepadApi } from '@core/api/ConnectedGamepadApi';
 import { CameraApi } from '@core/api/CameraApi';
 import { GamepadConfigApi } from '@core/api/GamepadConfigApi';
-import { VideoMixerApi } from '@core/api/videoMixerApi';
+import { VideoMixerApi } from '@core/api/VideoMixerApi';
 import { NotificationApi } from '@core/api/NotificationApi';
 
 type AsyncApiMethods<T> = {

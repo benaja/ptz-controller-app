@@ -5,7 +5,7 @@ import { GamepadFactory } from './Gamepad/GemepadFactory';
 import { ConnectedGamepadApi } from './api/ConnectedGamepadApi';
 import { GamepadConfigApi } from './api/GamepadConfigApi';
 import { CameraApi } from './api/CameraApi';
-import { VideoMixerApi } from './api/videoMixerApi';
+import { VideoMixerApi } from './api/VideoMixerApi';
 import { ConnectedGamepadStore } from './store/ConnectedGamepadsStore';
 import { TallyHub } from './Tally/TallyHub';
 import { CameraRepository } from './repositories/CameraRepository';
