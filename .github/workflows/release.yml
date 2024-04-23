@@ -23,7 +23,7 @@ jobs:
       contents: write # Allows this job to create releases
 
     strategy:
-      fail-fast: true
+      # fail-fast: true
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
 
@@ -38,6 +38,9 @@ jobs:
         with:
           cache: 'npm'
           node-version: '20'
+
+      - name: Install appdmg
+        run: npm install -g appdmg
 
       # - name: Cache node modules
       #   uses: actions/cache@v3
