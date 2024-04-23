@@ -1,6 +1,6 @@
 import { WebSocketServer } from 'ws';
 
-const AMOUNT_OF_CAMERAS = 4;
+const AMOUNT_OF_CAMERAS = 1;
 
 function startConnection(cameraId) {
   function log(...args) {
@@ -9,7 +9,7 @@ function startConnection(cameraId) {
 
   const wss = new WebSocketServer({
     port: 3004,
-    host: '127.0.0.' + cameraId,
+    host: '192.178.1.65',
   });
 
   wss.on('connection', (ws) => {

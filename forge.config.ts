@@ -17,6 +17,7 @@ dotenv.config();
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    icon: './src/assets/img/icon',
   },
   rebuildConfig: {},
   makers: [

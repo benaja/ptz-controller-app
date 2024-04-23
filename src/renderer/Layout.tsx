@@ -33,6 +33,10 @@ export default function Layout({
       id: 'video-mixers',
       label: 'Video Mixers',
     },
+    {
+      id: 'settings',
+      label: 'Settings',
+    },
   ];
 
   return (

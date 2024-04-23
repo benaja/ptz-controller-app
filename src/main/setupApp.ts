@@ -4,8 +4,8 @@ import { ArduinoPtzCameraBuilder } from '@core/CameraConnection/ArduinoPtzCamera
 import { BrowserGamepadBuilder } from '../core/Gamepad/BrowserGamepad/BrowserGamepadBuilder';
 import { ObsVideoMixerBuilder } from '@core/VideoMixer/Obs/ObsVideoMixerBuilder';
 import { VMixBuilder } from '@core/VideoMixer/VMix/VMixBuilder';
-import { NotificationApi } from '@core/api/NotificationApi';
 import { PassthroughBuilder } from '@core/VideoMixer/Passthrough/PassthroughBuilder';
+import { SettingsApi } from '@core/api/SettingsApi';
 
 export async function setupApp() {
   const core = new Core();
@@ -19,14 +19,15 @@ export async function setupApp() {
     new BrowserGamepadBuilder(core.cameraFactory, core.mixerFactory, core.notificationApi),
   );
 
-  const notificationApi = new NotificationApi();
+  const settingsApi = new SettingsApi();
 
   setupElectronApi([
     core.gamepadConfigApi,
     core.connectedGamepadApi,
     core.cameraApi,
     core.videoMixerApi,
-    notificationApi,
+    core.notificationApi,
+    settingsApi,
   ]);
 
   core.bootstrap();

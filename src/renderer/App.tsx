@@ -10,6 +10,7 @@ import VideoMixers from './components/videomixer/VideMixers';
 import AddVideoMixer from './components/videomixer/AddVideoMixer';
 import EditVideoMixer from './components/videomixer/EditVideoMixer';
 import AddGamepad from './components/gamepads/AddGamepad';
+import Settings from './components/settings/Settints';
 
 function App(): JSX.Element {
   // useEffect(() => {
@@ -63,6 +64,11 @@ function App(): JSX.Element {
           <Route
             element={<EditVideoMixer />}
             path="/video-mixers/:id"
+          />
+
+          <Route
+            element={<Settings />}
+            path="/settings"
           />
         </Routes>
       </HistoryProvider>
