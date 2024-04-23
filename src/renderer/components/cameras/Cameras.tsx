@@ -33,7 +33,7 @@ export default function Cameras() {
             to={`/cameras/${camera.id}`}
             className="py-2 flex items-center gap-4"
           >
-            <p>{camera.number}</p>
+            <p>{camera.name}</p>
 
             <span className="ml-auto  px-1 py-0 border-gray-200 border rounded">
               {camera.connected ? 'connected' : 'disconnected'}

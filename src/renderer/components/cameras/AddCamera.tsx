@@ -3,7 +3,7 @@ import Container from '../ui/Container';
 import { useEffect, useState } from 'react';
 import AppButton from '../ui/AppButton';
 import { useNavigate } from 'react-router-dom';
-import CameraForm from './CameraForm';
+import CameraForm, { CameraFormType } from './CameraForm';
 import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTypes';
 import { parseErrorMessage } from '@renderer/lib/utils';
 import { CameraConfig } from '@core/api/CameraApi';
@@ -11,10 +11,13 @@ import { CameraConfig } from '@core/api/CameraApi';
 export default function AddCamera() {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<CameraFormType>({
     type: CameraConnectionType.ArduinoPtzCamera,
     ip: '',
-    number: 0,
+    name: '',
+    connectionPort: null as string | null,
+    sourceId: null as string | null,
+    mixerId: null as string | null,
   });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -28,7 +31,10 @@ export default function AddCamera() {
         setForm({
           type: CameraConnectionType.ArduinoPtzCamera,
           ip: '',
-          number: 0,
+          name: '',
+          sourceId: null,
+          mixerId: null,
+          connectionPort: null,
         });
 
         navigate('/cameras');
@@ -46,7 +52,6 @@ export default function AddCamera() {
           onSubmit={submit}
         >
           <CameraForm
-            // @ts-ignore
             form={form}
             onChange={(newForm) => setForm(newForm)}
           />

@@ -15,6 +15,7 @@ type Scene = {
 export const vMixConfigSchema = baseVideoMixerSchema.extend({
   type: z.literal(VideoMixerType.Vmix),
   password: z.string().nullable(),
+  ip: z.string(),
 });
 
 export type VmixConfig = z.infer<typeof vMixConfigSchema>;

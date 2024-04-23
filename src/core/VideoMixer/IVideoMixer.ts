@@ -5,7 +5,6 @@ import { IDisposable } from '@core/GenericFactory/IDisposable';
 export const baseVideoMixerSchema = z.object({
   id: z.string(),
   name: z.string(),
-  ip: z.string(),
 });
 
 export type BaseVideoMixerConfig = z.infer<typeof baseVideoMixerSchema>;

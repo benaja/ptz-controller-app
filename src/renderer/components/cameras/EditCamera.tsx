@@ -11,13 +11,14 @@ export default function EditCamera() {
   const { id } = useParams<{ id: string }>();
 
   const navigate = useNavigate();
-  const [camera, setCamera] = useState<BaseCameraConfig | null>(null);
-
   const [form, setForm] = useState<CameraFormType>({
     type: CameraConnectionType.ArduinoPtzCamera,
     ip: '',
-    number: 0,
-  } as CameraFormType);
+    name: '',
+    connectionPort: null as string | null,
+    sourceId: null as string | null,
+    mixerId: null as string | null,
+  });
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -30,11 +31,13 @@ export default function EditCamera() {
         id,
       } as Partial<BaseCameraConfig> & { id: string })
       .then(() => {
-        // @ts-ignore
         setForm({
           type: CameraConnectionType.ArduinoPtzCamera,
           ip: '',
-          number: 0,
+          name: '',
+          sourceId: null,
+          mixerId: null,
+          connectionPort: null,
         });
 
         navigate('/cameras');
@@ -55,7 +58,6 @@ export default function EditCamera() {
       if (!camera) {
         throw new Error('Camera not found');
       }
-      setCamera(camera);
       setForm(camera);
     });
   }, []);

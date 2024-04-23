@@ -53,12 +53,14 @@ export default function VideoMixerForm({ form, onChange }: Props) {
         required
       />
 
-      <TextField
-        label="Ip"
-        value={form.ip}
-        onChange={(ip) => set('ip', ip)}
-        required
-      />
+      {form.type !== VideoMixerType.Passthrough && (
+        <TextField
+          label="Ip"
+          value={form.ip}
+          onChange={(ip) => set('ip', ip)}
+          required
+        />
+      )}
 
       {form.type === VideoMixerType.OBS && (
         <TextField
@@ -68,7 +70,7 @@ export default function VideoMixerForm({ form, onChange }: Props) {
         />
       )}
 
-      {form.type === VideoMixerType.BlackmagicAtem && (
+      {/* {form.type === VideoMixerType.BlackmagicAtem && (
         <TextField
           label="MixEffectBlock"
           value={form.mixEffectBlock?.toString() || ''}
@@ -76,7 +78,7 @@ export default function VideoMixerForm({ form, onChange }: Props) {
           type="number"
           required
         />
-      )}
+      )} */}
     </>
   );
 }

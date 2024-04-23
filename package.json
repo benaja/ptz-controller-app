@@ -1,7 +1,7 @@
 {
   "name": "ptz-controller-app",
   "productName": "ptz-controller-app",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "An App to control PTZ cameras",
   "main": ".webpack/main",
   "scripts": {
@@ -40,6 +40,7 @@
     "@typescript-eslint/parser": "^5.0.0",
     "@vercel/webpack-asset-relocator-loader": "^1.7.3",
     "autoprefixer": "^10.4.16",
+    "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^6.8.1",
     "electron": "28.0.0",
     "eslint": "^8.0.1",

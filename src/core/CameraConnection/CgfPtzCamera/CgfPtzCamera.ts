@@ -16,7 +16,6 @@ export const cgfPtzCameraSchema = baseCameraConfigSchema.extend({
 
 export type CgfPtzCameraConfig = z.infer<typeof cgfPtzCameraSchema>;
 
-// @ts-ignore
 export class CgfPtzCamera implements ICameraConnection {
   private readonly axios: AxiosInstance;
   private readonly socketConnection: signalR.HubConnection;
@@ -27,10 +26,6 @@ export class CgfPtzCamera implements ICameraConnection {
 
   public readonly displayName = 'Cgf Ptz Camera';
   public readonly type = CameraConnectionType.CgfPtzCamera;
-
-  public get number(): number {
-    return this.config.number;
-  }
 
   private get connectionUrl(): string {
     return `http://${this.config.ip}`;

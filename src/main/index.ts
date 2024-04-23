@@ -50,6 +50,10 @@ if (!gotTheLock) {
       mainWindow.webContents.openDevTools();
     }
     mainWindow.show();
+
+    mainWindow.on('closed', () => {
+      mainWindow = null;
+    });
   };
 
   const createGamepadWindow = () => {
@@ -66,17 +70,20 @@ if (!gotTheLock) {
     gamepadWindow.loadURL(GAMEPAD_WINDOW_WEBPACK_ENTRY);
   };
 
-  console.log(__dirname);
-
   let tray: Tray | null = null;
   const createTray = () => {
-    tray = new Tray(path.join(__dirname, 'assets/img/icon'));
+    const iconPath = path.resolve(__dirname, 'assets/img/tray-icon.png');
+    tray = new Tray(iconPath);
 
     const contextMenu = Menu.buildFromTemplate([
       {
         label: 'Open',
         click: () => {
-          console.log('Open clicked');
+          if (mainWindow) {
+            mainWindow.show();
+          } else {
+            createMainWindow();
+          }
         },
       },
       { type: 'separator' },
@@ -93,19 +100,15 @@ if (!gotTheLock) {
 
     tray.on('click', () => {
       // This can be used to toggle the app window, for example
-      console.log('Tray icon clicked');
     });
   };
 
   const onAppReady = () => {
     setupApp();
 
-    createMainWindow();
     createGamepadWindow();
 
     createTray();
-    console.log('dirname', path.join(__dirname, 'preload.js'));
-    // Create the browser window.
   };
 
   // This method will be called when Electron has finished
@@ -116,11 +119,7 @@ if (!gotTheLock) {
   // Quit when all windows are closed, except on macOS. There, it's common
   // for applications and their menu bar to stay active until the user quits
   // explicitly with Cmd + Q.
-  app.on('window-all-closed', () => {
-    // if (process.platform !== 'darwin') {
-    //   app.quit();
-    // }
-  });
+  app.on('window-all-closed', () => {});
 
   app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the

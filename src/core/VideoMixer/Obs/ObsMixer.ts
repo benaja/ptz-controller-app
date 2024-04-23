@@ -16,6 +16,7 @@ type Scene = {
 export const obsMixerConfigSchema = baseVideoMixerSchema.extend({
   type: z.literal(VideoMixerType.OBS),
   password: z.string().nullable(),
+  ip: z.string(),
 });
 
 export type ObsMixerConfig = z.infer<typeof obsMixerConfigSchema>;

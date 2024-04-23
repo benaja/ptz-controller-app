@@ -5,7 +5,7 @@ import { CameraPosition } from './ArduinoPtzCamera/AurduinoPtzCameraState';
 
 export const baseCameraConfigSchema = z.object({
   id: z.string().uuid(),
-  number: z.number(),
+  name: z.string(),
   type: z.nativeEnum(CameraConnectionType),
   mixerId: z.string(),
   sourceId: z.string(),
@@ -29,7 +29,6 @@ export interface ICameraConnection extends IDisposable {
   readonly type: CameraConnectionType;
 
   readonly connectionString: string;
-  readonly number: number;
 
   readonly connected: boolean;
 

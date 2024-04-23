@@ -7,8 +7,8 @@ import { type MixerSource } from '@core/VideoMixer/IVideoMixer';
 export type CameraFormType = {
   type: CameraConnectionType;
   ip: string;
-  number: number;
-  connectionPort?: string;
+  name: string;
+  connectionPort?: string | null;
   sourceId: string | null;
   mixerId: string | null;
 };
@@ -81,11 +81,10 @@ export default function CameraForm({ form, onChange }: Props) {
         required
       />
       <TextField
-        label="Nummer"
-        value={form.number.toString()}
-        onChange={(value) => set('number', parseInt(value))}
+        label="Name"
+        value={form.name || ''}
+        onChange={(value) => set('name', value)}
         required
-        type="number"
       />
       <Select
         label="Mixer"
