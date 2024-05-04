@@ -50,8 +50,6 @@ export class NodeGamepad extends GamepadController implements IGamepadController
 
     log.info('connecting to gamepad', _config);
 
-    log.info('devices', devices());
-
     gamepad.on('connected', () => {
       log.info('connected');
       this.isConnected = true;
@@ -73,17 +71,6 @@ export class NodeGamepad extends GamepadController implements IGamepadController
       });
     });
 
-    // gamepad.on('leftJoystick:move', (value) => {
-    //   this.onAxis({
-    //     axis: 0,
-    //     value: (value.x - 128) / 128,
-    //   });
-    //   this.onAxis({
-    //     axis: 1,
-    //     value: (value.y - 128) / 128,
-    //   });
-    // });
-
     gamepad.on('right:move', (value) => {
       console.log('right:move', value);
       this.onAxis({
@@ -95,17 +82,6 @@ export class NodeGamepad extends GamepadController implements IGamepadController
         value: (value.y - 128) / 128,
       });
     });
-
-    // gamepad.on('rightJoystick:move', (value) => {
-    //   this.onAxis({
-    //     axis: 2,
-    //     value: (value.x - 128) / 128,
-    //   });
-    //   this.onAxis({
-    //     axis: 3,
-    //     value: (value.y - 128) / 128,
-    //   });
-    // });
 
     gamepad.on('dpadLeft:press', () => {
       this.onButton({
@@ -326,6 +302,38 @@ export class NodeGamepad extends GamepadController implements IGamepadController
     gamepad.on('start:release', () => {
       this.onButton({
         button: GamepadButtons.Start,
+        pressed: false,
+        value: 0,
+      });
+    });
+
+    gamepad.on('leftJoystick:press', () => {
+      this.onButton({
+        button: GamepadButtons.LeftStick,
+        pressed: true,
+        value: 1,
+      });
+    });
+
+    gamepad.on('leftJoystick:release', () => {
+      this.onButton({
+        button: GamepadButtons.LeftStick,
+        pressed: false,
+        value: 0,
+      });
+    });
+
+    gamepad.on('rightJoystick:press', () => {
+      this.onButton({
+        button: GamepadButtons.RightStick,
+        pressed: true,
+        value: 1,
+      });
+    });
+
+    gamepad.on('rightJoystick:release', () => {
+      this.onButton({
+        button: GamepadButtons.RightStick,
         pressed: false,
         value: 0,
       });
