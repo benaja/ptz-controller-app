@@ -11,6 +11,7 @@ import * as f310 from '@sensslen/node-gamepad/controllers/logitech/gamepadf310.j
 import * as ps4 from './ps4.json';
 
 import { GamepadButtons } from '../KeyBindings';
+import log from 'electron-log/main';
 
 export const logitechN310Schema = baseGamepadSchema.extend({
   type: z.literal(GamepadType.LogitechN310),
@@ -46,11 +47,14 @@ export class NodeGamepad extends GamepadController implements IGamepadController
         throw new Error(`Gamepad type ${_config.type} not supported`);
     }
 
+    log.info('connecting to gamepad', _config);
+
     gamepad.on('connected', () => {
-      console.log();
+      log.info('connected');
       this.isConnected = true;
     });
     gamepad.on('disconnected', () => {
+      log.info('disconnected');
       this.isConnected = false;
     });
 

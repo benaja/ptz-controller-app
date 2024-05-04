@@ -82,11 +82,19 @@ export class ArduinoPtzCamera implements ICameraConnection {
   }
 
   pan(value: number): void {
+    if (this.config.isUpsideDown) {
+      value = -value;
+    }
+
     this.relativeState.pan = value;
     this.sheduleUpdate('move', this.relativeState);
   }
 
   tilt(value: number): void {
+    if (this.config.isUpsideDown) {
+      value = -value;
+    }
+
     this.relativeState.tilt = value;
     this.sheduleUpdate('move', this.relativeState);
   }

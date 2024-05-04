@@ -11,6 +11,7 @@ export type CameraFormType = {
   connectionPort?: string | null;
   sourceId: string | null;
   mixerId: string | null;
+  isUpsideDown?: boolean;
 };
 
 type Props = {
@@ -107,6 +108,23 @@ export default function CameraForm({ form, onChange }: Props) {
         onChange={(value) => set('sourceId', value)}
         required
       />
+
+      <div>
+        <input
+          name="isUpsideDown"
+          id="isUpsideDown"
+          type="checkbox"
+          checked={form.isUpsideDown}
+          onChange={(e) => set('isUpsideDown', e.target.value)}
+        />
+        <label
+          className="ml-2"
+          htmlFor="isUpsideDown"
+        >
+          Open at login
+        </label>
+      </div>
+
       {form.type === CameraConnectionType.CgfPtzCamera && (
         <TextField
           label="Connection Port"
