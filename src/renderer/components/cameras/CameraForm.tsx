@@ -3,6 +3,7 @@ import Select from '../ui/Select';
 import { CameraConnectionType } from '@core/CameraConnection/CameraConnectionTypes';
 import { useEffect, useState } from 'react';
 import { type MixerSource } from '@core/VideoMixer/IVideoMixer';
+import { Checkbox } from '../ui/Checkbox';
 
 export type CameraFormType = {
   type: CameraConnectionType;
@@ -75,6 +76,7 @@ export default function CameraForm({ form, onChange }: Props) {
         value={form.type}
         onChange={(type) => set('type', type)}
       />
+
       <TextField
         label="Ip"
         value={form.ip || ''}
@@ -109,21 +111,12 @@ export default function CameraForm({ form, onChange }: Props) {
         required
       />
 
-      <div>
-        <input
-          name="isUpsideDown"
-          id="isUpsideDown"
-          type="checkbox"
-          checked={form.isUpsideDown}
-          onChange={(e) => set('isUpsideDown', e.target.checked)}
-        />
-        <label
-          className="ml-2"
-          htmlFor="isUpsideDown"
-        >
-          Is upside down
-        </label>
-      </div>
+      <Checkbox
+        name="isUpsideDown"
+        value={form.isUpsideDown}
+        onChange={(value) => set('isUpsideDown', value)}
+        label="Is upside down"
+      />
 
       {form.type === CameraConnectionType.CgfPtzCamera && (
         <TextField

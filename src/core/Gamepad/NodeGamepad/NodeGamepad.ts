@@ -60,7 +60,6 @@ export class NodeGamepad extends GamepadController implements IGamepadController
     });
 
     gamepad.on('left:move', (value) => {
-      console.log('left:move', value);
       this.onAxis({
         axis: 0,
         value: (value.x - 128) / 128,
@@ -72,7 +71,6 @@ export class NodeGamepad extends GamepadController implements IGamepadController
     });
 
     gamepad.on('right:move', (value) => {
-      console.log('right:move', value);
       this.onAxis({
         axis: 2,
         value: (value.x - 128) / 128,
