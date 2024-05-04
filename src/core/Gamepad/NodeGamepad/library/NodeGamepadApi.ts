@@ -150,16 +150,20 @@ export class NodeGamepadApi extends EventEmitter {
     };
   }
 
-  onControllerFrame = throttle((data: number[]) => {
-    this.logDebug(JSON.stringify(data));
+  onControllerFrame = throttle(
+    (data: number[]) => {
+      this.logDebug(JSON.stringify(data));
 
-    console.log('data:', [...data]);
+      console.log('data:', [...data]);
 
-    this.processJoysticks(data);
-    this.processButtons(data);
-    this.processStates(data);
-    this.processScales(data);
-  }, 50);
+      this.processJoysticks(data);
+      this.processButtons(data);
+      this.processStates(data);
+      this.processScales(data);
+    },
+    20,
+    { trailing: true },
+  );
 
   private processJoysticks(data: number[]) {
     this.config.joysticks?.forEach((joystick) => {

@@ -63,37 +63,37 @@ export class NodeGamepad extends GamepadController implements IGamepadController
 
     gamepad.on('left:move', (value) => {
       console.log('left:move', value);
-      // this.onAxis({
-      //   axis: 0,
-      //   value: (value.x - 128) / 128,
-      // });
-      // this.onAxis({
-      //   axis: 1,
-      //   value: (value.y - 128) / 128,
-      // });
+      this.onAxis({
+        axis: 0,
+        value: (value.x - 128) / 128,
+      });
+      this.onAxis({
+        axis: 1,
+        value: (value.y - 128) / 128,
+      });
     });
 
     // gamepad.on('leftJoystick:move', (value) => {
-    // //   this.onAxis({
-    // //     axis: 0,
-    // //     value: (value.x - 128) / 128,
-    // //   });
-    // //   this.onAxis({
-    // //     axis: 1,
-    // //     value: (value.y - 128) / 128,
-    // //   });
+    //   this.onAxis({
+    //     axis: 0,
+    //     value: (value.x - 128) / 128,
+    //   });
+    //   this.onAxis({
+    //     axis: 1,
+    //     value: (value.y - 128) / 128,
+    //   });
     // });
 
     gamepad.on('right:move', (value) => {
       console.log('right:move', value);
-      // this.onAxis({
-      //   axis: 2,
-      //   value: (value.x - 128) / 128,
-      // });
-      // this.onAxis({
-      //   axis: 3,
-      //   value: (value.y - 128) / 128,
-      // });
+      this.onAxis({
+        axis: 2,
+        value: (value.x - 128) / 128,
+      });
+      this.onAxis({
+        axis: 3,
+        value: (value.y - 128) / 128,
+      });
     });
 
     // gamepad.on('rightJoystick:move', (value) => {
@@ -108,227 +108,227 @@ export class NodeGamepad extends GamepadController implements IGamepadController
     // });
 
     gamepad.on('dpadLeft:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.LeftBumper,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.LeftBumper,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('dpadLeft:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.LeftBumper,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.LeftBumper,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.on('dpadUp:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.DPadUp,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.DPadUp,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('dpadUp:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.DPadUp,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.DPadUp,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.on('dpadRight:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.DPadRight,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.DPadRight,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('dpadRight:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.DPadRight,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.DPadRight,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.on('dpadDown:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.DPadDown,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.DPadDown,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('dpadDown:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.DPadDown,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.DPadDown,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.on('RB:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.RightBumper,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.RightBumper,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('RB:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.RightBumper,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.RightBumper,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.on('LB:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.LeftBumper,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.LeftBumper,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('LB:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.LeftBumper,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.LeftBumper,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.on('LT:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.LeftTrigger,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.LeftTrigger,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('LT:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.LeftTrigger,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.LeftTrigger,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.on('RT:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.RightTrigger,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.RightTrigger,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('RT:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.RightTrigger,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.RightTrigger,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.on('A:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.A,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.A,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('A:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.A,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.A,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.on('B:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.B,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.B,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('B:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.B,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.B,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.on('X:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.X,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.X,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('X:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.X,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.X,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.on('Y:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.Y,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.Y,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('Y:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.Y,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.Y,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.on('back:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.Back,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.Back,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('back:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.Back,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.Back,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.on('start:press', () => {
-      // this.onButton({
-      //   button: GamepadButtons.Start,
-      //   pressed: true,
-      //   value: 1,
-      // });
+      this.onButton({
+        button: GamepadButtons.Start,
+        pressed: true,
+        value: 1,
+      });
     });
 
     gamepad.on('start:release', () => {
-      // this.onButton({
-      //   button: GamepadButtons.Start,
-      //   pressed: false,
-      //   value: 0,
-      // });
+      this.onButton({
+        button: GamepadButtons.Start,
+        pressed: false,
+        value: 0,
+      });
     });
 
     gamepad.start();
