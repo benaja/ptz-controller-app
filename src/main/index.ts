@@ -2,6 +2,7 @@ import { app, BrowserWindow, Menu, Tray } from 'electron';
 import path from 'path';
 import { setupApp } from './setupApp';
 import { updateElectronApp } from 'update-electron-app';
+import log from 'electron-log/main';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -14,6 +15,8 @@ updateElectronApp();
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
+
+log.initialize();
 
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {

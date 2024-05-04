@@ -28,6 +28,7 @@ import {
 } from './actions/CameraPositionAction';
 import { GamepadConfig } from '@core/repositories/GamepadRepository';
 import { INotificationApi } from '@core/api/INotificationApi';
+import log from 'electron-log/main';
 
 export class GamepadController {
   private keyBindings: Record<string, number>;
@@ -117,6 +118,7 @@ export class GamepadController {
   }
 
   onAxis(axis: Omit<AxisEventPayload, 'gamepad'>) {
+    log.info('onAxis', axis.axis, axis.value);
     this.axisActions.forEach((action) => {
       if (this.keyBindings[action.constructor.name] === axis.axis) {
         action.hanlde(axis.value);
@@ -125,6 +127,7 @@ export class GamepadController {
   }
 
   onButton(button: Omit<ButtonEventPayload, 'gamepad'>) {
+    log.info('onButton', button.value, button.pressed ? 'pressed' : 'released');
     console.log('onButton', button.button, button.pressed ? 'pressed' : 'released');
     this.buttonActions.forEach((action) => {
       if (this.keyBindings[action.constructor.name] === button.button) {
