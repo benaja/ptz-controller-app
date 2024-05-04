@@ -4,6 +4,7 @@ import { throttle } from '@main/utils/throttle';
 import { RelativeCameraState } from './AurduinoPtzCameraState';
 import { CameraConnectionType } from '../CameraConnectionTypes';
 import { z } from 'zod';
+import log from 'electron-log/main';
 
 export const arduinoPtzCameraSchema = baseCameraConfigSchema.extend({
   type: z.literal(CameraConnectionType.ArduinoPtzCamera),
@@ -45,12 +46,12 @@ export class ArduinoPtzCamera implements ICameraConnection {
   private pingInterval: NodeJS.Timeout | undefined;
 
   setupWebsocket() {
-    console.log('setting up websocket: ', this.config.ip);
+    log.info('setting up websocket: ', this.config.ip);
     // if (!this.reconnect || this.websocket?.readyState === WebSocket.OPEN) return;
     this.websocket = new WebSocket(`ws://${this.config.ip}:3004`);
 
     this.websocket.on('open', () => {
-      console.log('websocket connected: ', this.config.ip);
+      log.info('websocket connected: ', this.config.ip);
       this.connected = true;
 
       this.pingInterval = setInterval(() => {
@@ -59,6 +60,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
     });
 
     this.websocket.on('close', (e, reason) => {
+      log.info('websocket closed', e, reason);
       this.connected = false;
       clearInterval(this.pingInterval);
       if (this.reconnect) {
@@ -68,6 +70,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
     });
 
     this.websocket.on('error', (error) => {
+      log.error('websocket error', error, this.config.ip);
       // console.log('websocket error', error, this.config.ip);
     });
 
@@ -82,11 +85,19 @@ export class ArduinoPtzCamera implements ICameraConnection {
   }
 
   pan(value: number): void {
+    if (this.config.isUpsideDown) {
+      value = -value;
+    }
+
     this.relativeState.pan = value;
     this.sheduleUpdate('move', this.relativeState);
   }
 
   tilt(value: number): void {
+    if (this.config.isUpsideDown) {
+      value = -value;
+    }
+
     this.relativeState.tilt = value;
     this.sheduleUpdate('move', this.relativeState);
   }
@@ -119,7 +130,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
   }, 50);
 
   sendUpdate(action: string, data?: Record<string, any>): void {
-    console.log('sending update to', this.config.ip, action, data);
+    log.info('sending update to', this.config.ip, action, data);
     try {
       this.websocket?.send(
         JSON.stringify({
@@ -129,6 +140,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
       );
     } catch (error) {
       console.log('error sending update', error);
+      log.error('error sending update', error);
     }
   }
 
@@ -142,7 +154,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
       this.websocket?.once('message', (data: WebSocket.Data) => {
         const response = JSON.parse(data.toString());
 
-        console.log('response', response.payload);
+        log.info('current Position', response.payload);
         if (response.payload.zoom && typeof response.payload.zoom === 'string') {
           response.payload.zoom = 0;
         }

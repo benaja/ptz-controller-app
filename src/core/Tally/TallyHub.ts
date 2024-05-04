@@ -16,6 +16,13 @@ export class TallyHub implements ITallyHub {
   }
 
   private debounceTallyUpdate = debounce(async () => {
+    // Stop all camera movements
+    this._cameraFactory.instances.forEach((camera) => {
+      camera.pan(0);
+      camera.tilt(0);
+      camera.zoom(0);
+    });
+
     const onAir = await this._mixer.getOnAirSources();
     const preview = await this._mixer.getPreviewSources();
 

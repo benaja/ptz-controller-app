@@ -44,7 +44,7 @@ class CameraPositionAction extends ButtonAction {
 
     this.params.notificationApi.notify({
       title: `Position ${this.positionNumber} saved`,
-      body: `Position: ${currentCameraConfig.positions[this.positionNumber]}`,
+      body: `Position: ${JSON.stringify(currentCameraConfig.positions[this.positionNumber])}`,
     });
   }
 }

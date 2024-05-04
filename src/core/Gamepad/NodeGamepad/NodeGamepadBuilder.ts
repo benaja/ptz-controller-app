@@ -28,7 +28,7 @@ export class NodeGamepadBuilder implements IBuilder<IGamepadController> {
     // const gamepads = this._userConfigStore.get('gamepads');
     // const gamepad = gamepads.find((g) => g.id === config.id);
 
-    console.log('build browser gamepad', config);
+    console.log('build node gamepad', config);
 
     switch (config.type) {
       case GamepadType.SonyPs4:

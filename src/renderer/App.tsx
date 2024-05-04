@@ -10,7 +10,7 @@ import VideoMixers from './components/videomixer/VideMixers';
 import AddVideoMixer from './components/videomixer/AddVideoMixer';
 import EditVideoMixer from './components/videomixer/EditVideoMixer';
 import AddGamepad from './components/gamepads/AddGamepad';
-import Settings from './components/settings/Settints';
+import Settings from './components/settings/Settings';
 
 function App(): JSX.Element {
   // useEffect(() => {

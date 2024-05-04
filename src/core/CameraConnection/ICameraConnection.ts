@@ -9,6 +9,7 @@ export const baseCameraConfigSchema = z.object({
   type: z.nativeEnum(CameraConnectionType),
   mixerId: z.string(),
   sourceId: z.string(),
+  isUpsideDown: z.boolean().optional(),
   positions: z
     .record(
       z.number().or(z.string()),

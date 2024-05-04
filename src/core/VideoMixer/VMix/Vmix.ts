@@ -81,7 +81,6 @@ export class Vmix implements IVideoMixer {
 
       this._xmlData = await this.getXmlData();
 
-      // Your logic here!
       this._tallyHub.updateTally();
     });
 
