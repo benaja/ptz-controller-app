@@ -8,15 +8,23 @@ type StoreOptions<T, Schema extends z.ZodObject<any> | undefined> = {
   configName: string;
   defaults: Schema extends z.ZodObject<any> ? z.infer<Schema> : T;
   schema?: Schema;
+  migrations?: {
+    [version: number]: (data: any) => any;
+  };
+  version?: number;
 };
 
 export class Store<T, Schema extends z.ZodObject<any> | undefined> {
   path: string;
-  data: Schema extends z.ZodObject<ZodRawShape> ? z.infer<Schema> : T;
+  data: (Schema extends z.ZodObject<ZodRawShape> ? z.infer<Schema> : T) & { _version?: number };
   schema?: Schema;
+  version?: number;
+  migrations?: { [version: number]: (data: any) => any };
 
   constructor(opts: StoreOptions<T, Schema>) {
     this.schema = opts.schema;
+    this.version = opts.version;
+    this.migrations = opts.migrations;
     // Renderer process has to get `app` module via `remote`, whereas the main process can get it directly
     // app.getPath('userData') will return a string of the user's app data directory path. (electron.app || electron.remote.app)
 
@@ -58,7 +66,10 @@ export class Store<T, Schema extends z.ZodObject<any> | undefined> {
     fs.writeFileSync(this.path, JSON.stringify(this.data));
   }
 
-  private parseDataFile<T, Schema extends z.ZodObject<ZodRawShape> | undefined = undefined>(
+  private parseDataFile<
+    T,
+    Schema extends z.ZodObject<{ version: z.ZodNumber }> | undefined = undefined,
+  >(
     filePath: string,
     defaults: Schema extends z.ZodObject<ZodRawShape> ? z.infer<Schema> : T,
     schema?: Schema,
@@ -67,7 +78,32 @@ export class Store<T, Schema extends z.ZodObject<any> | undefined> {
     // `fs.readFileSync` will return a JSON string which we then parse into a Javascript object
     try {
       console.log('parseDataFile', filePath);
-      const data = JSON.parse(fs.readFileSync(filePath).toString());
+      // check if the file exists
+      console.log('fs.existsSync(filePath)', fs.existsSync(filePath));
+      if (!fs.existsSync(filePath)) {
+        if (this.version !== undefined) {
+          return { ...defaults, _version: this.version } as typeof this.data;
+        }
+
+        return defaults as typeof this.data;
+      }
+
+      let data = JSON.parse(fs.readFileSync(filePath).toString());
+
+      const version = data._version !== undefined ? data._version : -1;
+      const migrationVersions = Object.keys(this.migrations || {})
+        .map((v) => parseInt(v))
+        .filter((v) => v > version)
+        .sort();
+
+      migrationVersions.forEach((migration) => {
+        data = this.migrations![migration](data);
+        data._version = migration;
+      });
+
+      if (migrationVersions.length > 0) {
+        fs.writeFileSync(filePath, JSON.stringify(data));
+      }
 
       // apply default for any missing keys
       for (const key in defaults) {

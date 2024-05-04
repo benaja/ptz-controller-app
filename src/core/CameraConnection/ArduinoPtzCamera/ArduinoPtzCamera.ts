@@ -128,7 +128,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
         }),
       );
     } catch (error) {
-      console.log('error sending update');
+      console.log('error sending update', error);
     }
   }
 
