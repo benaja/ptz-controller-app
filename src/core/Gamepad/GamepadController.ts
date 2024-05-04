@@ -116,7 +116,7 @@ export class GamepadController {
     ].map((action) => this.registerAction<ButtonAction>(action));
   }
 
-  onAxis(axis: Omit<AxisEventPayload, 'gamepadId'>) {
+  onAxis(axis: Omit<AxisEventPayload, 'gamepad'>) {
     this.axisActions.forEach((action) => {
       if (this.keyBindings[action.constructor.name] === axis.axis) {
         action.hanlde(axis.value);
@@ -124,7 +124,7 @@ export class GamepadController {
     });
   }
 
-  onButton(button: Omit<ButtonEventPayload, 'gamepadId'>) {
+  onButton(button: Omit<ButtonEventPayload, 'gamepad'>) {
     console.log('onButton', button.button, button.pressed ? 'pressed' : 'released');
     this.buttonActions.forEach((action) => {
       if (this.keyBindings[action.constructor.name] === button.button) {
