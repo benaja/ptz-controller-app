@@ -153,7 +153,7 @@ export class NodeGamepadApi extends EventEmitter {
   onControllerFrame = throttle((data: number[]) => {
     this.logDebug(JSON.stringify(data));
 
-    console.log([...data]);
+    console.log('data:', [...data]);
 
     this.processJoysticks(data);
     this.processButtons(data);
