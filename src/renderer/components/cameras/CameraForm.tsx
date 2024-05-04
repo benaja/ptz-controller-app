@@ -115,7 +115,7 @@ export default function CameraForm({ form, onChange }: Props) {
           id="isUpsideDown"
           type="checkbox"
           checked={form.isUpsideDown}
-          onChange={(e) => set('isUpsideDown', !!e.target.value)}
+          onChange={(e) => set('isUpsideDown', e.target.checked)}
         />
         <label
           className="ml-2"
