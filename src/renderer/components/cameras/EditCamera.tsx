@@ -18,6 +18,7 @@ export default function EditCamera() {
     connectionPort: null as string | null,
     sourceId: null as string | null,
     mixerId: null as string | null,
+    isUpsideDown: false,
   });
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -38,6 +39,7 @@ export default function EditCamera() {
           sourceId: null,
           mixerId: null,
           connectionPort: null,
+          isUpsideDown: false,
         });
 
         navigate('/cameras');
@@ -58,7 +60,10 @@ export default function EditCamera() {
       if (!camera) {
         throw new Error('Camera not found');
       }
-      setForm(camera);
+      setForm({
+        ...camera,
+        isUpsideDown: camera.isUpsideDown || false,
+      });
     });
   }, []);
 

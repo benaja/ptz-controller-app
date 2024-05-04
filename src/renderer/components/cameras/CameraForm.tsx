@@ -11,7 +11,7 @@ export type CameraFormType = {
   connectionPort?: string | null;
   sourceId: string | null;
   mixerId: string | null;
-  isUpsideDown?: boolean;
+  isUpsideDown: boolean;
 };
 
 type Props = {
@@ -121,7 +121,7 @@ export default function CameraForm({ form, onChange }: Props) {
           className="ml-2"
           htmlFor="isUpsideDown"
         >
-          Open at login
+          Is upside down
         </label>
       </div>
 
