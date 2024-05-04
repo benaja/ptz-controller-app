@@ -6,13 +6,13 @@ import { GamepadConfig } from '@core/repositories/GamepadRepository';
 import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
 import { INotificationApi } from '@core/api/INotificationApi';
-import { NodeGamepad as NodeGamepadApi } from '@sensslen/node-gamepad';
 import * as f310 from './f310.json';
 import * as ps4 from './ps4.json';
 
 import { GamepadButtons } from '../KeyBindings';
 import log from 'electron-log/main';
 import { devices } from 'node-hid';
+import { NodeGamepadApi } from './library/NodeGamepadApi';
 
 export const logitechN310Schema = baseGamepadSchema.extend({
   type: z.literal(GamepadType.LogitechN310),
