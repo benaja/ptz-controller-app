@@ -7,7 +7,7 @@ import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
 import { INotificationApi } from '@core/api/INotificationApi';
 import { NodeGamepad as NodeGamepadApi } from '@sensslen/node-gamepad';
-import * as f310 from '@sensslen/node-gamepad/controllers/logitech/gamepadf310.json';
+import * as f310 from './f310.json';
 import * as ps4 from './ps4.json';
 
 import { GamepadButtons } from '../KeyBindings';
