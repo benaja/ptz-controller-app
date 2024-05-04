@@ -78,6 +78,15 @@ listener.on('gamepad:axis', (event) => {
 
 listener.start();
 
+function requestGamepads() {
+  window.connectedGamepadApi.updateConnectedGamepads(
+    navigator
+      .getGamepads()
+      .filter((g) => g)
+      .map(convertGamepad),
+  );
+}
+
 // window.electronApi.onSystemResume(() => {
 //   listener.stop();
 //   console.log('onSystemResume');

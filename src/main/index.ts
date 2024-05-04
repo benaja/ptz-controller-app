@@ -41,6 +41,8 @@ if (!gotTheLock) {
       },
     });
 
+    app.commandLine.appendSwitch('disable-hid-blocklist');
+
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
     // Open the DevTools.
@@ -67,6 +69,8 @@ if (!gotTheLock) {
       show: false,
     });
 
+    gamepadWindow.focus();
+
     gamepadWindow.loadURL(GAMEPAD_WINDOW_WEBPACK_ENTRY);
   };
 
@@ -84,6 +88,12 @@ if (!gotTheLock) {
           } else {
             createMainWindow();
           }
+        },
+      },
+      {
+        label: 'Focus Gamepads',
+        click: () => {
+          gamepadWindow?.focus();
         },
       },
       { type: 'separator' },
