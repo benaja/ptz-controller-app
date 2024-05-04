@@ -61,6 +61,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.18",
     "@microsoft/signalr": "^8.0.0",
+    "@sensslen/node-gamepad": "^1.0.6",
     "axios": "^1.6.2",
     "clsx": "^2.0.0",
     "dotenv": "^16.4.5",

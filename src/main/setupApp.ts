@@ -6,6 +6,7 @@ import { ObsVideoMixerBuilder } from '@core/VideoMixer/Obs/ObsVideoMixerBuilder'
 import { VMixBuilder } from '@core/VideoMixer/VMix/VMixBuilder';
 import { PassthroughBuilder } from '@core/VideoMixer/Passthrough/PassthroughBuilder';
 import { SettingsApi } from '@core/api/SettingsApi';
+import { NodeGamepadBuilder } from '@core/Gamepad/NodeGamepad/NodeGamepadBuilder';
 
 export async function setupApp() {
   const core = new Core();
@@ -17,6 +18,9 @@ export async function setupApp() {
 
   await core.gamepadFactory.addBuilder(
     new BrowserGamepadBuilder(core.cameraFactory, core.mixerFactory, core.notificationApi),
+  );
+  await core.gamepadFactory.addBuilder(
+    new NodeGamepadBuilder(core.cameraFactory, core.mixerFactory, core.notificationApi),
   );
 
   const settingsApi = new SettingsApi();
