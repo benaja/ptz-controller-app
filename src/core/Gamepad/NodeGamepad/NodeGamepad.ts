@@ -6,12 +6,13 @@ import { GamepadConfig } from '@core/repositories/GamepadRepository';
 import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
 import { INotificationApi } from '@core/api/INotificationApi';
-import { NodeGamepad as NodeGamepadApi } from '@sensslen/node-gamepad';
 import * as f310 from '@sensslen/node-gamepad/controllers/logitech/gamepadf310.json';
 import * as ps4 from './ps4.json';
 
 import { GamepadButtons } from '../KeyBindings';
 import log from 'electron-log/main';
+import { devices } from 'node-hid';
+import { NodeGamepadApi } from './library/NodeGamepadApi';
 
 export const logitechN310Schema = baseGamepadSchema.extend({
   type: z.literal(GamepadType.LogitechN310),
@@ -54,22 +55,11 @@ export class NodeGamepad extends GamepadController implements IGamepadController
       this.isConnected = true;
     });
     gamepad.on('disconnected', () => {
-      log.info('disconnected');
+      log.info('gamepad disconnected');
       this.isConnected = false;
     });
 
     gamepad.on('left:move', (value) => {
-      this.onAxis({
-        axis: 0,
-        value: (value.x - 128) / 128,
-      });
-      this.onAxis({
-        axis: 1,
-        value: (value.y - 128) / 128,
-      });
-    });
-
-    gamepad.on('leftJoystick:move', (value) => {
       this.onAxis({
         axis: 0,
         value: (value.x - 128) / 128,
@@ -91,20 +81,9 @@ export class NodeGamepad extends GamepadController implements IGamepadController
       });
     });
 
-    gamepad.on('rightJoystick:move', (value) => {
-      this.onAxis({
-        axis: 2,
-        value: (value.x - 128) / 128,
-      });
-      this.onAxis({
-        axis: 3,
-        value: (value.y - 128) / 128,
-      });
-    });
-
     gamepad.on('dpadLeft:press', () => {
       this.onButton({
-        button: GamepadButtons.LeftBumper,
+        button: GamepadButtons.DPadLeft,
         pressed: true,
         value: 1,
       });
@@ -112,7 +91,7 @@ export class NodeGamepad extends GamepadController implements IGamepadController
 
     gamepad.on('dpadLeft:release', () => {
       this.onButton({
-        button: GamepadButtons.LeftBumper,
+        button: GamepadButtons.DPadLeft,
         pressed: false,
         value: 0,
       });
@@ -321,6 +300,38 @@ export class NodeGamepad extends GamepadController implements IGamepadController
     gamepad.on('start:release', () => {
       this.onButton({
         button: GamepadButtons.Start,
+        pressed: false,
+        value: 0,
+      });
+    });
+
+    gamepad.on('leftJoystick:press', () => {
+      this.onButton({
+        button: GamepadButtons.LeftStick,
+        pressed: true,
+        value: 1,
+      });
+    });
+
+    gamepad.on('leftJoystick:release', () => {
+      this.onButton({
+        button: GamepadButtons.LeftStick,
+        pressed: false,
+        value: 0,
+      });
+    });
+
+    gamepad.on('rightJoystick:press', () => {
+      this.onButton({
+        button: GamepadButtons.RightStick,
+        pressed: true,
+        value: 1,
+      });
+    });
+
+    gamepad.on('rightJoystick:release', () => {
+      this.onButton({
+        button: GamepadButtons.RightStick,
         pressed: false,
         value: 0,
       });
