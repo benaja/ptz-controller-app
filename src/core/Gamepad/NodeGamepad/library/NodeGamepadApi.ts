@@ -13,7 +13,7 @@ import { IDeviceSpec } from './IDeviceSpec';
 import { JoyStickValue } from './JoyStickValue';
 import { evaluate } from 'mathjs';
 import { ILogger } from './ILogger';
-import { debounce } from 'lodash';
+import { debounce, throttle } from 'lodash';
 
 export class NodeGamepadApi extends EventEmitter {
   protected _usb?: HID = undefined;
@@ -150,7 +150,7 @@ export class NodeGamepadApi extends EventEmitter {
     };
   }
 
-  onControllerFrame = debounce((data: number[]) => {
+  onControllerFrame = throttle((data: number[]) => {
     this.logDebug(JSON.stringify(data));
 
     console.log(data);
@@ -159,7 +159,7 @@ export class NodeGamepadApi extends EventEmitter {
     this.processButtons(data);
     this.processStates(data);
     this.processScales(data);
-  }, 100);
+  }, 50);
 
   private processJoysticks(data: number[]) {
     this.config.joysticks?.forEach((joystick) => {
