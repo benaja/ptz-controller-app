@@ -1,5 +1,5 @@
 export enum GamepadType {
-  Ps4NodeHid = 'ps4-node-hid',
-  NodeHid = 'node-hid',
+  SonyPs4 = 'sony-ps4',
+  LogitechN310 = 'logitech-n310',
   WebApi = 'web-api',
 }

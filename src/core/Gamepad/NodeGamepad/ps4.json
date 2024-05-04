@@ -5,19 +5,19 @@
     {
       "name": "left",
       "x": {
-        "pin": 0
+        "pin": 1
       },
       "y": {
-        "pin": 1
+        "pin": 2
       }
     },
     {
       "name": "right",
       "x": {
-        "pin": 2
+        "pin": 3
       },
       "y": {
-        "pin": 3
+        "pin": 4
       }
     }
   ],
@@ -34,73 +34,73 @@
     },
     {
       "value": "(value & 16) > 0",
-      "pin": 5,
-      "name": "select"
+      "pin": 6,
+      "name": "back"
     },
     {
       "value": "(value & 32) > 0",
-      "pin": 5,
+      "pin": 6,
       "name": "start"
     },
     {
       "value": "((value & 15) >= 5) and ((value & 15) <= 7)",
-      "pin": 4,
+      "pin": 5,
       "name": "dpadLeft"
     },
     {
       "value": "((value & 15) <= 1) or ((value & 15) == 7)",
-      "pin": 4,
+      "pin": 5,
       "name": "dpadUp"
     },
     {
       "value": "((value & 15) >= 1) and ((value & 15) <= 3)",
-      "pin": 4,
+      "pin": 5,
       "name": "dpadRight"
     },
     {
       "value": "((value & 15) >= 3) and ((value & 15) <= 5)",
-      "pin": 4,
+      "pin": 5,
       "name": "dpadDown"
     },
     {
       "value": "(value & 16) > 0",
-      "pin": 4,
-      "name": "1"
+      "pin": 5,
+      "name": "X"
     },
     {
       "value": "(value & 128) > 0",
-      "pin": 4,
-      "name": "4"
+      "pin": 5,
+      "name": "Y"
     },
     {
       "value": "(value & 32) > 0",
-      "pin": 4,
-      "name": "2"
+      "pin": 5,
+      "name": "A"
     },
     {
       "value": "(value & 64) > 0",
-      "pin": 4,
-      "name": "3"
+      "pin": 5,
+      "name": "B"
     },
     {
       "value": "(value & 1) > 0",
-      "pin": 5,
-      "name": "l1"
+      "pin": 6,
+      "name": "LB"
     },
     {
       "value": "(value & 2) > 0",
-      "pin": 5,
-      "name": "r1"
+      "pin": 6,
+      "name": "RB"
     },
     {
       "value": "(value & 4) > 0",
-      "pin": 5,
-      "name": "l2"
+      "pin": 6,
+      "name": "LT"
     },
     {
       "value": "(value & 8) > 0",
-      "pin": 5,
-      "name": "r2"
+      "pin": 6,
+      "name": "RT"
     }
   ]
 }

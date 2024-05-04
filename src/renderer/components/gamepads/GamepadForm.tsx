@@ -35,8 +35,12 @@ export default function GamepadForm({ form, onChange, original }: Props) {
       value: GamepadType.WebApi,
     },
     {
-      label: 'Node hid',
-      value: GamepadType.NodeHid,
+      label: 'Sony PS4 Node HID',
+      value: GamepadType.SonyPs4,
+    },
+    {
+      label: 'Logitech F310 Node HID',
+      value: GamepadType.LogitechN310,
     },
   ];
 

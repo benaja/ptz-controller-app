@@ -17,7 +17,7 @@ export class NodeGamepadBuilder implements IBuilder<IGamepadController> {
   ) {}
 
   public supportedTypes(): string[] {
-    return [GamepadType.NodeHid];
+    return [GamepadType.LogitechN310, GamepadType.SonyPs4];
   }
 
   public validationSchema() {
@@ -31,8 +31,8 @@ export class NodeGamepadBuilder implements IBuilder<IGamepadController> {
     console.log('build browser gamepad', config);
 
     switch (config.type) {
-      case GamepadType.NodeHid:
-      case GamepadType.Ps4NodeHid:
+      case GamepadType.SonyPs4:
+      case GamepadType.LogitechN310:
         return new NodeGamepad(
           config,
           this._cameraFactory,

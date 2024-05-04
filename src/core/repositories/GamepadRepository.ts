@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import { Repository } from './Repository';
 import { browserGamepadSchema } from '@core/Gamepad/BrowserGamepad/BrowserGamepad';
-import { nodeGamepadSchema, ps4GamepadSchema } from '@core/Gamepad/NodeGamepad/NodeGamepad';
+import { logitechN310Schema, sonyPs4Schema } from '@core/Gamepad/NodeGamepad/NodeGamepad';
 
 const gamepadConfigSchema = z.discriminatedUnion('type', [
   browserGamepadSchema,
-  nodeGamepadSchema,
-  ps4GamepadSchema,
+  logitechN310Schema,
+  sonyPs4Schema,
 ]);
 export type GamepadConfig = z.infer<typeof gamepadConfigSchema>;
 

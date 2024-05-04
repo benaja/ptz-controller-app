@@ -7,7 +7,6 @@ export const baseGamepadSchema = z.object({
   name: z.string(),
   videoMixerId: z.string().nullable(),
   keyBindings: z.record(z.number()),
-  // gamepadId: z.string(),
 });
 
 export type BaseGamepadConfig = z.infer<typeof baseGamepadSchema>;

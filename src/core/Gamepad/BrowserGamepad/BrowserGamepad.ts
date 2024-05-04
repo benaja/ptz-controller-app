@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { GamepadType } from '@core/api/GamepadType';
 
 export const browserGamepadSchema = baseGamepadSchema.extend({
+  gamepadId: z.string(),
   type: z.literal(GamepadType.WebApi),
 });
 export type BrowserGamepadConfig = z.infer<typeof browserGamepadSchema>;

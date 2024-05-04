@@ -59,37 +59,31 @@ export class ConnectedGamepadApi {
     }
     this._connectedGamepadsStore.get().push(gamepad);
 
-    const gamepads = this._gamepadRepository.getAll();
-    const availableGamepad = gamepads.find((g) => g.gamepadId === gamepad.id);
+    const gamepadController = this._gamepadFactory.getByGamepadId(gamepad.id);
+    if (!gamepadController) return;
 
-    if (!availableGamepad) return;
-
-    this._gamepadFactory.add(availableGamepad);
+    gamepadController.isConnected = true;
   }
 
   public gamepadDisconnected(gamepad: ConnectedGamepad): void {
     const index = this._connectedGamepadsStore.get().findIndex((c) => c.id === gamepad.id);
     if (index === -1) return;
-
     this._connectedGamepadsStore.get().splice(index, 1);
 
-    const gamepads = this._gamepadRepository.getAll();
-    const availableGamepad = gamepads.find((g) => g.gamepadId === gamepad.id);
-    if (!availableGamepad) return;
+    const gamepadController = this._gamepadFactory.getByGamepadId(gamepad.id);
+    if (!gamepadController) return;
 
-    this._gamepadFactory.remove(availableGamepad.id);
+    gamepadController.isConnected = false;
   }
 
   public updateConnectedGamepads(gamepads: ConnectedGamepad[]): void {
     const originalGamepads = [...this._connectedGamepadsStore.get()];
-
     const addedGamepads = gamepads.filter(
       (gamepad) => !originalGamepads.find((originalGamepad) => originalGamepad.id === gamepad.id),
     );
     const removedGamepads = originalGamepads.filter(
       (gamepad) => !gamepads.find((connectedGamepad) => connectedGamepad.id === gamepad.id),
     );
-
     addedGamepads.forEach((gamepad) => {
       this.gamepadConnected(gamepad);
     });

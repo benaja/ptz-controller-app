@@ -61,6 +61,7 @@ export class Core implements IDisposable {
   public async bootstrap(): Promise<void> {
     this.cameraFactory.build(this.cameraRepository.getAll());
     this.mixerFactory.build(this.mixerRepository.getAll());
+    this.gamepadFactory.build(this.gamepadRepository.getAll());
   }
 
   public async dispose(): Promise<void> {

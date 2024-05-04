@@ -47,14 +47,14 @@ export class GamepadConfigApi {
 
     return {
       ...gamepad,
-      connected: !!this._gamepadFactory.get(id),
+      connected: !!this._gamepadFactory.get(id)?.isConnected,
     };
   }
 
   public getGamepads(): GamepadResponse[] {
     return this._gamepadRepository.getAll().map((gamepad) => ({
       ...gamepad,
-      connected: !!this._gamepadFactory.get(gamepad.id),
+      connected: !!this._gamepadFactory.get(gamepad.id)?.isConnected,
     }));
   }
 }
