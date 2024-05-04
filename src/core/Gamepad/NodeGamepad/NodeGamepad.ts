@@ -12,6 +12,7 @@ import * as ps4 from './ps4.json';
 
 import { GamepadButtons } from '../KeyBindings';
 import log from 'electron-log/main';
+import { devices } from 'node-hid';
 
 export const logitechN310Schema = baseGamepadSchema.extend({
   type: z.literal(GamepadType.LogitechN310),
@@ -48,6 +49,8 @@ export class NodeGamepad extends GamepadController implements IGamepadController
     }
 
     log.info('connecting to gamepad', _config);
+
+    log.info('devices', devices());
 
     gamepad.on('connected', () => {
       log.info('connected');
