@@ -55,7 +55,7 @@ export class NodeGamepad extends GamepadController implements IGamepadController
       this.isConnected = true;
     });
     gamepad.on('disconnected', () => {
-      log.info('disconnected');
+      log.info('gamepad disconnected');
       this.isConnected = false;
     });
 
@@ -83,7 +83,7 @@ export class NodeGamepad extends GamepadController implements IGamepadController
 
     gamepad.on('dpadLeft:press', () => {
       this.onButton({
-        button: GamepadButtons.LeftBumper,
+        button: GamepadButtons.DPadLeft,
         pressed: true,
         value: 1,
       });
@@ -91,7 +91,7 @@ export class NodeGamepad extends GamepadController implements IGamepadController
 
     gamepad.on('dpadLeft:release', () => {
       this.onButton({
-        button: GamepadButtons.LeftBumper,
+        button: GamepadButtons.DPadLeft,
         pressed: false,
         value: 0,
       });
