@@ -139,8 +139,7 @@ export class GamepadController {
     if (button.pressed) {
       this.pressedButtons.push(button.button);
     }
-    // log.info('onButton', button.value, button.pressed ? 'pressed' : 'released');
-    console.log('onButton', button.button, button.pressed ? 'pressed' : 'released');
+    log.info('onButton', button.value, button.pressed ? 'pressed' : 'released');
     this.buttonActions.forEach((action) => {
       if (
         this.buttonBindings[action.constructor.name]?.every((b) => this.pressedButtons.includes(b))
