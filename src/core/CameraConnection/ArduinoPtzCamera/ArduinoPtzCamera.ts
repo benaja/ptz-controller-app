@@ -134,6 +134,9 @@ export class ArduinoPtzCamera implements ICameraConnection {
 
   setAutoFocus(value: boolean): void {
     this.sendUpdate('setAutofocus', { value });
+    setTimeout(() => {
+      this.sendUpdate('setAutofocus', { value: false });
+    }, 50);
   }
 
   toggleAutoFocus(): void {

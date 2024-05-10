@@ -31,9 +31,17 @@ export class NodeGamepad extends GamepadController implements IGamepadController
     _cameraFactory: CameraFactory,
     _videoMixerFactory: VideomixerFactory,
     _notificationApi: INotificationApi,
-    keyBindings: Record<string, number>,
+    buttonBindings: Record<string, number[]>,
+    axisBindings: Record<string, number>,
   ) {
-    super(_config, _cameraFactory, _videoMixerFactory, _notificationApi, keyBindings);
+    super(
+      _config,
+      _cameraFactory,
+      _videoMixerFactory,
+      _notificationApi,
+      buttonBindings,
+      axisBindings,
+    );
 
     let gamepad: NodeGamepadApi;
 

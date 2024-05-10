@@ -37,8 +37,6 @@ import {
 } from './actions/ToggleOverlayActions';
 
 export class GamepadController {
-  private keyBindings: Record<string, number>;
-
   private axisActions: IAxisAction[];
   private buttonActions: IButtonAction[];
 
@@ -100,10 +98,9 @@ export class GamepadController {
     private _cameraFactory: CameraFactory,
     private _videoMixerFactory: VideomixerFactory,
     private _notificationApi: INotificationApi,
-    keyBindings: Record<string, number>,
+    private buttonBindings: Record<string, number[]>,
+    private axisBindings: Record<string, number>,
   ) {
-    this.keyBindings = keyBindings;
-
     this.gamepadId = _config.gamepadId;
 
     this.axisActions = [PanCameraAction, TiltCameraAction, ZoomCameraAction].map((action) =>
@@ -132,20 +129,29 @@ export class GamepadController {
   onAxis(axis: Omit<AxisEventPayload, 'gamepad'>) {
     // log.info('onAxis', axis.axis, axis.value);
     this.axisActions.forEach((action) => {
-      if (this.keyBindings[action.constructor.name] === axis.axis) {
+      if (this.axisBindings[action.constructor.name] === axis.axis) {
         action.hanlde(axis.value);
       }
     });
   }
 
   onButton(button: Omit<ButtonEventPayload, 'gamepad'>) {
+    if (button.pressed) {
+      this.pressedButtons.push(button.button);
+    }
     // log.info('onButton', button.value, button.pressed ? 'pressed' : 'released');
     console.log('onButton', button.button, button.pressed ? 'pressed' : 'released');
     this.buttonActions.forEach((action) => {
-      if (this.keyBindings[action.constructor.name] === button.button) {
+      if (
+        this.buttonBindings[action.constructor.name]?.every((b) => this.pressedButtons.includes(b))
+      ) {
         action.hanlde(button.pressed ? 'pressed' : 'released');
       }
     });
+
+    if (!button.pressed) {
+      this.pressedButtons = this.pressedButtons.filter((b) => b !== button.button);
+    }
   }
 
   dispose() {}

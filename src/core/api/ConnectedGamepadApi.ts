@@ -24,19 +24,6 @@ export type AxisEventPayload = {
   gamepad: ConnectedGamepad;
 };
 
-function mergeKeyBindings(
-  defaultKeyBindings: Record<string, number>,
-  customzedKeyBindings: Record<string, number>,
-): Record<string, number> {
-  const mergedKeyBindings = { ...defaultKeyBindings };
-
-  Object.keys(customzedKeyBindings).forEach((key) => {
-    mergedKeyBindings[key] = customzedKeyBindings[key];
-  });
-
-  return mergedKeyBindings;
-}
-
 export class ConnectedGamepadApi {
   public constructor(
     private _gamepadFactory: GamepadFactory,

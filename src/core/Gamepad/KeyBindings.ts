@@ -49,12 +49,14 @@ export enum GamepadAxis {
   // RightTrigger = 5,
 }
 
-export const defaultKeyBindings: Record<string, (GamepadButtons | GamepadAxis)[]> = {
-  [TiltCameraAction.name]: [GamepadAxis.LeftStickY],
-  [PanCameraAction.name]: [GamepadAxis.LeftStickX],
-  [ZoomCameraAction.name]: [GamepadAxis.RightStickY],
-  [FocusCameraAction.name]: [GamepadAxis.RightStickX],
+export const defaultAxisBindings: Record<string, GamepadAxis> = {
+  [TiltCameraAction.name]: GamepadAxis.LeftStickY,
+  [PanCameraAction.name]: GamepadAxis.LeftStickX,
+  [ZoomCameraAction.name]: GamepadAxis.RightStickY,
+  [FocusCameraAction.name]: GamepadAxis.RightStickX,
+};
 
+export const defaultButtonBindings: Record<string, GamepadButtons[]> = {
   [ToggleAutofocusAction.name]: [GamepadButtons.RightStick],
 
   [ToggleOverlay1.name]: [GamepadButtons.Y],

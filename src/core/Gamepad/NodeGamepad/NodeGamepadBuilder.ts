@@ -4,7 +4,11 @@ import { IGamepadController, baseGamepadSchema } from '../IGamepadController';
 import { GamepadType } from '@core/api/GamepadType';
 import { CameraFactory } from '@core/CameraConnection/CameraFactory';
 import { VideomixerFactory } from '@core/VideoMixer/VideoMixerFactory';
-import { defaultKeyBindings } from '@core/Gamepad/KeyBindings';
+import {
+  defaultAxisBindings,
+  defaultB,
+  defaultButtonBindingsuttonBindings,
+} from '@core/Gamepad/KeyBindings';
 import { GamepadConfig } from '@core/repositories/GamepadRepository';
 import { INotificationApi } from '@core/api/INotificationApi';
 import { NodeGamepad, NodeGamepadConfig, nodeGamepadSchema } from './NodeGamepad';
@@ -38,7 +42,8 @@ export class NodeGamepadBuilder implements IBuilder<IGamepadController> {
           this._cameraFactory,
           this._videoMixerFactory,
           this._notificationApi,
-          defaultKeyBindings,
+          defaultButtonBindings,
+          defaultAxisBindings,
         );
       default:
         throw new Error(`Gamepad type ${config.type} not supported`);
