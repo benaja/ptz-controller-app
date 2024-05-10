@@ -49,31 +49,31 @@ export enum GamepadAxis {
   // RightTrigger = 5,
 }
 
-export const defaultKeyBindings: Record<string, GamepadButtons | GamepadAxis> = {
-  [TiltCameraAction.name]: GamepadAxis.LeftStickY,
-  [PanCameraAction.name]: GamepadAxis.LeftStickX,
-  [ZoomCameraAction.name]: GamepadAxis.RightStickY,
-  [FocusCameraAction.name]: GamepadAxis.RightStickX,
+export const defaultKeyBindings: Record<string, (GamepadButtons | GamepadAxis)[]> = {
+  [TiltCameraAction.name]: [GamepadAxis.LeftStickY],
+  [PanCameraAction.name]: [GamepadAxis.LeftStickX],
+  [ZoomCameraAction.name]: [GamepadAxis.RightStickY],
+  [FocusCameraAction.name]: [GamepadAxis.RightStickX],
 
-  [ToggleAutofocusAction.name]: GamepadButtons.RightStick,
+  [ToggleAutofocusAction.name]: [GamepadButtons.RightStick],
 
-  [ToggleOverlay1.name]: GamepadButtons.Y,
-  [ToggleOverlay2.name]: GamepadButtons.X,
-  // [PreviousInputAction.name]: GamepadButtons.LeftBumper,
-  // [NextInputAction.name]: GamepadButtons.RightBumper,
-  // [CutInputAction.name]: GamepadButtons.B,
+  [ToggleOverlay1.name]: [GamepadButtons.Y],
+  [ToggleOverlay2.name]: [GamepadButtons.X],
+  // [PreviousInputAction.name]: [GamepadButtons.LeftBumper],
+  // [NextInputAction.name]: [GamepadButtons.RightBumper],
+  // [CutInputAction.name]: [GamepadButtons.B],
 
-  // [SetActiveCameraToOnAirAction.name]: GamepadButtons.RightBumper,
-  // [SetActiveCameraToPreviewAction.name]: GamepadButtons.LeftBumper,
+  // [SetActiveCameraToOnAirAction.name]: [GamepadButtons.RightBumper],
+  // [SetActiveCameraToPreviewAction.name]: [GamepadButtons.LeftBumper],
 
-  [CutInputAction.name]: GamepadButtons.B,
-  [NextInputAction.name]: GamepadButtons.RightBumper,
-  [PreviousInputAction.name]: GamepadButtons.LeftBumper,
+  [CutInputAction.name]: [GamepadButtons.B],
+  [NextInputAction.name]: [GamepadButtons.RightBumper],
+  [PreviousInputAction.name]: [GamepadButtons.LeftBumper],
 
-  [CameraPosition1Action.name]: GamepadButtons.DPadUp,
-  [CameraPosition2Action.name]: GamepadButtons.DPadRight,
-  [CameraPosition3Action.name]: GamepadButtons.DPadDown,
-  [CameraPosition4Action.name]: GamepadButtons.DPadLeft,
+  [CameraPosition1Action.name]: [GamepadButtons.DPadUp],
+  [CameraPosition2Action.name]: [GamepadButtons.DPadRight],
+  [CameraPosition3Action.name]: [GamepadButtons.DPadDown],
+  [CameraPosition4Action.name]: [GamepadButtons.DPadLeft],
 };
 
 export const defaultSecondaryKeyBindings: Record<string, GamepadButtons | GamepadAxis> = {};

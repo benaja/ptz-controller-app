@@ -46,6 +46,8 @@ export class GamepadController {
 
   private activeCamera: 'preview' | 'onAir' = 'preview';
 
+  private pressedButtons: number[] = [];
+
   private getVideoMixer() {
     if (!this._config.videoMixerId) {
       throw new Error('mixer not connected');
