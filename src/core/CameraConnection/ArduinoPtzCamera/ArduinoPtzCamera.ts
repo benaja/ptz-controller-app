@@ -85,15 +85,10 @@ export class ArduinoPtzCamera implements ICameraConnection {
       log.error('websocket error', error, this.config.ip);
     });
 
-    console.log('setting up pong listener');
     this.websocket.on('pong', () => {
       console.log('pong received');
       this._lastPongReceived = Date.now();
     });
-
-    // this.websocket.on('message', (data: WebSocket.Data) => {
-    //   console.log('message from server:', data.toString());
-    // });
   }
 
   private onClose() {
@@ -158,7 +153,6 @@ export class ArduinoPtzCamera implements ICameraConnection {
   sendUpdate(action: string, data?: Record<string, any>): void {
     log.info('sending update to', this.config.ip, action, data);
     try {
-      // this.websocket?.send('hey');
       this.websocket?.send(
         JSON.stringify({
           action,
@@ -166,7 +160,6 @@ export class ArduinoPtzCamera implements ICameraConnection {
         }),
       );
     } catch (error) {
-      console.log('error sending update', error);
       log.error('error sending update', error);
     }
   }
@@ -187,8 +180,6 @@ export class ArduinoPtzCamera implements ICameraConnection {
         }
 
         resolve(response.payload);
-
-        console.log('message from server:', data.toString());
       });
       this.sendUpdate('getCurrentPosition');
     });
