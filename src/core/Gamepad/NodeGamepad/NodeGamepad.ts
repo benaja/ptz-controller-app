@@ -23,6 +23,8 @@ export const sonyPs4Schema = baseGamepadSchema.extend({
 export type LogitechN310Schema = z.infer<typeof logitechN310Schema>;
 export type SonyPs4Schema = z.infer<typeof sonyPs4Schema>;
 
+export const nodeGamepadSchema = z.union([logitechN310Schema, sonyPs4Schema]);
+
 export class NodeGamepad extends GamepadController implements IGamepadController {
   private _isConnected = false;
 

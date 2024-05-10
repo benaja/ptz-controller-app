@@ -20,7 +20,7 @@ class CameraPositionAction extends ButtonAction {
 
     camera.goToPosition({
       ...position,
-      speed: 100,
+      speed: 180,
     });
   }
 

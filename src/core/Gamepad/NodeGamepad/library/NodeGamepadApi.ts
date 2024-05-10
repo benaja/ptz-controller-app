@@ -13,7 +13,6 @@ import { IDeviceSpec } from './IDeviceSpec';
 import { JoyStickValue } from './JoyStickValue';
 import { evaluate } from 'mathjs';
 import { ILogger } from './ILogger';
-import { debounce, throttle } from 'lodash';
 
 export class NodeGamepadApi extends EventEmitter {
   protected _usb?: HID = undefined;
