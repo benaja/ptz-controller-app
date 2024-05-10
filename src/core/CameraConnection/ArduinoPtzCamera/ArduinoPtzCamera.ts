@@ -25,6 +25,8 @@ export class ArduinoPtzCamera implements ICameraConnection {
 
   public readonly sourceId: string;
 
+  private _lastPongReceived: number | null = Date.now();
+
   constructor(public config: ArduionoPtzCameraConfig) {
     this.sourceId = config.sourceId;
     this.id = config.id;
@@ -46,6 +48,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
   private pingInterval: NodeJS.Timeout | undefined;
 
   setupWebsocket() {
+    this._lastPongReceived = null;
     log.info('setting up websocket: ', this.config.ip);
     // if (!this.reconnect || this.websocket?.readyState === WebSocket.OPEN) return;
     this.websocket = new WebSocket(`ws://${this.config.ip}:3004`);
@@ -55,28 +58,51 @@ export class ArduinoPtzCamera implements ICameraConnection {
       this.connected = true;
 
       this.pingInterval = setInterval(() => {
-        this.websocket?.ping();
-      }, 1000);
+        if (this._lastPongReceived && Date.now() - this._lastPongReceived > 11000) {
+          console.log('no pong received in 11 seconds');
+          this.onClose();
+        }
+        if (!this.websocket) {
+          log.error('cannot ping, no websocket');
+          return;
+        }
+        console.log('pinging');
+        try {
+          this.websocket.ping();
+        } catch (error) {
+          console.log('error pinging', error);
+          log.error('error pinging', error);
+        }
+      }, 5000);
     });
 
     this.websocket.on('close', (e, reason) => {
       log.info('websocket closed', e, reason);
-      this.connected = false;
-      clearInterval(this.pingInterval);
-      if (this.reconnect) {
-        // console.log('websocket closed, retrying in 5s: ', this.config.ip, e, reason);
-        setTimeout(this.setupWebsocket.bind(this), 5000);
-      }
+      this.onClose();
     });
 
     this.websocket.on('error', (error) => {
       log.error('websocket error', error, this.config.ip);
-      // console.log('websocket error', error, this.config.ip);
+    });
+
+    console.log('setting up pong listener');
+    this.websocket.on('pong', () => {
+      console.log('pong received');
+      this._lastPongReceived = Date.now();
     });
 
     // this.websocket.on('message', (data: WebSocket.Data) => {
     //   console.log('message from server:', data.toString());
     // });
+  }
+
+  private onClose() {
+    this.connected = false;
+    this.websocket?.removeAllListeners();
+    clearInterval(this.pingInterval);
+    if (this.reconnect) {
+      setTimeout(this.setupWebsocket.bind(this), 1000);
+    }
   }
 
   dispose(): void {
@@ -132,6 +158,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
   sendUpdate(action: string, data?: Record<string, any>): void {
     log.info('sending update to', this.config.ip, action, data);
     try {
+      // this.websocket?.send('hey');
       this.websocket?.send(
         JSON.stringify({
           action,

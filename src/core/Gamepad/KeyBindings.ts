@@ -15,6 +15,7 @@ import {
 } from './actions/SetActiveCameraAction';
 import { TiltCameraAction } from './actions/TiltCameraAction';
 import { ToggleAutofocusAction } from './actions/ToggleAutofocusAction';
+import { ToggleOverlay1, ToggleOverlay2 } from './actions/ToggleOverlayActions';
 import { ToggleTallyAction } from './actions/ToggleTallyAction';
 import { ZoomCameraAction } from './actions/ZoomCameraAction';
 
@@ -54,14 +55,20 @@ export const defaultKeyBindings: Record<string, GamepadButtons | GamepadAxis> = 
   [ZoomCameraAction.name]: GamepadAxis.RightStickY,
   [FocusCameraAction.name]: GamepadAxis.RightStickX,
 
-  [ToggleAutofocusAction.name]: GamepadButtons.A,
-  [ToggleTallyAction.name]: GamepadButtons.X,
+  [ToggleAutofocusAction.name]: GamepadButtons.RightStick,
+
+  [ToggleOverlay1.name]: GamepadButtons.Y,
+  [ToggleOverlay2.name]: GamepadButtons.X,
   // [PreviousInputAction.name]: GamepadButtons.LeftBumper,
   // [NextInputAction.name]: GamepadButtons.RightBumper,
-  [CutInputAction.name]: GamepadButtons.B,
+  // [CutInputAction.name]: GamepadButtons.B,
 
-  [SetActiveCameraToOnAirAction.name]: GamepadButtons.RightBumper,
-  [SetActiveCameraToPreviewAction.name]: GamepadButtons.LeftBumper,
+  // [SetActiveCameraToOnAirAction.name]: GamepadButtons.RightBumper,
+  // [SetActiveCameraToPreviewAction.name]: GamepadButtons.LeftBumper,
+
+  [CutInputAction.name]: GamepadButtons.B,
+  [NextInputAction.name]: GamepadButtons.RightBumper,
+  [PreviousInputAction.name]: GamepadButtons.LeftBumper,
 
   [CameraPosition1Action.name]: GamepadButtons.DPadUp,
   [CameraPosition2Action.name]: GamepadButtons.DPadRight,

@@ -29,6 +29,12 @@ import {
 import { GamepadConfig } from '@core/repositories/GamepadRepository';
 import { INotificationApi } from '@core/api/INotificationApi';
 import log from 'electron-log/main';
+import {
+  ToggleOverlay1,
+  ToggleOverlay2,
+  ToggleOverlay3,
+  ToggleOverlay4,
+} from './actions/ToggleOverlayActions';
 
 export class GamepadController {
   private keyBindings: Record<string, number>;
@@ -114,6 +120,10 @@ export class GamepadController {
       CameraPosition2Action,
       CameraPosition3Action,
       CameraPosition4Action,
+      ToggleOverlay1,
+      ToggleOverlay2,
+      ToggleOverlay3,
+      ToggleOverlay4,
     ].map((action) => this.registerAction<ButtonAction>(action));
   }
 

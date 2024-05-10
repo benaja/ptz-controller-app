@@ -27,6 +27,8 @@ export interface IVideoMixer extends IDisposable {
   nextInput(): Promise<void>;
   previousInput(): Promise<void>;
 
+  toggleOverlay(overlay: number): void;
+
   toggleKey(key: number): void;
   runMacro(macro: number): void;
   /**

@@ -1,12 +1,9 @@
 import { ButtonAction } from './BaseAction';
 
 export class NextInputAction extends ButtonAction {
-  onPress(): void {
+  async onPress() {
+    const mixer = await this.getVideoMixer();
+    mixer?.nextInput();
     console.log('NextInputAction');
-    // this.getVideoMixer()?.nextInput();
-  }
-
-  onRelease() {
-    console.log('asdfa');
   }
 }
