@@ -14,7 +14,6 @@ export type CameraFormType = {
   mixerId: string | null;
   isUpsideDown: boolean;
   maxSpeed: number;
-  minSpeed: number;
 };
 
 type Props = {
@@ -122,17 +121,9 @@ export default function CameraForm({ form, onChange }: Props) {
 
       <TextField
         name="maxSpeed"
-        label="Max Speed in % (0-100)"
+        label="Max Speed"
         value={form.maxSpeed.toString() || ''}
         onChange={(maxSpeed) => set('maxSpeed', Number(maxSpeed))}
-        required
-      />
-
-      <TextField
-        name="minSpeed"
-        label="Min Speed in % (0-100)"
-        value={form.minSpeed.toString() || ''}
-        onChange={(minSpeed) => set('minSpeed', Number(minSpeed))}
         required
       />
 

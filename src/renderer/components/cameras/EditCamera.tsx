@@ -20,7 +20,6 @@ export default function EditCamera() {
     mixerId: null as string | null,
     isUpsideDown: false,
     maxSpeed: 100,
-    minSpeed: 0,
   });
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -43,7 +42,6 @@ export default function EditCamera() {
           connectionPort: null,
           isUpsideDown: false,
           maxSpeed: 100,
-          minSpeed: 0,
         });
 
         navigate('/cameras');
@@ -68,7 +66,6 @@ export default function EditCamera() {
         ...camera,
         isUpsideDown: camera.isUpsideDown || false,
         maxSpeed: camera.maxSpeed || 100,
-        minSpeed: camera.minSpeed || 0,
       });
     });
   }, []);

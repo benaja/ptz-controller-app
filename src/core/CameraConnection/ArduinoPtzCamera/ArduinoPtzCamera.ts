@@ -1,7 +1,6 @@
 import { ICameraConnection, baseCameraConfigSchema } from '../ICameraConnection';
 import WebSocket from 'ws';
 import { throttle } from '@main/utils/throttle';
-import { applyLowPassFilter, clampSpeedChange, round } from '@main/utils/filters';
 import { RelativeCameraState } from './AurduinoPtzCameraState';
 import { CameraConnectionType } from '../CameraConnectionTypes';
 import { z } from 'zod';
@@ -110,27 +109,25 @@ export class ArduinoPtzCamera implements ICameraConnection {
     if (this.config.isUpsideDown) {
       value = -value;
     }
-    value -= value * this.getMinSpeed();
-    value *= this.getMaxSpeed();
+    value = (value * (this.config.maxSpeed || 100)) / 100;
 
     this.relativeState.pan = value;
-    this.scheduleMoveUpdate(this.relativeState);
+    this.sheduleUpdate('move', this.relativeState);
   }
 
   tilt(value: number): void {
     if (this.config.isUpsideDown) {
       value = -value;
     }
-    value -= value * this.getMinSpeed();
-    value *= this.getMaxSpeed();
+    value = (value * (this.config.maxSpeed || 100)) / 100;
 
     this.relativeState.tilt = value;
-    this.scheduleMoveUpdate(this.relativeState);
+    this.sheduleUpdate('move', this.relativeState);
   }
 
   zoom(value: number): void {
     this.relativeState.zoom = value;
-    this.scheduleMoveUpdate(this.relativeState);
+    this.sheduleUpdate('move', this.relativeState);
   }
 
   focus(value: number): void {
@@ -154,69 +151,9 @@ export class ArduinoPtzCamera implements ICameraConnection {
     });
   }
 
-  private interval: NodeJS.Timeout | undefined;
-  private timeout: NodeJS.Timeout | undefined;
-  scheduleMoveUpdate = throttle((data: RelativeCameraState) => {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
-    this.sendMovementUpdate(data);
-    this.interval = setInterval(() => {
-      this.sendMovementUpdate(data);
-    }, 50);
-
-    if (this.timeout) {
-      clearTimeout(this.timeout);
-    }
-    this.timeout = setTimeout(() => {
-      clearInterval(this.interval);
-    }, 2000);
+  sheduleUpdate = throttle((action: string, data?: Record<string, any>) => {
+    this.sendUpdate(action, data);
   }, 50);
-
-  private filterData: Record<string, any> = {
-    pan: 0,
-    tilt: 0,
-    zoom: 0,
-  };
-  sendMovementUpdate(data: RelativeCameraState): void {
-    const lastData = { ...this.filterData };
-    this.filterData.pan = applyLowPassFilter(data.pan, lastData.pan, 0.2);
-    this.filterData.tilt = applyLowPassFilter(data.tilt, lastData.tilt, 0.2);
-    this.filterData.zoom = applyLowPassFilter(data.zoom, lastData.zoom, 0.2);
-
-    this.filterData.pan = clampSpeedChange(this.filterData.pan, lastData.pan, 0.2);
-    this.filterData.tilt = clampSpeedChange(this.filterData.tilt, lastData.tilt, 0.2);
-    this.filterData.zoom = clampSpeedChange(this.filterData.zoom, lastData.zoom, 0.2);
-
-    const newData = {
-      pan: round(this.filterData.pan),
-      tilt: round(this.filterData.tilt),
-      zoom: round(this.filterData.zoom),
-    };
-
-    // if (
-    //   newData.pan === round(lastData.pan) &&
-    //   newData.tilt === round(lastData.tilt) &&
-    //   newData.zoom === round(lastData.zoom)
-    // ) {
-    //   return;
-    // }
-    const absoluteMinSpeed = round(this.getMinSpeed() * 255 * this.getMaxSpeed());
-
-    this.sendUpdate('move', {
-      pan: newData.pan + Math.sign(newData.pan) * absoluteMinSpeed,
-      tilt: newData.tilt + Math.sign(newData.tilt) * absoluteMinSpeed,
-      zoom: newData.zoom,
-    });
-  }
-
-  private getMinSpeed(): number {
-    return (this.config.minSpeed || 0) / 100;
-  }
-
-  private getMaxSpeed(): number {
-    return (this.config.maxSpeed || 100) / 100;
-  }
 
   sendUpdate(action: string, data?: Record<string, any>): void {
     log.info('sending update to', this.config.ip, action, data);
