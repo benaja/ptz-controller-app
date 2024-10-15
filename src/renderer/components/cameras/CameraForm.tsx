@@ -13,6 +13,7 @@ export type CameraFormType = {
   sourceId: string | null;
   mixerId: string | null;
   isUpsideDown: boolean;
+  maxSpeed: number;
 };
 
 type Props = {
@@ -116,6 +117,14 @@ export default function CameraForm({ form, onChange }: Props) {
         value={form.isUpsideDown}
         onChange={(value) => set('isUpsideDown', value)}
         label="Is upside down"
+      />
+
+      <TextField
+        name="maxSpeed"
+        label="Max Speed"
+        value={form.maxSpeed.toString() || ''}
+        onChange={(maxSpeed) => set('maxSpeed', Number(maxSpeed))}
+        required
       />
 
       {form.type === CameraConnectionType.CgfPtzCamera && (

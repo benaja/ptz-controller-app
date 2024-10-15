@@ -10,6 +10,7 @@ export const baseCameraConfigSchema = z.object({
   mixerId: z.string(),
   sourceId: z.string(),
   isUpsideDown: z.boolean().optional(),
+  maxSpeed: z.number().optional(),
   positions: z
     .record(
       z.number().or(z.string()),

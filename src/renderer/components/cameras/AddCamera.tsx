@@ -19,6 +19,7 @@ export default function AddCamera() {
     sourceId: null as string | null,
     mixerId: null as string | null,
     isUpsideDown: false,
+    maxSpeed: 100,
   });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -37,6 +38,7 @@ export default function AddCamera() {
           mixerId: null,
           connectionPort: null,
           isUpsideDown: false,
+          maxSpeed: 100,
         });
 
         navigate('/cameras');

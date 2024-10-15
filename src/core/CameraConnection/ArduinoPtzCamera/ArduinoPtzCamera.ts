@@ -109,6 +109,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
     if (this.config.isUpsideDown) {
       value = -value;
     }
+    value = (value * (this.config.maxSpeed || 100)) / 100;
 
     this.relativeState.pan = value;
     this.sheduleUpdate('move', this.relativeState);
@@ -118,6 +119,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
     if (this.config.isUpsideDown) {
       value = -value;
     }
+    value = (value * (this.config.maxSpeed || 100)) / 100;
 
     this.relativeState.tilt = value;
     this.sheduleUpdate('move', this.relativeState);
