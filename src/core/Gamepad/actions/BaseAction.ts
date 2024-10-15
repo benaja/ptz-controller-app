@@ -100,6 +100,9 @@ export class AxisAction extends BaseAction implements IAxisAction {
       return 0;
     }
 
+    // exponantial curve
+    value = value < 0 ? -Math.pow(-value, 3) : Math.pow(value, 3);
+
     return Math.round(value * muliplier);
   }
 
