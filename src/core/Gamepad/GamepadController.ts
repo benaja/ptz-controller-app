@@ -52,7 +52,7 @@ export class GamepadController {
     }
     const videoMixer = this._videoMixerFactory.get(this._config.videoMixerId);
     if (!videoMixer) {
-      throw new Error('Videomixer nocht connected');
+      throw new Error('Videomixer nicht connected');
     }
     return videoMixer;
   }
@@ -87,7 +87,6 @@ export class GamepadController {
       notificationApi: this._notificationApi,
       setSelectCamera: (camera) => {
         this.activeCamera = camera;
-        console.log('setSelectCamera', camera);
       },
       cameraFacotry: this._cameraFactory,
     });

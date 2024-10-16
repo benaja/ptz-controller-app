@@ -27,3 +27,18 @@ export function clampSpeedChange(value: number, lastValue: number, maxChange: nu
 export function applyLowPassFilter(target: number, lastValue: number, alpha: number): number {
   return alpha * target + (1 - alpha) * lastValue;
 }
+
+/**
+ *
+ * @param value value 0-255
+ * @param min value in percentage: 0-1
+ * @param max value in percentage: 0-1
+ * @returns
+ */
+export function applyMinMax(value: number, min: number, max: number): number {
+  if (value <= 0.5 && value >= -0.5) {
+    return 0;
+  }
+
+  return Math.sign(value) * 255 * min + value * (max - min);
+}

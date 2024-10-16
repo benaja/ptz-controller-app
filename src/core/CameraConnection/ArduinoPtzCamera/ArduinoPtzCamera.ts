@@ -1,7 +1,7 @@
 import { ICameraConnection, baseCameraConfigSchema } from '../ICameraConnection';
 import WebSocket from 'ws';
 import { throttle } from '@main/utils/throttle';
-import { applyLowPassFilter, clampSpeedChange, round } from '@main/utils/filters';
+import { applyLowPassFilter, applyMinMax, clampSpeedChange, round } from '@main/utils/filters';
 import { RelativeCameraState } from './AurduinoPtzCameraState';
 import { CameraConnectionType } from '../CameraConnectionTypes';
 import { z } from 'zod';
@@ -110,8 +110,6 @@ export class ArduinoPtzCamera implements ICameraConnection {
     if (this.config.isUpsideDown) {
       value = -value;
     }
-    value -= value * this.getMinSpeed();
-    value *= this.getMaxSpeed();
 
     this.relativeState.pan = value;
     this.scheduleMoveUpdate(this.relativeState);
@@ -121,8 +119,6 @@ export class ArduinoPtzCamera implements ICameraConnection {
     if (this.config.isUpsideDown) {
       value = -value;
     }
-    value -= value * this.getMinSpeed();
-    value *= this.getMaxSpeed();
 
     this.relativeState.tilt = value;
     this.scheduleMoveUpdate(this.relativeState);
@@ -178,34 +174,36 @@ export class ArduinoPtzCamera implements ICameraConnection {
     tilt: 0,
     zoom: 0,
   };
+  private lastData = new RelativeCameraState();
   sendMovementUpdate(data: RelativeCameraState): void {
-    const lastData = { ...this.filterData };
-    this.filterData.pan = applyLowPassFilter(data.pan, lastData.pan, 0.2);
-    this.filterData.tilt = applyLowPassFilter(data.tilt, lastData.tilt, 0.2);
-    this.filterData.zoom = applyLowPassFilter(data.zoom, lastData.zoom, 0.2);
+    const lastFilterData = { ...this.filterData };
+    this.filterData.pan = applyLowPassFilter(data.pan, lastFilterData.pan, 0.2);
+    this.filterData.tilt = applyLowPassFilter(data.tilt, lastFilterData.tilt, 0.2);
+    this.filterData.zoom = applyLowPassFilter(data.zoom, lastFilterData.zoom, 0.2);
 
-    this.filterData.pan = clampSpeedChange(this.filterData.pan, lastData.pan, 0.2);
-    this.filterData.tilt = clampSpeedChange(this.filterData.tilt, lastData.tilt, 0.2);
-    this.filterData.zoom = clampSpeedChange(this.filterData.zoom, lastData.zoom, 0.2);
+    this.filterData.pan = clampSpeedChange(this.filterData.pan, lastFilterData.pan, 0.2);
+    this.filterData.tilt = clampSpeedChange(this.filterData.tilt, lastFilterData.tilt, 0.2);
+    this.filterData.zoom = clampSpeedChange(this.filterData.zoom, lastFilterData.zoom, 0.2);
 
     const newData = {
-      pan: round(this.filterData.pan),
-      tilt: round(this.filterData.tilt),
+      pan: round(applyMinMax(this.filterData.pan, this.getMinSpeed(), this.getMaxSpeed())),
+      tilt: round(applyMinMax(this.filterData.tilt, this.getMinSpeed(), this.getMaxSpeed())),
       zoom: round(this.filterData.zoom),
     };
 
-    // if (
-    //   newData.pan === round(lastData.pan) &&
-    //   newData.tilt === round(lastData.tilt) &&
-    //   newData.zoom === round(lastData.zoom)
-    // ) {
-    //   return;
-    // }
-    const absoluteMinSpeed = round(this.getMinSpeed() * 255 * this.getMaxSpeed());
+    if (
+      newData.pan === round(this.lastData.pan) &&
+      newData.tilt === round(this.lastData.tilt) &&
+      newData.zoom === round(this.lastData.zoom)
+    ) {
+      return;
+    }
+
+    this.lastData = { ...newData };
 
     this.sendUpdate('move', {
-      pan: newData.pan + Math.sign(newData.pan) * absoluteMinSpeed,
-      tilt: newData.tilt + Math.sign(newData.tilt) * absoluteMinSpeed,
+      pan: newData.pan,
+      tilt: newData.tilt,
       zoom: newData.zoom,
     });
   }
