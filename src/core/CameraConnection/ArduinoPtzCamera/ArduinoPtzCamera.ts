@@ -181,13 +181,13 @@ export class ArduinoPtzCamera implements ICameraConnection {
     this.filterData.zoom = clampSpeedChange(this.filterData.zoom, lastFilterData.zoom, 0.2);
 
     // If speed is reduced, instantly set the new speed
-    if (Math.abs(this.filterData.pan) < Math.abs(data.pan)) {
+    if (Math.abs(this.filterData.pan) > Math.abs(data.pan)) {
       this.filterData.pan = data.pan;
     } else {
       this.filterData.pan = applyLowPassFilter(data.pan, lastFilterData.pan, 0.2);
       this.filterData.pan = clampSpeedChange(this.filterData.pan, lastFilterData.pan, 0.2);
     }
-    if (Math.abs(this.filterData.tilt) < Math.abs(data.tilt)) {
+    if (Math.abs(this.filterData.tilt) > Math.abs(data.tilt)) {
       this.filterData.tilt = data.tilt;
     } else {
       this.filterData.tilt = applyLowPassFilter(data.tilt, lastFilterData.tilt, 0.2);
