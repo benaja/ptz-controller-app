@@ -23,6 +23,13 @@ export function LogsPage() {
     };
   }, []);
 
+  useEffect(() => {
+    window.logsApi.getLatestLogs().then((logs) => {
+      console.log('logs', logs);
+      setLogs(logs);
+    });
+  }, []);
+
   return (
     <Layout
       title="Logs"

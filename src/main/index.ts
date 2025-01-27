@@ -17,7 +17,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 log.initialize();
-// log.errorHandler.startCatching();
+log.errorHandler.startCatching();
 
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {

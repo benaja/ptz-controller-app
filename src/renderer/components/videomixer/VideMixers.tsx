@@ -19,6 +19,14 @@ export default function VideoMixers() {
     fetchVideoMixers();
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchVideoMixers();
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Layout
       title="Video Mixer Configuration"

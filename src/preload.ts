@@ -72,8 +72,12 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld('notificationApi', registerEndpoints(['notify']));
 
-contextBridge.exposeInMainWorld('logsApi', registerEndpoints(['openLogFile'], ['onLog']));
+contextBridge.exposeInMainWorld(
+  'logsApi',
+  registerEndpoints(['openLogFile', 'getLatestLogs'], ['onLog']),
+);
 
-// contextBridge.exposeInMainWorld('logsApi', {
-//   onLog: (callback) => ipcRenderer.on('onLog', (_event, value) => callback(value)),
-// });
+contextBridge.exposeInMainWorld(
+  'settingsApi',
+  registerEndpoints(['getSettings', 'updateSettings']),
+);

@@ -22,6 +22,16 @@ export default function ManageGamepads() {
   }
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      fetchGamepads();
+    }, 500);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
     // const removeGamepadEventListener = window.connectedGamepadApi.onGamepadEvent(
     //   async (event, gamepadEvent: GamepadEvent) => {
     //     if (gamepadEvent.type === 'connected') {

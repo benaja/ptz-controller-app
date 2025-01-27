@@ -53,7 +53,6 @@ export class GamepadConfigApi {
   }
 
   public getGamepads(): GamepadResponse[] {
-    log.info('getGamepads');
     return this._gamepadRepository.getAll().map((gamepad) => ({
       ...gamepad,
       connected: !!this._gamepadFactory.get(gamepad.id)?.isConnected,

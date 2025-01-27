@@ -52,7 +52,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
     this._lastPongReceived = null;
     log.info('setting up websocket: ', this.config.ip);
     // if (!this.reconnect || this.websocket?.readyState === WebSocket.OPEN) return;
-    this.websocket = new WebSocket(`ws://${this.config.ip}:3004`);
+    this.websocket = new WebSocket(`ws://${this.config.ip}:3004`, { timeout: 1000 });
 
     this.websocket.on('open', () => {
       log.info('websocket connected: ', this.config.ip);
