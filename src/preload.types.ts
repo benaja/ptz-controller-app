@@ -4,6 +4,7 @@ import { GamepadConfigApi } from '@core/api/GamepadConfigApi';
 import { VideoMixerApi } from '@core/api/VideoMixerApi';
 import { NotificationApi } from '@core/api/NotificationApi';
 import { SettingsApi } from '@core/api/SettingsApi';
+import { LogsApi } from '@core/api/LogsApi';
 
 type AsyncApiMethods<T> = {
   [K in keyof T]: T[K] extends (...args: any[]) => any
@@ -21,5 +22,10 @@ declare global {
     videoMixerApi: AsyncApiMethods<VideoMixerApi>;
     notificationApi: AsyncApiMethods<NotificationApi>;
     settingsApi: AsyncApiMethods<SettingsApi>;
+    logsApi: AsyncApiMethods<LogsApi> & {
+      onLog: (
+        callback: (log: Electron.IpcRendererEvent, data: Record<string, any>) => void,
+      ) => () => void;
+    };
   }
 }

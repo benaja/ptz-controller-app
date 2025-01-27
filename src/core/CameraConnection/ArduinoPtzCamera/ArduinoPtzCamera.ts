@@ -83,6 +83,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
     });
 
     this.websocket.on('error', (error) => {
+      this.connected = false;
       log.error('websocket error', error, this.config.ip);
     });
 

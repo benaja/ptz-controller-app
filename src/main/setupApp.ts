@@ -7,6 +7,7 @@ import { VMixBuilder } from '@core/VideoMixer/VMix/VMixBuilder';
 import { PassthroughBuilder } from '@core/VideoMixer/Passthrough/PassthroughBuilder';
 import { SettingsApi } from '@core/api/SettingsApi';
 import { NodeGamepadBuilder } from '@core/Gamepad/NodeGamepad/NodeGamepadBuilder';
+import { LogsApi } from '@core/api/LogsApi';
 
 export async function setupApp() {
   const core = new Core();
@@ -24,6 +25,7 @@ export async function setupApp() {
   );
 
   const settingsApi = new SettingsApi();
+  const logsApi = new LogsApi();
 
   setupElectronApi([
     core.gamepadConfigApi,
@@ -32,6 +34,7 @@ export async function setupApp() {
     core.videoMixerApi,
     core.notificationApi,
     settingsApi,
+    logsApi,
   ]);
 
   core.bootstrap();

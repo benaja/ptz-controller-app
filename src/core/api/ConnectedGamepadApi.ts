@@ -32,7 +32,6 @@ export class ConnectedGamepadApi {
   ) {}
 
   public getConnectedGamepads(): ConnectedGamepadResponse[] {
-    console.log('getConnectedGamepads', this._connectedGamepadsStore.get());
     return this._connectedGamepadsStore.get().map((c) => ({
       ...c,
       inUse: !!this._gamepadFactory.getByGamepadId(c.id),

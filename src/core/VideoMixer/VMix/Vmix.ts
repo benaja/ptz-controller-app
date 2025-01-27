@@ -91,11 +91,12 @@ export class Vmix implements IVideoMixer {
       // Request vMix tally info by sending message 'TALLY'
       this._connection.send('TALLY');
 
-      this._tallyInterval = setInterval(() => {
-        if (!this._connection.connected()) return;
+      // this._tallyInterval = setInterval(() => {
+      //   if (!this._connection.connected()) return;
 
-        this._connection.send('TALLY');
-      }, 100);
+      //   this._connection.send('TALLY');
+      // }, 100);
+      this._connection.send('SUBSCRIBE TALLY');
 
       this._dataInterval = setInterval(async () => {
         if (!this._connection.connected()) return;
@@ -175,32 +176,13 @@ export class Vmix implements IVideoMixer {
 
   cut() {
     this._connection.send({ Function: 'Cut' });
-    // connection2.send({ Function: 'Merge' });
   }
   async changeInput() {}
   async nextInput() {
     this._connection.send({ Function: 'PreviewInputNext' });
-
-    // const preview = await this.getPreview();
-    // let next = parseInt(preview?.id || '0') + 1;
-    // const sources = await this.getSources();
-    // if (next >= sources.length) {
-    //   next = 0;
-    // }
-
-    // this._connection.send({ Function: 'PreviewInput', Input: next });
   }
   async previousInput() {
     this._connection.send({ Function: 'PreviewInputPrevious' });
-
-    // const preview = await this.getPreview();
-    // let previous = parseInt(preview?.id || '0') - 1;
-    // const sources = await this.getSources();
-    // if (previous === 0) {
-    //   previous = sources.length - 1;
-    // }
-
-    // this._connection.send({ Function: 'PreviewInput', Input: previous });
   }
   toggleKey() {}
   runMacro() {}
@@ -218,19 +200,4 @@ export class Vmix implements IVideoMixer {
     console.log('toggleOverlay', number);
     this._connection.send({ Function: 'OverlayInput' + number + 'Last' });
   }
-
-  // private async getSourcesByTallyInfo(state: '0' | '1' | '2') {
-  //   if (!this._tallyState) return null;
-
-  //   const sources = await this.getSources();
-  //   return this._tallyState
-  //     .split('')
-  //     .map((s, index) => {
-  //       if (s === state) {
-  //         return sources[index];
-  //       }
-  //       return null;
-  //     })
-  //     .filter((s) => s !== null);
-  // }
 }

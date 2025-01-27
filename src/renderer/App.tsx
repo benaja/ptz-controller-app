@@ -11,6 +11,7 @@ import AddVideoMixer from './components/videomixer/AddVideoMixer';
 import EditVideoMixer from './components/videomixer/EditVideoMixer';
 import AddGamepad from './components/gamepads/AddGamepad';
 import Settings from './components/settings/Settings';
+import { LogsPage } from './components/LogsPage';
 
 function App(): JSX.Element {
   // useEffect(() => {
@@ -69,6 +70,11 @@ function App(): JSX.Element {
           <Route
             element={<Settings />}
             path="/settings"
+          />
+
+          <Route
+            element={<LogsPage />}
+            path="/logs"
           />
         </Routes>
       </HistoryProvider>

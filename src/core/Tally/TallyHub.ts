@@ -26,9 +26,9 @@ export class TallyHub implements ITallyHub {
     const onAir = await this._mixer.getOnAirSources();
     const preview = await this._mixer.getPreviewSources();
 
-    const allSouces = await this._mixer.getSources();
+    const allSources = await this._mixer.getSources();
 
-    const notLiveSources = allSouces.filter(
+    const notLiveSources = allSources.filter(
       (source) =>
         !onAir.find((s) => s.id === source.id) && !preview.find((s) => s.id === source.id),
     );
@@ -45,5 +45,5 @@ export class TallyHub implements ITallyHub {
       .forEach(async (source) => {
         this._cameraFactory.getCameraConnection(source.id)?.setTally('preview');
       });
-  }, 100);
+  }, 10);
 }

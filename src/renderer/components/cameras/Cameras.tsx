@@ -12,12 +12,20 @@ export default function Cameras() {
   function fetchCameras() {
     window.cameraApi.getCameras().then((cameras) => {
       setCameras(cameras);
-      console.log('cameras', cameras);
     });
   }
 
   useEffect(() => {
     fetchCameras();
+  }, []);
+
+  // fetch all 500ms for cameras
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchCameras();
+    }, 500);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (

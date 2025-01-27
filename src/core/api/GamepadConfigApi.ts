@@ -1,6 +1,7 @@
 import { GamepadFactory } from '@core/Gamepad/GemepadFactory';
 import { GamepadConfig, GamepadRepository } from '@core/repositories/GamepadRepository';
 import { ConnectedGamepadStore } from '@core/store/ConnectedGamepadsStore';
+import log from 'electron-log/main';
 
 export type GamepadResponse = {
   connected: boolean;
@@ -52,6 +53,7 @@ export class GamepadConfigApi {
   }
 
   public getGamepads(): GamepadResponse[] {
+    log.info('getGamepads');
     return this._gamepadRepository.getAll().map((gamepad) => ({
       ...gamepad,
       connected: !!this._gamepadFactory.get(gamepad.id)?.isConnected,

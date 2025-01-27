@@ -5,7 +5,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 function registerListener(channel: string, callback: (...args: any[]) => void) {
-  ipcRenderer.on(channel, callback);
+  ipcRenderer.addListener(channel, callback);
 
   // return a function to remove the listener
   return () => {
@@ -71,3 +71,9 @@ contextBridge.exposeInMainWorld(
 );
 
 contextBridge.exposeInMainWorld('notificationApi', registerEndpoints(['notify']));
+
+contextBridge.exposeInMainWorld('logsApi', registerEndpoints(['openLogFile'], ['onLog']));
+
+// contextBridge.exposeInMainWorld('logsApi', {
+//   onLog: (callback) => ipcRenderer.on('onLog', (_event, value) => callback(value)),
+// });

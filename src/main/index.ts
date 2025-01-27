@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, Tray } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import path from 'path';
 import { setupApp } from './setupApp';
 import { updateElectronApp } from 'update-electron-app';
@@ -17,6 +17,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 log.initialize();
+// log.errorHandler.startCatching();
 
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
@@ -24,6 +25,17 @@ if (!gotTheLock) {
 } else {
   let mainWindow: BrowserWindow | null = null;
   let gamepadWindow: BrowserWindow | null = null;
+
+  if (log.hooks.length === 0) {
+    log.hooks.push((message, transport) => {
+      if (transport !== log.transports.file) {
+        return message;
+      }
+
+      mainWindow?.webContents.send('onLog', message);
+      return message;
+    });
+  }
 
   app.on('second-instance', (event, commandLine, workingDirectory) => {
     // Someone tried to run a second instance, we should focus our window.
