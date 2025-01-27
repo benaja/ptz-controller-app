@@ -1,7 +1,7 @@
 {
   "name": "ptz-controller-app",
   "productName": "ptz-controller-app",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "An App to control PTZ cameras",
   "main": ".webpack/main",
   "scripts": {
