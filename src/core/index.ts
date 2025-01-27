@@ -12,6 +12,7 @@ import { CameraRepository } from './repositories/CameraRepository';
 import { VideoMixerRepository } from './repositories/VideoMixerRepository';
 import { GamepadRepository } from './repositories/GamepadRepository';
 import { NotificationApi } from './api/NotificationApi';
+import { ipcMain } from 'electron';
 
 export class Core implements IDisposable {
   public readonly cameraFactory: CameraFactory;
@@ -32,6 +33,10 @@ export class Core implements IDisposable {
   public readonly tallyController: TallyHub;
 
   private readonly connectedGamepadsStore = new ConnectedGamepadStore();
+
+  public api: {
+    camera: CameraRepository;
+  };
 
   constructor() {
     this.notificationApi = new NotificationApi();

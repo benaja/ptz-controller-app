@@ -1,5 +1,5 @@
 import { IBuilder } from '@core/GenericFactory/IBuilder';
-import { z } from 'zod';
+import { z, ZodObject, ZodUnion } from 'zod';
 import { IGamepadController, baseGamepadSchema } from '../IGamepadController';
 import { GamepadType } from '@core/api/GamepadType';
 import { CameraFactory } from '@core/CameraConnection/CameraFactory';
@@ -8,6 +8,8 @@ import { defaultAxisBindings, defaultButtonBindings } from '@core/Gamepad/KeyBin
 import { GamepadConfig } from '@core/repositories/GamepadRepository';
 import { INotificationApi } from '@core/api/INotificationApi';
 import { NodeGamepad, nodeGamepadSchema } from './NodeGamepad';
+
+export type NodeGamepadConfig = z.infer<typeof nodeGamepadSchema>;
 
 export class NodeGamepadBuilder implements IBuilder<IGamepadController> {
   public constructor(
@@ -25,11 +27,6 @@ export class NodeGamepadBuilder implements IBuilder<IGamepadController> {
   }
 
   public async build(config: GamepadConfig): Promise<IGamepadController> {
-    // const gamepads = this._userConfigStore.get('gamepads');
-    // const gamepad = gamepads.find((g) => g.id === config.id);
-
-    console.log('build node gamepad', config);
-
     switch (config.type) {
       case GamepadType.SonyPs4:
       case GamepadType.LogitechN310:

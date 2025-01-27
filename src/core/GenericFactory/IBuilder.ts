@@ -1,7 +1,7 @@
-import { ZodObject, ZodSchema } from 'zod';
+import { ZodObject, ZodSchema, ZodUnion } from 'zod';
 
 export interface IBuilder<TConcrete> {
   supportedTypes(): string[];
-  validationSchema(type: string): ZodObject<any>;
+  validationSchema(): ZodObject<any> | ZodUnion<any>;
   build(config: Record<string, unknown>): Promise<TConcrete>;
 }

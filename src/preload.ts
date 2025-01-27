@@ -71,8 +71,3 @@ contextBridge.exposeInMainWorld(
 );
 
 contextBridge.exposeInMainWorld('notificationApi', registerEndpoints(['notify']));
-
-contextBridge.exposeInMainWorld(
-  'settingsApi',
-  registerEndpoints(['getSettings', 'updateSettings']),
-);
