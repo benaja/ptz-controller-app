@@ -14,8 +14,8 @@ export const mainConfig: Configuration = {
     {
       'utf-8-validate': 'commonjs utf-8-validate',
       bufferutil: 'commonjs bufferutil',
-      'node-hid': 'commonjs node-hid',
-      '@sensslen/node-gamepad': 'commonjs @sensslen/node-gamepad',
+      // 'node-hid': 'commonjs node-hid',
+      // '@sensslen/node-gamepad': 'commonjs @sensslen/node-gamepad',
     },
   ],
 
