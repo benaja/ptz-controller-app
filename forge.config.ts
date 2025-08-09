@@ -18,6 +18,8 @@ dotenv.config();
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    // Ensure native module files for node-hid are unpacked from the ASAR on Windows
+    // asarUnpack: ['**/node_modules/node-hid/**'],
     icon: './src/assets/img/icon',
   },
   rebuildConfig: {},
@@ -66,7 +68,8 @@ const config: ForgeConfig = {
       [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
       [FuseV1Options.EnableNodeCliInspectArguments]: false,
       [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
-      [FuseV1Options.OnlyLoadAppFromAsar]: true,
+      // Must be false because we rely on unpacked native modules (e.g., node-hid)
+      [FuseV1Options.OnlyLoadAppFromAsar]: false,
     }),
   ],
   publishers: [
