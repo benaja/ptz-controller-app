@@ -1,3 +1,4 @@
+import log from 'electron-log/main';
 import { GamepadFactory } from '@core/Gamepad/GemepadFactory';
 import { GamepadRepository } from '@core/repositories/GamepadRepository';
 import { ConnectedGamepadStore } from '@core/store/ConnectedGamepadsStore';
@@ -88,6 +89,8 @@ export class ConnectedGamepadApi {
   public triggerAxisEvent(event: AxisEventPayload) {
     const gamepad = this._gamepadFactory.getByGamepadId(event.gamepad.id);
     if (!gamepad) return;
+
+    log.verbose('triggerAxisEvent', event);
 
     gamepad.onAxis(event);
   }

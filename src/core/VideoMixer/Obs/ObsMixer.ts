@@ -1,9 +1,9 @@
+import log from 'electron-log/main';
 import OBSWebSocket from 'obs-websocket-js';
 import { throttle } from '@main/utils/throttle';
-import { IVideoMixer, MixerSource, baseVideoMixerSchema } from '../IVideoMixer';
+import { IVideoMixer, baseVideoMixerSchema } from '../IVideoMixer';
 import { z } from 'zod';
 import { VideoMixerType } from '../VideoMixerType';
-import { emit } from '@core/events/eventBus';
 import { ITallyHub } from '@core/Tally/ITallyHub';
 import { TallyHub } from '@core/Tally/TallyHub';
 import { CameraFactory } from '@core/CameraConnection/CameraFactory';
@@ -49,7 +49,7 @@ export class ObsMixer implements IVideoMixer {
   }
 
   public connect(config: ObsMixerConfig) {
-    // console.log('connecting to OBS', config.ip);
+    log.info('connecting to OBS', config.ip, config.password);
     this._obs
       .connect(`ws://${config.ip}`, config.password || undefined)
       .then(async () => {
@@ -94,6 +94,7 @@ export class ObsMixer implements IVideoMixer {
   }
 
   public async getPreview() {
+    console.log('getPreview', this._currentPreview);
     if (!this._currentPreview) return null;
 
     return this.getPrimarySourceBySceneName(this._currentPreview?.sceneName);
@@ -122,8 +123,8 @@ export class ObsMixer implements IVideoMixer {
 
   public async changeInput(newInputIndex: number): Promise<void> {
     const scene = await this.getSceneByIndex(newInputIndex);
-
     this._currentPreview = scene;
+    // await this.setPreviewScene(scene.sceneName);
   }
 
   public async nextInput(): Promise<void> {
@@ -157,19 +158,48 @@ export class ObsMixer implements IVideoMixer {
     this.setPreviewScene(this._currentPreview.sceneName);
   }
 
+  public async toggleOverlay(overlay: number): Promise<void> {
+    const scenes = await this.getScenes();
+
+    const overlayScene = scenes.find(
+      (s) => s.sceneName === 'Overlay' || s.sceneName === 'Overlays',
+    );
+    if (!overlayScene) {
+      return;
+    }
+
+    const items = await this._obs.call('GetSceneItemList', {
+      sceneName: overlayScene.sceneName,
+    });
+
+    const item = items.sceneItems.find((i) => i.sceneItemIndex === overlay - 1);
+
+    if (!item) {
+      return;
+    }
+
+    await this._obs.call('SetSceneItemEnabled', {
+      sceneName: overlayScene.sceneName,
+      sceneItemId: item.sceneItemId as number,
+      sceneItemEnabled: !item.sceneItemEnabled,
+    });
+  }
+
   public toggleKey(key: number): void {
-    // intentionally nothing
+    void key;
   }
 
   public runMacro(macro: number): void {
-    // intentionally nothing
+    void macro;
   }
 
   public async isKeySet(key: number): Promise<boolean> {
+    void key;
     return false;
   }
 
   public async getAuxilarySelection(aux: number): Promise<number> {
+    void aux;
     return 0;
   }
 
@@ -228,10 +258,17 @@ export class ObsMixer implements IVideoMixer {
         (s) =>
           s.inputKind === 'av_capture_input_v2' ||
           s.inputKind === 'screen_capture' ||
-          s.inputKind === 'ndi_source',
+          s.inputKind === 'ndi_source' ||
+          s.inputKind === 'decklink-input',
       )
       .sort((a, b) => {
-        // av_capture_input_v2 > screen_capture > ndi_source
+        // decklink-input > av_capture_input_v2 > screen_capture > ndi_source
+        if (a.inputKind === 'decklink-input') {
+          return -1;
+        }
+        if (b.inputKind === 'decklink-input') {
+          return 1;
+        }
         if (a.inputKind === 'av_capture_input_v2') {
           return -1;
         }
@@ -284,7 +321,7 @@ export class ObsMixer implements IVideoMixer {
     const scene = scenes.find((s) => s.sceneIndex === sceneIndex);
 
     if (!scene) {
-      throw new Error(`Scene ${name} not found`);
+      throw new Error(`Scene with index ${sceneIndex} not found`);
     }
 
     return scene as Scene;
