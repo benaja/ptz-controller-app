@@ -13,13 +13,10 @@ function useRadialDrag(onChange: (x: number, y: number) => void) {
     (ev.target as Element).setPointerCapture?.(ev.pointerId);
   }, []);
 
-  const onPointerUp = useCallback(
-    (ev: PointerEvent | React.PointerEvent<HTMLDivElement>) => {
-      draggingRef.current = false;
-      onChange(0, 0);
-    },
-    [onChange],
-  );
+  const onPointerUp = useCallback(() => {
+    draggingRef.current = false;
+    onChange(0, 0);
+  }, [onChange]);
 
   const onPointerMove = useCallback(
     (ev: PointerEvent | React.PointerEvent<HTMLDivElement>) => {
@@ -39,7 +36,7 @@ function useRadialDrag(onChange: (x: number, y: number) => void) {
   );
 
   useEffect(() => {
-    const up = (e: PointerEvent) => onPointerUp(e);
+    const up = () => onPointerUp();
     const move = (e: PointerEvent) => onPointerMove(e);
     window.addEventListener('pointerup', up);
     window.addEventListener('pointermove', move);
@@ -56,6 +53,7 @@ export default function ControlCamera() {
   const { id } = useParams<{ id: string }>();
   const [connected, setConnected] = useState(false);
   const [name, setName] = useState('');
+  const [pad, setPad] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     if (!id) return;
@@ -76,6 +74,7 @@ export default function ControlCamera() {
   );
 
   const { containerRef, onPointerDown } = useRadialDrag((x, y) => {
+    setPad({ x, y });
     // y inverted for intuitive up/down control; pan=x, tilt=-y
     sendPanTilt(x, -y);
   });
@@ -98,13 +97,22 @@ export default function ControlCamera() {
             <div
               ref={containerRef}
               onPointerDown={onPointerDown}
-              className="relative w-64 h-64 rounded-full bg-gray-100 border border-gray-200 select-none touch-none"
+              className="relative w-64 h-64 bg-gray-100 border border-gray-200 rounded-full select-none touch-none"
             >
-              <div className="absolute inset-0 m-auto w-1 h-64 bg-gray-200" />
-              <div className="absolute inset-0 m-auto w-64 h-1 bg-gray-200" />
+              <div className="absolute inset-0 w-1 h-64 m-auto bg-gray-200" />
+              <div className="absolute inset-0 w-64 h-1 m-auto bg-gray-200" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="text-xs text-gray-400">Drag</span>
               </div>
+              {/* indicator dot showing current pan/tilt vector */}
+              <div
+                className="absolute w-3 h-3 bg-blue-500 rounded-full shadow-sm"
+                style={{
+                  left: `${50 + pad.x * 50}%`,
+                  top: `${50 + pad.y * 50}%`,
+                  transform: 'translate(-50%, -50%)',
+                }}
+              />
             </div>
           </div>
 
@@ -112,21 +120,24 @@ export default function ControlCamera() {
 
           <div className="flex-1">
             <p className="mb-2 text-sm text-gray-600">Zoom</p>
-            <input
-              type="range"
-              min={-1}
-              max={1}
-              step={0.01}
-              onChange={(e) => onZoom(parseFloat(e.target.value))}
-              onMouseUp={() => onZoom(0)}
-              onTouchEnd={() => onZoom(0)}
-              className="w-64"
-            />
-            <div className="text-xs text-gray-400 mt-1">Slide up to zoom in, down to zoom out</div>
+            <div className="flex items-center h-64">
+              <input
+                type="range"
+                min={-1}
+                max={1}
+                step={0.01}
+                defaultValue={0}
+                onChange={(e) => onZoom(parseFloat(e.target.value))}
+                onMouseUp={() => onZoom(0)}
+                onTouchEnd={() => onZoom(0)}
+                className="w-64 origin-center rotate-90"
+              />
+            </div>
+            <div className="mt-1 text-xs text-gray-400">Slide up to zoom in, down to zoom out</div>
           </div>
         </div>
 
-        <div className="mt-6 flex">
+        <div className="flex mt-6">
           <span
             className={`px-2 py-0.5 rounded text-xs border ${
               connected ? 'text-green-700 border-green-200' : 'text-gray-600 border-gray-200'
@@ -146,12 +157,12 @@ export default function ControlCamera() {
   );
 }
 
-function throttle<T extends (...args: any[]) => void>(fn: T, wait: number): T {
+function throttle<T extends (...args: unknown[]) => void>(fn: T, wait: number): T {
   let last = 0;
-  let timeout: any;
-  let lastArgs: any[] | null = null;
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+  let lastArgs: unknown[] | null = null;
 
-  return function (this: any, ...args: any[]) {
+  return function (this: unknown, ...args: unknown[]) {
     const now = Date.now();
     const remaining = wait - (now - last);
     lastArgs = args;
