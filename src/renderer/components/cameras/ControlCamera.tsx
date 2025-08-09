@@ -54,6 +54,7 @@ export default function ControlCamera() {
   const [connected, setConnected] = useState(false);
   const [name, setName] = useState('');
   const [pad, setPad] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -126,10 +127,20 @@ export default function ControlCamera() {
                 min={-1}
                 max={1}
                 step={0.01}
-                defaultValue={0}
-                onChange={(e) => onZoom(parseFloat(e.target.value))}
-                onMouseUp={() => onZoom(0)}
-                onTouchEnd={() => onZoom(0)}
+                value={zoom}
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value);
+                  setZoom(v);
+                  onZoom(v);
+                }}
+                onMouseUp={() => {
+                  setZoom(0);
+                  onZoom(0);
+                }}
+                onTouchEnd={() => {
+                  setZoom(0);
+                  onZoom(0);
+                }}
                 className="w-64 origin-center rotate-90"
               />
             </div>
