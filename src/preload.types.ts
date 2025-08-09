@@ -7,10 +7,8 @@ import { SettingsApi } from '@core/api/SettingsApi';
 import { LogsApi } from '@core/api/LogsApi';
 
 type AsyncApiMethods<T> = {
-  [K in keyof T]: T[K] extends (...args: any[]) => any
-    ? (
-        ...args: Parameters<T[K]>
-      ) => ReturnType<T[K]> extends Promise<any> ? ReturnType<T[K]> : Promise<ReturnType<T[K]>>
+  [K in keyof T]: T[K] extends (...args: infer P) => infer R
+    ? (...args: P) => R extends Promise<unknown> ? R : Promise<R>
     : never;
 };
 
@@ -30,7 +28,7 @@ declare global {
     settingsApi: AsyncApiMethods<SettingsApi>;
     logsApi: AsyncApiMethods<LogsApi> & {
       onLog: (
-        callback: (log: Electron.IpcRendererEvent, data: Record<string, any>) => void,
+        callback: (log: Electron.IpcRendererEvent, data: Record<string, unknown>) => void,
       ) => () => void;
     };
   }

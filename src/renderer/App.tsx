@@ -14,7 +14,8 @@ import AddGamepad from './components/gamepads/AddGamepad';
 import Settings from './components/settings/Settings';
 import { LogsPage } from './components/LogsPage';
 
-function App(): JSX.Element {
+type Props = { initialRoute?: string };
+function App({ initialRoute = '/gamepads' }: Props): JSX.Element {
   // useEffect(() => {
   //   const removeCameraConnectedListener = window.api.newCammeraConnected((event, message) => {
   //     console.log('newCammeraConnected', message);
@@ -28,7 +29,7 @@ function App(): JSX.Element {
   // console.log('store', store.get('windowBounds'));
 
   return (
-    <MemoryRouter initialEntries={['/gamepads']}>
+    <MemoryRouter initialEntries={[initialRoute]}>
       <HistoryProvider>
         <Routes>
           <Route

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
+import { app, BrowserWindow, Menu, Tray } from 'electron';
 import path from 'path';
 import { setupApp } from './setupApp';
 import { updateElectronApp } from 'update-electron-app';
@@ -32,12 +32,20 @@ if (!gotTheLock) {
         return message;
       }
 
-      mainWindow?.webContents.send('onLog', message);
+      // Broadcast log messages to all renderer windows
+      BrowserWindow.getAllWindows().forEach((win) => {
+        // ignore errors if a window is closing
+        try {
+          win.webContents.send('onLog', message);
+        } catch (e) {
+          // noop
+        }
+      });
       return message;
     });
   }
 
-  app.on('second-instance', (event, commandLine, workingDirectory) => {
+  app.on('second-instance', () => {
     // Someone tried to run a second instance, we should focus our window.
     // const mainWindow = BrowserWindow.getAllWindows()[0];
     // if (mainWindow) {
@@ -89,6 +97,21 @@ if (!gotTheLock) {
     gamepadWindow.loadURL(GAMEPAD_WINDOW_WEBPACK_ENTRY);
   };
 
+  const createLogsWindow = () => {
+    const logsWindow = new BrowserWindow({
+      title: 'Logs',
+      width: 900,
+      height: 700,
+      webPreferences: {
+        preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+      },
+      show: true,
+    });
+    const url = new URL(MAIN_WINDOW_WEBPACK_ENTRY);
+    url.searchParams.set('route', '/logs');
+    logsWindow.loadURL(url.toString());
+  };
+
   let tray: Tray | null = null;
   const createTray = () => {
     const iconPath = path.resolve(__dirname, 'assets/img/tray-icon.png');
@@ -109,6 +132,12 @@ if (!gotTheLock) {
         label: 'Focus Gamepads',
         click: () => {
           gamepadWindow?.focus();
+        },
+      },
+      {
+        label: 'Open Logs',
+        click: () => {
+          createLogsWindow();
         },
       },
       { type: 'separator' },
@@ -144,7 +173,9 @@ if (!gotTheLock) {
   // Quit when all windows are closed, except on macOS. There, it's common
   // for applications and their menu bar to stay active until the user quits
   // explicitly with Cmd + Q.
-  app.on('window-all-closed', () => {});
+  app.on('window-all-closed', () => {
+    // keep app active in tray
+  });
 
   app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the

@@ -1,6 +1,5 @@
 import { shell } from 'electron';
 import log from 'electron-log/main';
-import fs from 'node:fs';
 
 export class LogsApi {
   public openLogFile(): void {
@@ -21,4 +20,6 @@ export class LogsApi {
 
     return [];
   }
+
+  // Opening a logs window is handled by the main process (tray/menu).
 }

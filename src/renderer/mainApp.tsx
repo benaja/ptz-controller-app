@@ -5,8 +5,11 @@ import App from './App';
 
 console.log(React);
 
+const params = new URLSearchParams(window.location.search);
+const initialRoute = params.get('route') || '/gamepads';
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <App initialRoute={initialRoute} />
   </React.StrictMode>,
 );
