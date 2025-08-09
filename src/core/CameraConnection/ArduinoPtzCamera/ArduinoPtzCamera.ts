@@ -178,22 +178,25 @@ export class ArduinoPtzCamera implements ICameraConnection {
   private lastData = new RelativeCameraState();
   sendMovementUpdate(data: RelativeCameraState): void {
     const lastFilterData = { ...this.filterData };
-    this.filterData.zoom = applyLowPassFilter(data.zoom, lastFilterData.zoom, 0.2);
-    this.filterData.zoom = clampSpeedChange(this.filterData.zoom, lastFilterData.zoom, 0.2);
+    this.filterData.zoom = data.zoom;
+    this.filterData.pan = data.pan;
+    this.filterData.tilt = data.tilt;
+    //this.filterData.zoom = applyLowPassFilter(data.zoom, lastFilterData.zoom, 0.2);
+    //this.filterData.zoom = clampSpeedChange(this.filterData.zoom, lastFilterData.zoom, 0.2);
 
     // If speed is reduced, instantly set the new speed
-    if (Math.abs(this.filterData.pan) > Math.abs(data.pan)) {
-      this.filterData.pan = data.pan;
-    } else {
-      this.filterData.pan = applyLowPassFilter(data.pan, lastFilterData.pan, 0.2);
-      this.filterData.pan = clampSpeedChange(this.filterData.pan, lastFilterData.pan, 0.2);
-    }
-    if (Math.abs(this.filterData.tilt) > Math.abs(data.tilt)) {
-      this.filterData.tilt = data.tilt;
-    } else {
-      this.filterData.tilt = applyLowPassFilter(data.tilt, lastFilterData.tilt, 0.2);
-      this.filterData.tilt = clampSpeedChange(this.filterData.tilt, lastFilterData.tilt, 0.2);
-    }
+    // if (Math.abs(this.filterData.pan) > Math.abs(data.pan)) {
+    //   this.filterData.pan = data.pan;
+    // } else {
+    //   this.filterData.pan = applyLowPassFilter(data.pan, lastFilterData.pan, 0.2);
+    //   this.filterData.pan = clampSpeedChange(this.filterData.pan, lastFilterData.pan, 0.2);
+    // }
+    // if (Math.abs(this.filterData.tilt) > Math.abs(data.tilt)) {
+    //   this.filterData.tilt = data.tilt;
+    // } else {
+    //   this.filterData.tilt = applyLowPassFilter(data.tilt, lastFilterData.tilt, 0.2);
+    //   this.filterData.tilt = clampSpeedChange(this.filterData.tilt, lastFilterData.tilt, 0.2);
+    // }
 
     const newData = {
       pan: round(applyMinMax(this.filterData.pan, this.getMinSpeed(), this.getMaxSpeed())),
