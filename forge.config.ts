@@ -1,3 +1,4 @@
+import preloadConfig from './webpack.preload.config';
 import type { ForgeConfig } from '@electron-forge/shared-types';
 import { MakerSquirrel } from '@electron-forge/maker-squirrel';
 import { MakerZIP } from '@electron-forge/maker-zip';
@@ -55,6 +56,7 @@ const config: ForgeConfig = {
           },
         ],
       },
+      preloadConfig,
       loggerPort: 9001,
     }),
     new FusesPlugin({
