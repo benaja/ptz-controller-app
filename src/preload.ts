@@ -46,6 +46,7 @@ contextBridge.exposeInMainWorld(
     'getCamera',
     'controlPanTilt',
     'controlZoom',
+    'getPing',
   ]),
 );
 

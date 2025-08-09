@@ -17,6 +17,7 @@ type AsyncApiMethods<T> = {
 type CameraControlExtras = {
   controlPanTilt: (args: { cameraId: string; pan: number; tilt: number }) => Promise<void>;
   controlZoom: (args: { cameraId: string; zoom: number }) => Promise<void>;
+  getPing: (args: { cameraId: string }) => Promise<number | null>;
 };
 
 declare global {

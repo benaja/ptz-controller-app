@@ -1,7 +1,7 @@
 import { ICameraConnection, baseCameraConfigSchema } from '../ICameraConnection';
 import WebSocket from 'ws';
 import { throttle } from '@main/utils/throttle';
-import { applyLowPassFilter, applyMinMax, clampSpeedChange, round } from '@main/utils/filters';
+import { applyMinMax, round } from '@main/utils/filters';
 import { RelativeCameraState } from './AurduinoPtzCameraState';
 import { CameraConnectionType } from '../CameraConnectionTypes';
 import { z } from 'zod';
@@ -27,6 +27,8 @@ export class ArduinoPtzCamera implements ICameraConnection {
   public readonly sourceId: string;
 
   private _lastPongReceived: number | null = Date.now();
+  private _lastPingSent: number | null = null;
+  public lastPingMs: number | null = null;
 
   constructor(public config: ArduionoPtzCameraConfig) {
     this.sourceId = config.sourceId;
@@ -69,6 +71,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
         }
         console.log('pinging');
         try {
+          this._lastPingSent = Date.now();
           this.websocket.ping();
         } catch (error) {
           console.log('error pinging', error);
@@ -90,6 +93,9 @@ export class ArduinoPtzCamera implements ICameraConnection {
     this.websocket.on('pong', () => {
       console.log('pong received');
       this._lastPongReceived = Date.now();
+      if (this._lastPingSent) {
+        this.lastPingMs = this._lastPongReceived - this._lastPingSent;
+      }
     });
   }
 
@@ -170,14 +176,13 @@ export class ArduinoPtzCamera implements ICameraConnection {
     }, 2000);
   }, 50);
 
-  private filterData: Record<string, any> = {
+  private filterData: Record<string, number> = {
     pan: 0,
     tilt: 0,
     zoom: 0,
   };
   private lastData = new RelativeCameraState();
   sendMovementUpdate(data: RelativeCameraState): void {
-    const lastFilterData = { ...this.filterData };
     this.filterData.zoom = data.zoom;
     this.filterData.pan = data.pan;
     this.filterData.tilt = data.tilt;
@@ -229,7 +234,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
     return (this.config.maxSpeed || 100) / 100;
   }
 
-  sendUpdate(action: string, data?: Record<string, any>): void {
+  sendUpdate(action: string, data?: Record<string, unknown>): void {
     log.info('sending update to', this.config.ip, action, data);
     try {
       this.websocket?.send(
@@ -249,7 +254,7 @@ export class ArduinoPtzCamera implements ICameraConnection {
     zoom: number;
     focus: number;
   }> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.websocket?.once('message', (data: WebSocket.Data) => {
         const response = JSON.parse(data.toString());
 

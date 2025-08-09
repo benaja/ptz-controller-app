@@ -55,6 +55,7 @@ export default function ControlCamera() {
   const [name, setName] = useState('');
   const [pad, setPad] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(0);
+  const [pingMs, setPingMs] = useState<number | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -63,6 +64,18 @@ export default function ControlCamera() {
       setName(camera.name);
       setConnected(!!camera.connected);
     });
+  }, [id]);
+
+  // poll ping periodically
+  useEffect(() => {
+    if (!id) return;
+    const interval = setInterval(() => {
+      window.cameraApi
+        .getPing({ cameraId: id })
+        .then((ms) => setPingMs(ms))
+        .catch(() => setPingMs(null));
+    }, 1000);
+    return () => clearInterval(interval);
   }, [id]);
 
   const sendPanTilt = useMemo(
@@ -156,6 +169,7 @@ export default function ControlCamera() {
           >
             {connected ? 'connected' : 'disconnected'}
           </span>
+          <span className="ml-3 text-xs text-gray-600">Ping: {pingMs ?? '-'} ms</span>
           <AppButton
             className="ml-auto"
             to={`/cameras/${id}`}

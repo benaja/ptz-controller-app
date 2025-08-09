@@ -42,13 +42,23 @@ export class CameraApi {
 
     if (!camera) return null;
 
-    console.log(this._cameraConnectionFactory.getCameraConnection(camera.sourceId));
-
     return {
       ...camera,
       connected:
         !!this._cameraConnectionFactory.getCameraConnection(camera.sourceId)?.connected || false,
     };
+  }
+
+  getPingEndpoint(args: { cameraId: string }): number | null {
+    const cameraConfig = this._cameraRepository.getById(args.cameraId);
+    if (!cameraConfig) return null;
+
+    const connection = this._cameraConnectionFactory.getCameraConnection(cameraConfig.sourceId);
+    if (!connection) return null;
+
+    // Narrow known interface extension for Arduino camera
+    const maybeArduino = connection as unknown as { lastPingMs?: number | null };
+    return maybeArduino.lastPingMs ?? null;
   }
 
   /**
