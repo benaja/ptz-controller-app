@@ -38,7 +38,7 @@ export default function Cameras() {
         {cameras.map((camera) => (
           <Link
             key={camera.id}
-            to={`/cameras/${camera.id}`}
+            to={`/cameras/${camera.id}/control`}
             className="py-2 flex items-center gap-4"
           >
             <p>{camera.name}</p>

@@ -86,7 +86,7 @@ export default function EditCamera() {
           />
           <div className="flex mt-6">
             <AppButton
-              className="border-red-300 text-red-600"
+              className="text-red-600 border-red-300"
               onClick={deleteCamera}
             >
               Delete

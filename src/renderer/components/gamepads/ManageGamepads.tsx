@@ -17,7 +17,6 @@ export default function ManageGamepads() {
   function fetchGamepads() {
     window.gamepadConfigApi.getGamepads().then((gamepads) => {
       setGamepads(gamepads);
-      console.log(gamepads);
     });
   }
 
@@ -52,7 +51,7 @@ export default function ManageGamepads() {
       title="Gamepads"
       actions={<AppButton onClick={fetchGamepads}>Refresh</AppButton>}
     >
-      <p className="font-bold ml-2 mb-1 ">Input devices</p>
+      <p className="mb-1 ml-2 font-bold ">Input devices</p>
       <Container>
         {/* <h2 className="text-xl">Input devices</h2> */}
 
@@ -61,18 +60,18 @@ export default function ManageGamepads() {
             <Link
               key={gamepad.id}
               to={`/gamepads/${gamepad.id}`}
-              className="font-medium flex py-2"
+              className="flex py-2 font-medium"
             >
               <p className="font-medium">{gamepad.name}</p>
 
-              <span className="ml-auto  px-1 py-0 border-gray-200 border rounded">
+              <span className="px-1 py-0 ml-auto border border-gray-200 rounded">
                 {gamepad.connected ? 'connected' : 'disconnected'}
               </span>
 
-              <ChevronRightIcon className="h-4 w-4 text-gray-400" />
+              <ChevronRightIcon className="w-4 h-4 text-gray-400" />
             </Link>
           ))}
-          {gamepads.length === 0 && <p className="text-gray-400 text-center py-2">No gamepads</p>}
+          {gamepads.length === 0 && <p className="py-2 text-center text-gray-400">No gamepads</p>}
         </div>
       </Container>
 

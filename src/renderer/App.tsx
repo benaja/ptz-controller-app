@@ -5,6 +5,7 @@ import { HistoryProvider } from './providers/HistoryProvider';
 import Cameras from './components/cameras/Cameras';
 import AddCamera from './components/cameras/AddCamera';
 import EditCamera from './components/cameras/EditCamera';
+import ControlCamera from './components/cameras/ControlCamera';
 import './assets/index.css';
 import VideoMixers from './components/videomixer/VideMixers';
 import AddVideoMixer from './components/videomixer/AddVideoMixer';
@@ -53,6 +54,10 @@ function App(): JSX.Element {
           <Route
             element={<EditCamera />}
             path="/cameras/:id"
+          />
+          <Route
+            element={<ControlCamera />}
+            path="/cameras/:id/control"
           />
           <Route
             element={<VideoMixers />}

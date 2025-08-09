@@ -14,11 +14,16 @@ type AsyncApiMethods<T> = {
     : never;
 };
 
+type CameraControlExtras = {
+  controlPanTilt: (args: { cameraId: string; pan: number; tilt: number }) => Promise<void>;
+  controlZoom: (args: { cameraId: string; zoom: number }) => Promise<void>;
+};
+
 declare global {
   interface Window {
     connectedGamepadApi: AsyncApiMethods<ConnectedGamepadApi>;
     gamepadConfigApi: AsyncApiMethods<GamepadConfigApi>;
-    cameraApi: AsyncApiMethods<CameraApi>;
+    cameraApi: AsyncApiMethods<CameraApi> & CameraControlExtras;
     videoMixerApi: AsyncApiMethods<VideoMixerApi>;
     notificationApi: AsyncApiMethods<NotificationApi>;
     settingsApi: AsyncApiMethods<SettingsApi>;

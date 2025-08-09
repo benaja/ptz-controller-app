@@ -17,8 +17,6 @@ export class GamepadConfigApi {
   public async addGamepad(config: any): Promise<GamepadConfig> {
     const gamepad = this._gamepadRepository.add(config);
 
-    console.log('addGamepad', gamepad);
-
     await this._gamepadFactory.add(gamepad);
 
     return gamepad;

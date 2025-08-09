@@ -38,7 +38,15 @@ function registerEndpoints(endpoints: string[], listeners: string[] = []) {
 
 contextBridge.exposeInMainWorld(
   'cameraApi',
-  registerEndpoints(['addCamera', 'removeCamera', 'updateCamera', 'getCameras', 'getCamera']),
+  registerEndpoints([
+    'addCamera',
+    'removeCamera',
+    'updateCamera',
+    'getCameras',
+    'getCamera',
+    'controlPanTilt',
+    'controlZoom',
+  ]),
 );
 
 contextBridge.exposeInMainWorld(
