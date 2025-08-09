@@ -53,7 +53,9 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libusb-1.0-0-dev libudev-dev
+          sudo apt-get install -y libusb-1.0-0-dev libudev-dev build-essential gcc-12 g++-12
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 100
 
       - name: Cache node modules
         uses: actions/cache@v3
@@ -63,7 +65,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Install Dependencies
+      - name: Install Dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: npm ci
+        env:
+          CC: gcc-12
+          CXX: g++-12
+          CXXFLAGS: -std=gnu++17
+
+      - name: Install Dependencies (non-Linux)
+        if: matrix.os != 'ubuntu-latest'
         run: npm ci
 
       # - name: Package Electron App
@@ -72,7 +83,17 @@ jobs:
       # - name: Build Electron App
       #   run: npm run make
 
-      - name: Publish
+      - name: Publish (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: npm run publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+          CC: gcc-12
+          CXX: g++-12
+          CXXFLAGS: -std=gnu++17
+
+      - name: Publish (non-Linux)
+        if: matrix.os != 'ubuntu-latest'
         run: npm run publish
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
