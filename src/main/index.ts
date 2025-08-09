@@ -88,6 +88,7 @@ if (!gotTheLock) {
       height: 600,
       webPreferences: {
         preload: GAMEPAD_WINDOW_PRELOAD_WEBPACK_ENTRY,
+        backgroundThrottling: false,
       },
       show: false,
     });
