@@ -4,6 +4,9 @@ import { IVideoMixer } from '@core/VideoMixer/IVideoMixer';
 import { INotificationApi } from '@core/api/INotificationApi';
 import { CameraRepository } from '@core/repositories/CameraRepository';
 
+/** Raw axis values within this band map to zero (shared by AxisAction and GamepadController PTZ idle). */
+export const GAMEPAD_AXIS_DEADZONE = 0.1;
+
 export type ActionParams = {
   getPreviewCamera: () => ICameraConnection | null;
   getOnAirCamera: () => ICameraConnection | null;
@@ -96,7 +99,7 @@ export class AxisAction extends BaseAction implements IAxisAction {
    * Converts from the range -1 to 1 to the range -255 to 255
    */
   convertValue(value: number, muliplier = 255): number {
-    if (value < 0.1 && value > -0.1) {
+    if (value < GAMEPAD_AXIS_DEADZONE && value > -GAMEPAD_AXIS_DEADZONE) {
       return 0;
     }
 

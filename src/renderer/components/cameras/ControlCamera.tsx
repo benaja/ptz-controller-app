@@ -4,23 +4,36 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import AppButton from '../ui/AppButton';
 
-function useRadialDrag(onChange: (x: number, y: number) => void) {
+function useRadialDrag(onChange: (x: number, y: number, phase: 'move' | 'end') => void) {
   const draggingRef = useRef(false);
+  const activePointerIdRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const onPointerDown = useCallback((ev: React.PointerEvent<HTMLDivElement>) => {
     draggingRef.current = true;
+    activePointerIdRef.current = ev.pointerId;
     (ev.target as Element).setPointerCapture?.(ev.pointerId);
   }, []);
 
-  const onPointerUp = useCallback(() => {
-    draggingRef.current = false;
-    onChange(0, 0);
-  }, [onChange]);
+  const onPointerUp = useCallback(
+    (ev?: PointerEvent) => {
+      if (ev && activePointerIdRef.current !== null && ev.pointerId !== activePointerIdRef.current) {
+        return;
+      }
+      if (!draggingRef.current) return;
+      draggingRef.current = false;
+      activePointerIdRef.current = null;
+      onChange(0, 0, 'end');
+    },
+    [onChange],
+  );
 
   const onPointerMove = useCallback(
     (ev: PointerEvent | React.PointerEvent<HTMLDivElement>) => {
       if (!draggingRef.current || !containerRef.current) return;
+      if (activePointerIdRef.current !== null && ev.pointerId !== activePointerIdRef.current) {
+        return;
+      }
       const rect = containerRef.current.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
@@ -30,13 +43,13 @@ function useRadialDrag(onChange: (x: number, y: number) => void) {
       const radius = Math.min(rect.width, rect.height) / 2;
       const nx = Math.max(-1, Math.min(1, dx / radius));
       const ny = Math.max(-1, Math.min(1, dy / radius));
-      onChange(nx, ny);
+      onChange(nx, ny, 'move');
     },
     [onChange],
   );
 
   useEffect(() => {
-    const up = () => onPointerUp();
+    const up = (e: PointerEvent) => onPointerUp(e);
     const move = (e: PointerEvent) => onPointerMove(e);
     window.addEventListener('pointerup', up);
     window.addEventListener('pointermove', move);
@@ -78,29 +91,41 @@ export default function ControlCamera() {
     return () => clearInterval(interval);
   }, [id]);
 
-  const sendPanTilt = useMemo(
+  const panTiltSend = useMemo(
     () =>
-      throttle((pan: number, tilt: number) => {
+      createThrottledSender((pan: number, tilt: number) => {
         if (!id) return;
         window.cameraApi.controlPanTilt({ cameraId: id, pan, tilt });
       }, 50),
     [id],
   );
 
-  const { containerRef, onPointerDown } = useRadialDrag((x, y) => {
-    setPad({ x, y });
-    // y inverted for intuitive up/down control; pan=x, tilt=-y
-    sendPanTilt(x, -y);
-  });
-
-  const onZoom = useMemo(
+  const zoomSend = useMemo(
     () =>
-      throttle((value: number) => {
+      createThrottledSender((value: number) => {
         if (!id) return;
         window.cameraApi.controlZoom({ cameraId: id, zoom: value });
       }, 50),
     [id],
   );
+
+  const sendFullStopPtz = useCallback(() => {
+    if (!id) return;
+    panTiltSend.invokeImmediate(0, 0);
+    zoomSend.invokeImmediate(0);
+  }, [id, panTiltSend, zoomSend]);
+
+  const { containerRef, onPointerDown } = useRadialDrag((x, y, phase) => {
+    setPad({ x, y });
+    if (phase === 'end') {
+      sendFullStopPtz();
+      return;
+    }
+    // y inverted for intuitive up/down control; pan=x, tilt=-y
+    panTiltSend.run(x, -y);
+  });
+
+  const onZoom = zoomSend.run;
 
   return (
     <Layout title={`Control ${name}`}>
@@ -148,11 +173,11 @@ export default function ControlCamera() {
                 }}
                 onMouseUp={() => {
                   setZoom(0);
-                  onZoom(0);
+                  sendFullStopPtz();
                 }}
                 onTouchEnd={() => {
                   setZoom(0);
-                  onZoom(0);
+                  sendFullStopPtz();
                 }}
                 className="w-64 origin-center rotate-90"
               />
@@ -182,28 +207,43 @@ export default function ControlCamera() {
   );
 }
 
-function throttle<T extends (...args: unknown[]) => void>(fn: T, wait: number): T {
+function createThrottledSender<T extends (...args: never[]) => void>(
+  fn: T,
+  wait: number,
+): { run: T; invokeImmediate: (...args: Parameters<T>) => void } {
   let last = 0;
   let timeout: ReturnType<typeof setTimeout> | null = null;
-  let lastArgs: unknown[] | null = null;
+  let lastArgs: Parameters<T> | null = null;
 
-  return function (this: unknown, ...args: unknown[]) {
+  const invokeImmediate = (...args: Parameters<T>) => {
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+    }
+    lastArgs = null;
+    last = Date.now();
+    fn(...args);
+  };
+
+  const run = ((...args: Parameters<T>) => {
     const now = Date.now();
     const remaining = wait - (now - last);
     lastArgs = args;
     if (remaining <= 0) {
       last = now;
-      fn.apply(this, args);
       lastArgs = null;
+      fn(...args);
     } else if (!timeout) {
       timeout = setTimeout(() => {
         last = Date.now();
         timeout = null;
         if (lastArgs) {
-          fn.apply(this, lastArgs);
+          fn(...lastArgs);
           lastArgs = null;
         }
       }, remaining);
     }
-  } as T;
+  }) as T;
+
+  return { run, invokeImmediate };
 }
